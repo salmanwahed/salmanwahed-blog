@@ -1,0 +1,7 @@
+venv/
+static/
+credentials
+env
+.env
+images/
+.idea/
