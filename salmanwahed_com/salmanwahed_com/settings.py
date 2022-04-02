@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'debug_toolbar',
     'blog',
     'ckeditor'
 ]
@@ -49,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware'
 ]
 
 ROOT_URLCONF = 'salmanwahed_com.urls'
@@ -131,3 +133,11 @@ STATIC_ROOT = '/Users/salman/PycharmProjects/salmanwahed_com_project/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+INTERNAL_IPS = [
+    "0.0.0.0",
+    "127.0.0.1",
+]
+
+MEDIA_ROOT = '/Users/salman/PycharmProjects/salmanwahed_com_project/salmanwahed_com/upload/'
+MEDIA_URL = '/upload/'
