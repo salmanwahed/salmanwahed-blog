@@ -1,0 +1,39 @@
+{% extends "blog/base.html" %}
+{% block title %} | Blog{% endblock %}
+{% block content %}
+    <div class="page-content">
+        <h2 class="title">Posts</h2>
+        <ul class="posts-list">
+            {% for blog in blogs %}
+            <li>
+                <a class="img-wrapper" href="{% url 'blog:blog_detail' id=blog.id slug=blog.slug %}">
+                    <img
+                        src="https://d33wubrfki0l68.cloudfront.net/92415bbac03502d9b495141e9e01bee85955b778/a6a42/solo-developer-year-4/cover.jpg">
+                </a>
+                <div>
+                    <h2><a class="title" href="{% url 'blog:blog_detail' id=blog.id slug=blog.slug %}">{{blog.title}}</a></h2>
+                    <p class="date">{{blog.publish_date}}</p>
+                    <p>{{blog.short_desc}}</p>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="d-flex justify-content-center">
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}

@@ -2,8 +2,7 @@
 {% extends "blog/base.html" %}
 {% block title %}{{blog.title}}{% endblock %}
 {% block content %}
-<div class="row">
-    <div class="col-md-8">
+    <div class="page-content">
         <article class="blog-post">
             {% if blog.hero_image %}
             <img class="img-fluid" src="{{blog.hero_image.orig_image.url}}"/>
@@ -12,6 +11,4 @@
             {{ blog.body | safe}}
         </article>
     </div>
-    <div class="col-md-4"></div>
-</div>
 {% endblock %}
