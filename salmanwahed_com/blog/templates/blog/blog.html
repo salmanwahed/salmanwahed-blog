@@ -5,7 +5,7 @@
     <div class="page-content">
         <article class="blog-post">
             {% if blog.hero_image %}
-            <img class="img-fluid" src="{{blog.hero_image.orig_image.url}}"/>
+            <img class="img-fluid" src="{{blog.hero_image_url}}"/>
             {% endif %}
             <h2>{{ blog.title }}</h2>
             {{ blog.body | safe}}

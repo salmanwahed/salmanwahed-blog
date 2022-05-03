@@ -75,5 +75,23 @@ class BlogPost(models.Model):
             self.publish_date = timezone.now()
         super(BlogPost, self).save(*args, **kwargs)
 
+    @property
+    def hero_image_url(self):
+        if self.hero_image:
+            if self.hero_image.compressed_image:
+                return self.hero_image.compressed_image
+            else:
+                return self.hero_image.orig_image.url
+        return
+
+    @property
+    def thumbanil_url(self):
+        if self.thumbanil:
+            if self.thumbanil.compressed_image:
+                return self.thumbanil.compressed_image
+            else:
+                return self.thumbanil.orig_image.url
+        return
+
     def __str__(self):
         return self.title

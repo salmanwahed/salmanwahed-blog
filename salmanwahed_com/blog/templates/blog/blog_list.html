@@ -1,5 +1,5 @@
 {% extends "blog/base.html" %}
-{% block title %} | Blog{% endblock %}
+{% block title %}Blog{% endblock %}
 {% block content %}
     <div class="page-content">
         <h2 class="title">Posts</h2>
@@ -8,11 +8,12 @@
             <li>
                 <a class="img-wrapper" href="{% url 'blog:blog_detail' id=blog.id slug=blog.slug %}">
                     <img
-                        src="https://d33wubrfki0l68.cloudfront.net/92415bbac03502d9b495141e9e01bee85955b778/a6a42/solo-developer-year-4/cover.jpg">
+                        src="{{blog.thumbnail.orig_image.url}}">
                 </a>
                 <div>
                     <h2><a class="title" href="{% url 'blog:blog_detail' id=blog.id slug=blog.slug %}">{{blog.title}}</a></h2>
-                    <p class="date">{{blog.publish_date}}</p>
+                    <p class="date">{{blog.publish_date|date:"l, d M Y"}}</p>
+                    <p class="tags">{{}}</p>
                     <p>{{blog.short_desc}}</p>
                 </div>
             </li>
