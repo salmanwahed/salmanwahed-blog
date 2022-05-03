@@ -11,7 +11,7 @@ def homepage(request):
 
 
 def post_detail(request, id, slug=None):
-    blog = get_object_or_404(BlogPost, pk=id)
+    blog = get_object_or_404(BlogPost, pk=id, status=BlogPost.Status.PUBLISHED)
     blog.visited_count += 1
     blog.save()
     return render(request, 'blog/blog.html', dict(blog=blog))

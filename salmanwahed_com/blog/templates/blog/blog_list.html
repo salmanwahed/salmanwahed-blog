@@ -12,9 +12,14 @@
                 </a>
                 <div>
                     <h2><a class="title" href="{% url 'blog:blog_detail' id=blog.id slug=blog.slug %}">{{blog.title}}</a></h2>
-                    <p class="date">{{blog.publish_date|date:"l, d M Y"}}</p>
-
-                    <p class="tags">{{}}</p>
+                    <div class="date mb-1">{{blog.publish_date|date:"l, d M Y"}}</div>
+                    <div class="mb-2">
+                        {% for tag in blog.tag.all %}
+                        <a href="{% url 'blog:tagged_posts' tag %}" class="text-decoration-none">
+                            <span class="tag">{{tag.tag_name}}</span>
+                        </a>
+                        {% endfor %}
+                    </div>
                     <p>{{blog.short_desc}}</p>
                 </div>
             </li>
