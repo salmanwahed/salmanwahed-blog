@@ -13,6 +13,7 @@
                 <div>
                     <h2><a class="title" href="{% url 'blog:blog_detail' id=blog.id slug=blog.slug %}">{{blog.title}}</a></h2>
                     <p class="date">{{blog.publish_date|date:"l, d M Y"}}</p>
+
                     <p class="tags">{{}}</p>
                     <p>{{blog.short_desc}}</p>
                 </div>
