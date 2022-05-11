@@ -6,6 +6,8 @@ from django.utils.text import slugify
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
+from django.utils.html import mark_safe
+
 
 def get_sentinel_user():
     return get_user_model().objects.get_or_create(username='anonymous', first_name='Anonymous', last_name='User')[0]
@@ -24,6 +26,9 @@ class BlogImages(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.CharField(max_length=50, null=True, blank=True)
+
+    def image_preview(self):
+        return mark_safe('<img src="/upload/%s" width="auto" height="80" />' % self.orig_image)
 
     def save(self, *args, **kwargs):
         if not self.name:
@@ -53,7 +58,8 @@ class BlogPost(models.Model):
     title = models.CharField(max_length=200, null=False)
     author = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user), blank=True)
     hero_image = models.ForeignKey(BlogImages, on_delete=models.SET_NULL, null=True, blank=True, related_name="hero")
-    thumbnail = models.ForeignKey(BlogImages, on_delete=models.SET_NULL, null=True, blank=True, related_name="thumbnail")
+    thumbnail = models.ForeignKey(BlogImages, on_delete=models.SET_NULL, null=True, blank=True,
+                                  related_name="thumbnail")
     body = models.TextField()
     short_desc = models.CharField(max_length=280, null=True, blank=True, verbose_name="Short Description")
     slug = models.SlugField(max_length=250, allow_unicode=True, unique=True, blank=True)
@@ -74,6 +80,10 @@ class BlogPost(models.Model):
         if self.status == BlogPost.Status.PUBLISHED:
             self.publish_date = timezone.now()
         super(BlogPost, self).save(*args, **kwargs)
+
+    def blog_preview(self):
+        if self.status == BlogPost.Status.DRAFT:
+            return mark_safe('<a href="/post/preview/%s">Preview</a>' % self.id)
 
     @property
     def hero_image_url(self):

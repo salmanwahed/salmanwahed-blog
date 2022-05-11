@@ -16,7 +16,7 @@ class BlogPostAdminForm(forms.ModelForm):
 
 
 class BlogPostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'status', 'publish_date', 'visited_count')
+    list_display = ('title', 'status', 'publish_date', 'visited_count', 'blog_preview')
     form = BlogPostAdminForm
 
     def save_model(self, request, obj, form, change):
@@ -29,6 +29,12 @@ class BlogPostAdmin(admin.ModelAdmin):
         super(BlogPostAdmin, self).save_model(request, obj, form, change)
 
 
-admin.site.register(BlogImages)
+class BlogImageAdmin(admin.ModelAdmin):
+    list_display = ('name', 'image_type', 'image_preview')
+    readonly_fields = ('image_preview',)
+
+
+
+admin.site.register(BlogImages, BlogImageAdmin)
 admin.site.register(BlogPost, BlogPostAdmin)
 admin.site.register(Tag)
