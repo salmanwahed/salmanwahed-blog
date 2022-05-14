@@ -4,7 +4,7 @@
     <div class="page-content">
         <h2 class="title">Posts</h2>
         <ul class="posts-list">
-            {% for blog in blogs %}
+            {% for blog in page_obj.object_list %}
             <li>
                 <a class="img-wrapper" href="{% url 'blog:blog_detail' id=blog.id slug=blog.slug %}">
                     <img
@@ -26,21 +26,47 @@
             {% endfor %}
         </ul>
     </div>
+    {% if show_pagination %}
     <div class="d-flex justify-content-center">
         <ul class="pagination">
+            {% if page_obj.has_previous %}
             <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
                 <a class="page-link" href="#" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            {% endif %}
+            {% for page_num in page_obj.paginator.page_range %}
+                {% if page_obj.number == page_num %}
+                <li class="page-item active">
+                    <a class="page-link" href="{% url 'blog:blog_home'%}?page={{page_num}}">{{page_num}}</a>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="{% url 'blog:blog_home'%}?page={{page_num}}">{{page_num}}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
             <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#    " aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
         </ul>
     </div>
-{% endblock %}
+    {% endif %}
+ {% endblock %}

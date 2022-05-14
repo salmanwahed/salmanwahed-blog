@@ -144,3 +144,4 @@ INTERNAL_IPS = [
 
 MEDIA_ROOT = '/Users/salman/PycharmProjects/salmanwahed_com_project/salmanwahed_com/upload/'
 MEDIA_URL = '/upload/'
+PAGINATION_ITEM_COUNT = 5
