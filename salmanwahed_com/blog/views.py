@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.views.generic import TemplateView
 
 from .models import BlogPost
 from django.conf import settings
@@ -40,6 +41,10 @@ def tagged_posts(request, tag):
     return render(request, 'blog/blog_list.html', dict(page_obj=page_obj, show_pagination=show_pagination))
 
 
+def apps_projects(request):
+    return render(request, 'blog/pages/apps_projects.html›')
+
+
 def page_not_found(request, *args, **kwargs):
     response = render(request, 'blog/error/404.html')
     response.status_code = 404
@@ -50,3 +55,7 @@ def server_error(request, *args, **kwargs):
     response = render(request, 'blog/error/500.html')
     response.status_code = 500
     return response
+
+
+class AboutView(TemplateView):
+    template_name = 'blog/pages/about.html'

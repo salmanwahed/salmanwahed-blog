@@ -20,7 +20,7 @@ class BlogImages(models.Model):
         BASIC = 'BASIC', _('Basic')
 
     name = models.CharField(max_length=40, verbose_name='File Name')
-    orig_image = models.ImageField(upload_to='images')
+    orig_image = models.ImageField(upload_to='blog')
     compressed_image = models.URLField(null=True, blank=True)
     image_type = models.CharField(max_length=10, choices=ImageType.choices, default=ImageType.BASIC)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -105,3 +105,5 @@ class BlogPost(models.Model):
 
     def __str__(self):
         return self.title
+
+

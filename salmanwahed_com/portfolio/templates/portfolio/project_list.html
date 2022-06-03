@@ -1,0 +1,27 @@
+{% extends "portfolio/base.html" %}
+{% block title %}Portfolio{% endblock %}
+{% block content %}
+<h2 class="title">Apps</h2>
+<div class="row">
+    {% for project in object_list %}
+    <div class="col-lg-6 d-flex mb-4 mb-md-2">
+        <a class="w-50"
+            href="{{project.utm_url}}">
+            <img class="img-thumbnail" src="{{project.thumbnail.orig_image.url}}" />
+        </a>
+        <div class="d-flex flex-column ms-3">
+            <a href="{{project.utm_url}}">
+                <h5>{{project.name}}</h5>
+            </a>
+            <p>{{project.short_description}}</p>
+            <div>
+                {% for tag in project.tag.all %}
+                <span class="tag" style="background-color:{{tag.color_code}}">{{tag.tag_name}}</span>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

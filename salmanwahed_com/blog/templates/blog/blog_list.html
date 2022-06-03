@@ -1,31 +1,29 @@
 {% extends "blog/base.html" %}
 {% block title %}Blog{% endblock %}
 {% block content %}
-    <div class="page-content">
-        <h2 class="title">Posts</h2>
-        <ul class="posts-list">
-            {% for blog in page_obj.object_list %}
-            <li>
-                <a class="img-wrapper" href="{% url 'blog:blog_detail' id=blog.id slug=blog.slug %}">
-                    <img
-                        src="{{blog.thumbnail.orig_image.url}}">
-                </a>
-                <div>
-                    <h2><a class="title" href="{% url 'blog:blog_detail' id=blog.id slug=blog.slug %}">{{blog.title}}</a></h2>
-                    <div class="date mb-1">{{blog.publish_date|date:"l, d M Y"}}</div>
-                    <div class="mb-2">
-                        {% for tag in blog.tag.all %}
-                        <a href="{% url 'blog:tagged_posts' tag %}" class="text-decoration-none">
-                            <span class="tag">{{tag.tag_name}}</span>
-                        </a>
-                        {% endfor %}
-                    </div>
-                    <p>{{blog.short_desc}}</p>
+    <h2 class="title">Posts</h2>
+    <ul class="posts-list">
+        {% for blog in page_obj.object_list %}
+        <li>
+            <a class="img-wrapper" href="{% url 'blog:blog_detail' id=blog.id slug=blog.slug %}">
+                <img class="img-fluid rounded"
+                    src="{{blog.thumbnail.orig_image.url}}">
+            </a>
+            <div>
+                <h2><a class="title" href="{% url 'blog:blog_detail' id=blog.id slug=blog.slug %}">{{blog.title}}</a></h2>
+                <div class="date mb-1">{{blog.publish_date|date:"l, d M Y"}}</div>
+                <div class="mb-2">
+                    {% for tag in blog.tag.all %}
+                    <a href="{% url 'blog:tagged_posts' tag %}" class="text-decoration-none">
+                        <span class="tag">{{tag.tag_name}}</span>
+                    </a>
+                    {% endfor %}
                 </div>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
+                <p>{{blog.short_desc}}</p>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
     {% if show_pagination %}
     <div class="d-flex justify-content-center">
         <ul class="pagination">

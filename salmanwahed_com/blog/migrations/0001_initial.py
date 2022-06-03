@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
             name='BlogImages',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('orig_image', models.ImageField(upload_to='images')),
+                ('orig_image', models.ImageField(upload_to='blog')),
                 ('compressed_image', models.URLField(blank=True, null=True)),
                 ('image_type', models.CharField(choices=[('HERO', 'Hero'), ('THUMB', 'Thumbnail'), ('BASIC', 'Basic')], default='BASIC', max_length=10)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),

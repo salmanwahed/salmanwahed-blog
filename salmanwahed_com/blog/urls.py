@@ -8,5 +8,6 @@ urlpatterns = [
     path('', views.blog_home, name='blog_home'),
     re_path(r'post/(?P<id>\d+)(?:/(?P<slug>[-\w]+))?/$', views.post_detail, name='blog_detail'),
     path('posts/tagged/<str:tag>/', views.tagged_posts, name='tagged_posts'),
-    path('post/preview/<int:id>', views.post_preview, name='preview_post')
+    path('post/preview/<int:id>', views.post_preview, name='preview_post'),
+    path('about/', views.AboutView.as_view(), name='about')
 ]
