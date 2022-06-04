@@ -11,7 +11,7 @@ class ProjectAdminForm(forms.ModelForm):
     class Meta:
         model = Project
         fields = ['name', 'short_description', 'tag', 'thumbnail', 'project_url', 'utm_url', 'source_url',
-                  'project_type', 'status']
+                  'project_type', 'status', 'project_weight']
 
 
 class ProjectAdmin(admin.ModelAdmin):

@@ -32,6 +32,7 @@ class ProjectImage(models.Model):
 class Tag(models.Model):
     tag_name = models.CharField(max_length=20, unique=True)
     color_code = models.CharField(max_length=8, null=True, blank=True)
+    external_url = models.URLField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -61,6 +62,7 @@ class Project(models.Model):
     project_type = models.CharField(max_length=20, choices=ProjectType.choices, default=ProjectType.MOBILE_APP,
                                     verbose_name='Project Type')
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.LIVE)
+    project_weight = models.SmallIntegerField(default=0)
     source_url = models.URLField(verbose_name="Source URL", blank=True, null=True)
     utm_url = models.URLField(verbose_name='UTM Url', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -5,3 +5,4 @@ from .models import Project
 
 class ProjectListView(ListView):
     model = Project
+    ordering = ['-project_weight']
