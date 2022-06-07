@@ -9,18 +9,24 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import os
 from pathlib import Path
+from django.core.exceptions import ImproperlyConfigured
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
+if Path.exists(BASE_DIR.joinpath('.env')):
+    load_dotenv(BASE_DIR.joinpath('.env'))
+else:
+    raise ImproperlyConfigured('.env file not found.')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-5o2psuie_51hwp#0yb&3@e0@fa!j9l%2e7k@c$kmtr-&wf6ya^'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -30,7 +36,6 @@ ALLOWED_HOSTS = [
     '0.0.0.0',
     'localhost'
 ]
-
 
 # Application definition
 
@@ -78,21 +83,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'salmanwahed_com.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'salmanwahed_com',
-        'USER': 'salmanwahed',
-        'PASSWORD': '$@1ManW@h3d',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': 'localhost',
         'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -112,7 +115,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -126,13 +128,12 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = '/Users/salman/PycharmProjects/salmanwahed_com_project/static/'
+STATIC_ROOT = BASE_DIR.joinpath('static').absolute()
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -144,6 +145,7 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
-MEDIA_ROOT = '/Users/salman/PycharmProjects/salmanwahed_com_project/salmanwahed_com/upload/'
 MEDIA_URL = '/upload/'
+MEDIA_ROOT = BASE_DIR.joinpath('upload').absolute()
+
 PAGINATION_ITEM_COUNT = 5
