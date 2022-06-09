@@ -31,6 +31,53 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+LOG_DIR = BASE_DIR.joinpath('log')
+LOG_FILE = 'salmanwahed_com.log'
+
+if not Path.exists(LOG_DIR):
+    raise ImproperlyConfigured('log directory was not found.')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'default': {
+            'format': '{levelname} {asctime} {module} {funcName}:{lineno} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{pathname} {funcName}({lineno}): {message}',
+            'style': '{',
+        }
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'handlers': {
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': LOG_DIR.joinpath(LOG_FILE),
+            'formatter': 'default',
+            'level': 'INFO'
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+            'filters': ['require_debug_true'],
+            'formatter': 'simple',
+            'level': 'DEBUG'
+        }
+    },
+    'loggers': {
+        'default': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    }
+}
+
 ALLOWED_HOSTS = [
     '127.0.0.1',
     '0.0.0.0',

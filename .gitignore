@@ -9,3 +9,4 @@ env
 images/
 .idea/
 upload/
+log/
