@@ -2,7 +2,6 @@
 __pycache__
 __pycache__/
 venv/
-staticfiles/
 credentials
 env
 .env
@@ -11,3 +10,4 @@ images/
 upload/
 log/
 credentials.txt
+/static/

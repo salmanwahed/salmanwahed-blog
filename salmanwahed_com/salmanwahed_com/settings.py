@@ -29,7 +29,10 @@ else:
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+if Path.exists(BASE_DIR.joinpath('credentials.txt')):
+    DEBUG = True
+else:
+    DEBUG = False
 
 LOG_DIR = BASE_DIR.joinpath('log')
 LOG_FILE = 'salmanwahed_com.log'
@@ -179,7 +182,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = BASE_DIR.joinpath('staticfiles')
+STATIC_ROOT = BASE_DIR.joinpath('static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
