@@ -79,9 +79,8 @@ LOGGING = {
 }
 
 ALLOWED_HOSTS = [
-    '127.0.0.1',
-    '0.0.0.0',
-    'localhost'
+    '.localhost',
+    '.salmanwahed.com'
 ]
 
 # Application definition
@@ -180,7 +179,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = BASE_DIR.joinpath('static').absolute()
+STATIC_ROOT = BASE_DIR.joinpath('static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -193,6 +192,6 @@ INTERNAL_IPS = [
 ]
 
 MEDIA_URL = '/upload/'
-MEDIA_ROOT = BASE_DIR.joinpath('upload').absolute()
+MEDIA_ROOT = BASE_DIR.joinpath('upload')
 
 PAGINATION_ITEM_COUNT = 5
