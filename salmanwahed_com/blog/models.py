@@ -7,6 +7,8 @@ from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 from django.utils.html import mark_safe
+from django.conf import settings
+from urllib.parse import urljoin
 
 
 def get_sentinel_user():
@@ -34,6 +36,13 @@ class BlogImages(models.Model):
         if not self.name:
             self.name = os.path.basename(self.orig_image.name)
         super(BlogImages, self).save(*args, **kwargs)
+
+    @property
+    def image_url(self):
+        if not self.compressed_image:
+            self.compressed_image = urljoin(settings.CDN_URL, self.orig_image.url)
+            self.save()
+        return self.compressed_image
 
     def __str__(self):
         return '{}({})'.format(self.name, self.pk)
@@ -85,25 +94,5 @@ class BlogPost(models.Model):
         if self.status == BlogPost.Status.DRAFT:
             return mark_safe('<a href="/post/preview/%s">Preview</a>' % self.id)
 
-    @property
-    def hero_image_url(self):
-        if self.hero_image:
-            if self.hero_image.compressed_image:
-                return self.hero_image.compressed_image
-            else:
-                return self.hero_image.orig_image.url
-        return
-
-    @property
-    def thumbanil_url(self):
-        if self.thumbanil:
-            if self.thumbanil.compressed_image:
-                return self.thumbanil.compressed_image
-            else:
-                return self.thumbanil.orig_image.url
-        return
-
     def __str__(self):
         return self.title
-
-

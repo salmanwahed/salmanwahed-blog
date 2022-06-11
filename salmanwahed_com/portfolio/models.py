@@ -2,6 +2,8 @@ import os
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.utils.html import mark_safe
+from django.conf import settings
+from urllib.parse import urljoin
 
 
 class ProjectImage(models.Model):
@@ -24,6 +26,13 @@ class ProjectImage(models.Model):
         if not self.name:
             self.name = os.path.basename(self.orig_image.name)
         super(ProjectImage, self).save(*args, **kwargs)
+
+    @property
+    def image_url(self):
+        if not self.compressed_image:
+            self.compressed_image = urljoin(settings.CDN_URL, self.orig_image.url)
+            self.save()
+        return self.compressed_image
 
     def __str__(self):
         return '{}({})'.format(self.name, self.pk)

@@ -198,3 +198,4 @@ MEDIA_URL = '/upload/'
 MEDIA_ROOT = BASE_DIR.joinpath('upload')
 
 PAGINATION_ITEM_COUNT = 5
+CDN_URL = 'https://z7q8g4z8.hostrycdn.com/'

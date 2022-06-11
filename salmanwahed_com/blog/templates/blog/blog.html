@@ -3,8 +3,8 @@
 {% block content %}
     <article class="blog-post">
         {% if blog.hero_image %}
-            <a href="{{blog.hero_image_url}}">
-                <img class="img-fluid rounded" src="{{blog.hero_image_url}}"/>
+            <a href="{{blog.hero_image.image_url}}">
+                <img class="img-fluid rounded" src="{{blog.hero_image.image_url}}"/>
             </a>
         {% endif %}
         <h2 class="mt-3">{{ blog.title }}</h2>
