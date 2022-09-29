@@ -42,7 +42,9 @@ class BlogImages(models.Model):
         if not self.compressed_image:
             self.compressed_image = urljoin(settings.CDN_URL, self.orig_image.url)
             self.save()
-        return self.compressed_image
+        if settings.USE_CDN:
+            return self.compressed_image
+        return self.orig_image.url
 
     def __str__(self):
         return '{}({})'.format(self.name, self.pk)
@@ -51,6 +53,7 @@ class BlogImages(models.Model):
 class Tag(models.Model):
     tag_name = models.CharField(max_length=20, unique=True)
     tag_name_bn = models.CharField(max_length=30, null=True, blank=True)
+    color_code = models.CharField(max_length=8, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.CharField(max_length=50, null=True, blank=True)

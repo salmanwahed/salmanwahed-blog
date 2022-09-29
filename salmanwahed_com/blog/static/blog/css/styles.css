@@ -73,7 +73,6 @@ pre {
 
 .tag {
   border-radius: 50rem !important;
-  background-color: lightgray;
   font-family: "Roboto Mono", monospace;
   font-weight: 400;
   padding: .1rem 0.5rem .2rem 0.5rem;
@@ -82,8 +81,7 @@ pre {
 }
 
 .tag:hover {
-    color: royalblue;
-    background-color: whitesmoke;
+    color: whitesmoke;
     font-size: .95rem;
 }
 

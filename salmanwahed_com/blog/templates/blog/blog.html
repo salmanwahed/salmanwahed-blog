@@ -16,7 +16,7 @@
             <div class="mt-1">
                 {% for tag in blog.tag.all %}
                 <a href="{% url 'blog:tagged_posts' tag %}" class="text-decoration-none">
-                    <span class="tag me-1">{{tag.tag_name}}</span>
+                    <span class="tag me-1" style="background-color:{{tag.color_code}}">{{tag.tag_name}}</span>
                 </a>
                 {% endfor %}
             </div>
