@@ -1,0 +1,13 @@
+git pull origin master
+# use key from github.com > Settings > Developer settings > Personal access token
+
+source venv/bin/activate
+# install any new requirements if required
+pip install -r requirements.txt
+cd salmanwahed_com
+python manage.py collectstatic
+python manage.py migrate
+deactivate
+sudo systemctl restart salmanwahed_com
+# if there is any change in salmanwahed_com.service file
+sudo systemctl daemon-reload

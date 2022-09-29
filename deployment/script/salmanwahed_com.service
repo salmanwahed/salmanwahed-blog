@@ -1,0 +1,12 @@
+[Unit]
+Description=gunicorn daemon
+After=network.target
+
+[Service]
+User=salman
+Group=salman
+WorkingDirectory=/home/salman/salmanwahed_com_project/salmanwahed_com
+ExecStart=/home/salman/salmanwahed_com_project/venv/bin/gunicorn --access-logfile - --workers 4 --bind unix:/home/salman/salmanwahed_com_project/salmanwahed.sock salmanwahed_com.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
