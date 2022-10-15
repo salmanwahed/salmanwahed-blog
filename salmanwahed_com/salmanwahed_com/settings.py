@@ -200,6 +200,14 @@ MEDIA_ROOT = BASE_DIR.joinpath('upload')
 
 PAGINATION_ITEM_COUNT = 5
 
+CKEDITOR_CONFIGS = {
+    'default': {
+        'extraAllowedContent': 'script[src]',
+        'height': 800,
+        'width': 960
+    },
+}
+
 CDN_URL = os.getenv('CDN_URL')
 USE_CDN = os.getenv('USE_CDN', 'FALSE').upper() == 'TRUE'
 

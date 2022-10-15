@@ -12,7 +12,7 @@ class BlogPostAdminForm(forms.ModelForm):
 
     class Meta:
         model = BlogPost
-        fields = ['title', 'slug', 'author', 'hero_image', 'thumbnail', 'tag', 'short_desc', 'body', 'status']
+        fields = ['title', 'slug', 'tag', 'body', 'author', 'hero_image', 'thumbnail', 'short_desc', 'status']
 
 
 class BlogPostAdmin(admin.ModelAdmin):

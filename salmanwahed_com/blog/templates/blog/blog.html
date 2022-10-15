@@ -1,4 +1,5 @@
 {% extends "blog/base.html" %}
+{% load blog_extras %}
 {% block title %}Blog | {{blog.title}}{% endblock %}
 {% block content %}
     <article class="blog-post">
@@ -11,9 +12,9 @@
         <div class="mb-4">
             <div class="mt-1">
                 <span class="me-3"><i class="fas fa-calendar"></i> {{blog.publish_date|date:"l, d M Y"}}</span>
-                <span><i class="fas fa-clock"></i> 15 minutes read</span>
+                <span><i class="fas fa-clock"></i> {% minutes_to_read blog.body %} minutes read</span>
             </div>
-            <div class="mt-1">
+            <div class="mt-2">
                 {% for tag in blog.tag.all %}
                 <a href="{% url 'blog:tagged_posts' tag %}" class="text-decoration-none">
                     <span class="tag me-1" style="background-color:{{tag.color_code}}">{{tag.tag_name}}</span>

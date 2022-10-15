@@ -45,7 +45,7 @@ pre {
   font-family: "Roboto Mono", monospace;
   font-size: .9rem;
   font-weight: 400;
-  background-color: #f8f8f8;
+  background-color: #FFFFFF;
   padding: 0.5rem 1rem;
   border: 1px solid #EAEAEA;
   border-radius: 0.3rem
@@ -399,4 +399,8 @@ input[type="checkbox"] {
 .post-body img {
     max-width: 75%;
     height: auto;
+}
+
+.gist tbody, td, tfoot, th, thead, tr {
+    border-style:none !important;
 }

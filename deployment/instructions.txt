@@ -1,5 +1,5 @@
 git pull origin master
-# use key from github.com > Settings > Developer settings > Personal access token
+# use key credentials or generate github.com > Settings > Developer settings > Personal access token
 
 source venv/bin/activate
 # install any new requirements if required
@@ -9,5 +9,6 @@ python manage.py collectstatic
 python manage.py migrate
 deactivate
 sudo systemctl restart salmanwahed_com
+sudo systemctl restart nginx
 # if there is any change in salmanwahed_com.service file
 sudo systemctl daemon-reload
