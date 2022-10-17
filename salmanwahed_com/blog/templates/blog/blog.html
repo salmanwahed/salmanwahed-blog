@@ -11,8 +11,12 @@
         <h2 class="mt-3">{{ blog.title }}</h2>
         <div class="mb-4">
             <div class="mt-1">
-                <span class="me-3"><i class="fas fa-calendar"></i> {{blog.publish_date|date:"l, d M Y"}}</span>
-                <span><i class="fas fa-clock"></i> {% minutes_to_read blog.body %} minutes read</span>
+                {% if blog.publish_date %}
+                <span class="me-3"><i class="fas fa-calendar"></i> {{ blog.publish_date|date:"l, d M Y"}}</span>
+                {% else %}
+                <span class="me-3"><i class="fas fa-calendar"></i> {{ blog.created_at|date:"l, d M Y"}}</span>
+                {% endif %}
+                <span><i class="fas fa-clock"></i> {% minutes_to_read blog.body %}</span>
             </div>
             <div class="mt-2">
                 {% for tag in blog.tag.all %}
