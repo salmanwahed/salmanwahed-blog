@@ -32,7 +32,9 @@ class ProjectImage(models.Model):
         if not self.compressed_image:
             self.compressed_image = urljoin(settings.CDN_URL, self.orig_image.url)
             self.save()
-        return self.compressed_image
+        if settings.USE_CDN:
+            return self.compressed_image
+        return self.orig_image.url
 
     def __str__(self):
         return '{}({})'.format(self.name, self.pk)

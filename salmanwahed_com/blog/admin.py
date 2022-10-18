@@ -30,7 +30,7 @@ class BlogPostAdmin(admin.ModelAdmin):
 
 
 class BlogImageAdmin(admin.ModelAdmin):
-    list_display = ('name', 'image_type', 'image_preview')
+    list_display = ('name', 'image_url', 'image_type', 'image_preview')
     readonly_fields = ('image_preview',)
 
 
