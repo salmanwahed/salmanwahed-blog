@@ -260,8 +260,8 @@ input[type="checkbox"] {
   .posts-list .img-wrapper {
     display: block;
     margin-right: 2.5rem;
-    min-width: 12rem;
-    max-width: 12rem;
+    min-width: 14rem;
+    max-width: 14rem;
   }
 }
 
