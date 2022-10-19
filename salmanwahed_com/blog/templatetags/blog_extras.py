@@ -1,6 +1,7 @@
 from math import ceil
 from django import template
 from bs4 import BeautifulSoup
+from django.conf import settings
 
 register = template.Library()
 
@@ -9,7 +10,7 @@ register = template.Library()
 def minutes_to_read(body):
     soup = BeautifulSoup(body, features="html.parser")
     words = soup.text.split()
-    minutes_read = ceil(len(words)/150)
+    minutes_read = ceil(len(words)/settings.WPM_READ)
     if minutes_read > 1:
         return f"{minutes_read} minutes read"
     else:

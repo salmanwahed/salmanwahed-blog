@@ -210,4 +210,4 @@ CKEDITOR_CONFIGS = {
 
 CDN_URL = os.getenv('CDN_URL')
 USE_CDN = os.getenv('USE_CDN', 'FALSE').upper() == 'TRUE'
-
+WPM_READ = int(os.getenv('WPM_READ', 180))
