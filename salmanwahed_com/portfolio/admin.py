@@ -23,6 +23,12 @@ class ProjectImageAdmin(admin.ModelAdmin):
     list_display = ('name', 'image_url', 'image_type', 'image_preview')
     readonly_fields = ('image_preview',)
 
+
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('tag_name', 'external_url', 'color_code', 'tag_color')
+    readonly_fields = ('tag_color',)
+
+
 admin.site.register(ProjectImage, ProjectImageAdmin)
 admin.site.register(Project, ProjectAdmin)
-admin.site.register(Tag)
+admin.site.register(Tag, TagAdmin)

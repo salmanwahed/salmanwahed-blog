@@ -34,7 +34,11 @@ class BlogImageAdmin(admin.ModelAdmin):
     readonly_fields = ('image_preview',)
 
 
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('tag_name', 'tag_name_bn', 'color_code', 'tag_color')
+    readonly_fields = ('tag_color',)
+
 
 admin.site.register(BlogImages, BlogImageAdmin)
 admin.site.register(BlogPost, BlogPostAdmin)
-admin.site.register(Tag)
+admin.site.register(Tag, TagAdmin)

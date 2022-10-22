@@ -364,8 +364,21 @@ input[type="checkbox"] {
 }
 
 .fa-twitter:hover {
-  color: skyblue;
+  color: #2497EA;
 }
+
+.fa-linkedin:hover {
+  color: #1566C2;
+}
+
+.fa-github:hover {
+  color: #7DBBE6;
+}
+
+.fa-stack-overflow:hover {
+    color: #F49111
+}
+
 
 .footer ul li a {
   color: #212121;

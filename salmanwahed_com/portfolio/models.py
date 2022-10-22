@@ -50,6 +50,9 @@ class Tag(models.Model):
     def __str__(self):
         return self.tag_name
 
+    def tag_color(self):
+        return mark_safe('<img width="15" height="15" style="background-color:%s;"/>' % self.color_code)
+
 
 class Project(models.Model):
     class ProjectType(models.TextChoices):

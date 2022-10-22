@@ -58,6 +58,9 @@ class Tag(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.CharField(max_length=50, null=True, blank=True)
 
+    def tag_color(self):
+        return mark_safe('<img width="15" height="15" style="background-color:%s;"/>' % self.color_code)
+
     def __str__(self):
         return self.tag_name
 
