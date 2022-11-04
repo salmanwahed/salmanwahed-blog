@@ -4,9 +4,12 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.views.generic import TemplateView
+from django.http import HttpResponse
+from django.shortcuts import redirect
 
 from .models import BlogPost
 from django.conf import settings
+from pathlib import Path
 
 logger = logging.getLogger('default')
 
@@ -64,3 +67,13 @@ class AboutView(TemplateView):
     def get(self, request, *args, **kwargs):
         logger.info('Creating About View')
         return super(AboutView, self).get(request, *args, **kwargs)
+
+
+def serve_text_file(request, filename):
+    file_path = settings.BASE_DIR.joinpath('text_files').joinpath(filename)
+    logger.info(file_path)
+    if Path.exists(file_path):
+        with open(file_path, 'r') as fp:
+            content = fp.read()
+        return HttpResponse(content, content_type="text/plain")
+    return page_not_found(request)
