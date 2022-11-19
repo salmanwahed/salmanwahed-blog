@@ -6,7 +6,7 @@ After=network.target
 User=salman
 Group=salman
 WorkingDirectory=/home/salman/salmanwahed_com_project/salmanwahed_com
-ExecStart=/home/salman/salmanwahed_com_project/venv/bin/gunicorn --access-logfile - --workers 4 --bind unix:/home/salman/salmanwahed_com_project/salmanwahed.sock salmanwahed_com.wsgi:application
+ExecStart=/home/salman/salmanwahed_com_project/venv/bin/gunicorn --log-file /home/salman/salmanwahed_com_project/log/gunicorn.log --workers 5 --timeout 120 --bind unix:/home/salman/salmanwahed_com_project/salmanwahed.sock salmanwahed_com.wsgi:application
 
 [Install]
 WantedBy=multi-user.target
