@@ -46,6 +46,7 @@ LOGGING = {
     'formatters': {
         'default': {
             'format': '{levelname} {asctime} {module} {funcName}:{lineno} {message}',
+            'datefmt':'%d-%b-%Y %I:%M:%S %p',
             'style': '{',
         },
         'simple': {
@@ -170,7 +171,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Dhaka'
 
 USE_I18N = True
 
