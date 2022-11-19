@@ -92,7 +92,7 @@ class BlogPost(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
-        if self.status == BlogPost.Status.PUBLISHED:
+        if self.status == BlogPost.Status.PUBLISHED and self.publish_date is None:
             self.publish_date = timezone.now()
         super(BlogPost, self).save(*args, **kwargs)
 
