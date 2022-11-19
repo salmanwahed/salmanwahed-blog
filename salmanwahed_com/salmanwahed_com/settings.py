@@ -45,7 +45,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'default': {
-            'format': '{levelname} [{asctime}] {module} {funcName}:{lineno} {message}',
+            'format': '{levelname} [{asctime}] [{module} {funcName}:{lineno}] {message}',
             'datefmt':'%d-%b-%Y %I:%M:%S %p',
             'style': '{',
         },
