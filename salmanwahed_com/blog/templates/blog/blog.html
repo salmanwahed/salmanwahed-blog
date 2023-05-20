@@ -1,5 +1,10 @@
 {% extends "blog/base.html" %}
 {% load blog_extras %}
+{% block metatags %}
+<meta property="og:title" content="{{ blog.title }}">
+<meta property="og:image" content="{{ blog.thumbnail.image_url }}">
+<meta property="og:description" content="{{ blog.short_desc }}">
+{% endblock %}
 {% block title %}Blog | {{blog.title}}{% endblock %}
 {% block content %}
     <article class="blog-post">
