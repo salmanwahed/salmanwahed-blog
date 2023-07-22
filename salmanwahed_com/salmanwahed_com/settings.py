@@ -82,11 +82,11 @@ LOGGING = {
     }
 }
 
-ALLOWED_HOSTS = [
-    '127.0.0.1',
-    '.localhost',
-    '.salmanwahed.com'
-]
+ALLOWED_HOSTS = ['.salmanwahed.com']
+if DEBUG:
+    ALLOWED_HOSTS.extend(['127.0.0.1', 'localhost'])
+else:
+    ALLOWED_HOSTS.append('216.127.184.165')
 
 # Application definition
 
