@@ -21,13 +21,13 @@ class BlogImages(models.Model):
         THUMBNAIL = 'THUMB', _('Thumbnail')
         BASIC = 'BASIC', _('Basic')
 
-    name = models.CharField(max_length=40, verbose_name='File Name')
+    name = models.CharField(max_length=255, verbose_name='File Name')
     orig_image = models.ImageField(upload_to='blog')
     compressed_image = models.URLField(null=True, blank=True)
     image_type = models.CharField(max_length=10, choices=ImageType.choices, default=ImageType.BASIC)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    created_by = models.CharField(max_length=50, null=True, blank=True)
+    created_by = models.CharField(max_length=80, null=True, blank=True)
 
     def image_preview(self):
         return mark_safe('<img src="/upload/%s" width="auto" height="80" />' % self.orig_image)
@@ -51,12 +51,12 @@ class BlogImages(models.Model):
 
 
 class Tag(models.Model):
-    tag_name = models.CharField(max_length=20, unique=True)
-    tag_name_bn = models.CharField(max_length=30, null=True, blank=True)
+    tag_name = models.CharField(max_length=255, unique=True)
+    tag_name_bn = models.CharField(max_length=255, null=True, blank=True)
     color_code = models.CharField(max_length=8, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    created_by = models.CharField(max_length=50, null=True, blank=True)
+    created_by = models.CharField(max_length=80, null=True, blank=True)
 
     def tag_color(self):
         return mark_safe('<img width="15" height="15" style="background-color:%s;"/>' % self.color_code)
@@ -70,24 +70,24 @@ class BlogPost(models.Model):
         DRAFT = 0
         PUBLISHED = 1
 
-    title = models.CharField(max_length=200, null=False)
+    title = models.CharField(max_length=255, null=False)
     author = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user), blank=True)
     hero_image = models.ForeignKey(BlogImages, on_delete=models.SET_NULL, null=True, blank=True, related_name="hero")
     thumbnail = models.ForeignKey(BlogImages, on_delete=models.SET_NULL, null=True, blank=True,
                                   related_name="thumbnail")
     body = models.TextField()
-    short_desc = models.CharField(max_length=280, null=True, blank=True, verbose_name="Short Description")
-    slug = models.SlugField(max_length=250, allow_unicode=True, unique=True, blank=True)
+    short_desc = models.TextField(null=True, blank=True, verbose_name="Short Description")
+    slug = models.SlugField(max_length=255, allow_unicode=True, unique=True, blank=True)
     tag = models.ManyToManyField(Tag)
     status = models.IntegerField(choices=Status.choices, default=Status.DRAFT)
     publish_date = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    updated_by = models.CharField(max_length=50, null=True, blank=True)
+    updated_by = models.CharField(max_length=80, null=True, blank=True)
     visited_count = models.IntegerField(default=0)
     claps_count = models.IntegerField(default=0)
     minutes_to_read = models.IntegerField(default=0)
-    remarks = models.CharField(max_length=100, null=True, blank=True)
+    remarks = models.CharField(max_length=255, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
