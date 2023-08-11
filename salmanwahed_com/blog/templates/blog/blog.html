@@ -1,8 +1,10 @@
 {% extends "blog/base.html" %}
+{% load static %}
 {% load blog_extras %}
 {% block metatags %}
 <meta property="og:title" content="{{ blog.title }}">
-<meta property="og:image" content="{{ blog.thumbnail.image_url }}">
+<meta property="og:image" content="{{ blog.thumbnail.orig_image_url }}">
+<meta property="og:image:url" content="{{ blog.thumbnail.image_url }}">
 <meta property="og:description" content="{{ blog.short_desc }}">
 {% endblock %}
 {% block title %}Blog | {{blog.title}}{% endblock %}
@@ -35,4 +37,7 @@
             {{ blog.body | safe}}
         </div>
     </article>
+{% endblock %}
+{% block scripts %}
+    <script src="{% static 'blog/js/script.js' %}"></script>
 {% endblock %}

@@ -45,6 +45,9 @@ class BlogImages(models.Model):
         if settings.USE_CDN:
             return self.compressed_image
         return self.orig_image.url
+    @property
+    def orig_image_url(self):
+        return self.orig_image.url
 
     def __str__(self):
         return '{}({})'.format(self.name, self.pk)
@@ -72,13 +75,13 @@ class BlogPost(models.Model):
 
     title = models.CharField(max_length=255, null=False)
     author = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user), blank=True)
-    hero_image = models.ForeignKey(BlogImages, on_delete=models.SET_NULL, null=True, blank=True, related_name="hero")
+    hero_image = models.ForeignKey(BlogImages, on_delete=models.SET_NULL, null=True, blank=True, related_name="of_posts")
     thumbnail = models.ForeignKey(BlogImages, on_delete=models.SET_NULL, null=True, blank=True,
-                                  related_name="thumbnail")
+                                  related_name="posts")
     body = models.TextField()
     short_desc = models.TextField(null=True, blank=True, verbose_name="Short Description")
     slug = models.SlugField(max_length=255, allow_unicode=True, unique=True, blank=True)
-    tag = models.ManyToManyField(Tag)
+    tag = models.ManyToManyField(Tag, related_name='posts')
     status = models.IntegerField(choices=Status.choices, default=Status.DRAFT)
     publish_date = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

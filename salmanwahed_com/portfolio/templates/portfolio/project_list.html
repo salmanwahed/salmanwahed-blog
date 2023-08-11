@@ -1,4 +1,10 @@
 {% extends "portfolio/base.html" %}
+{% load static %}
+{% block metatags %}
+<meta property="og:title" content="Projects: Salman Wahed">
+<meta property="og:image" content="{% static 'logo.png' %}">
+<meta property="og:description" content="Projects developed by Salman Wahed">
+{% endblock %}
 {% block title %}Salman Wahed | Portfolio{% endblock %}
 {% block content %}
 <h1 class="title">Apps</h1>
@@ -10,7 +16,7 @@
             <img class="img-thumbnail" src="{{project.thumbnail.image_url}}" />
         </a>
         <div class="col-8 d-flex flex-column ps-md-2 ps-1">
-            <a href="{{project.utm_url}}">
+            <a href="{{project.utm_url}}" target="_blank">
                 <h5>{{project.name}}</h5>
             </a>
             <p>{{project.short_description}}</p>

@@ -67,11 +67,11 @@ class Project(models.Model):
     name = models.CharField(max_length=100)
     short_description = models.CharField(max_length=200, blank=True, null=True, verbose_name='Short Description')
     description = models.TextField(null=True, blank=True)
-    tag = models.ManyToManyField(Tag)
+    tag = models.ManyToManyField(Tag, related_name="projects")
     banner = models.ForeignKey(ProjectImage, on_delete=models.SET_NULL, null=True, blank=True,
-                               related_name="banner")
+                               related_name="related_projects")
     thumbnail = models.ForeignKey(ProjectImage, on_delete=models.SET_NULL, null=True, blank=True,
-                                  related_name="thumbnail")
+                                  related_name="projects")
     project_url = models.URLField(verbose_name="Project URL", blank=True, null=True)
     project_type = models.CharField(max_length=20, choices=ProjectType.choices, default=ProjectType.MOBILE_APP,
                                     verbose_name='Project Type')

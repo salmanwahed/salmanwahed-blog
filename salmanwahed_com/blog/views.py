@@ -6,6 +6,7 @@ from django.core.paginator import Paginator
 from django.views.generic import TemplateView
 from django.http import HttpResponse
 from django.shortcuts import redirect
+from django.core.exceptions import ObjectDoesNotExist
 
 from .models import BlogPost
 from django.conf import settings
@@ -15,7 +16,8 @@ logger = logging.getLogger('default')
 
 
 def blog_home(request):
-    blogs = BlogPost.objects.filter(status=BlogPost.Status.PUBLISHED).order_by('-created_at')
+    blogs = BlogPost.objects.select_related('thumbnail').prefetch_related('tag').filter(status=BlogPost.Status.PUBLISHED).order_by('-created_at')
+    # blogs = BlogPost.objects.filter(status=BlogPost.Status.PUBLISHED).order_by('-created_at')
     paginator = Paginator(blogs, settings.PAGINATION_ITEM_COUNT)
     show_pagination = True if paginator.num_pages > 1 else False
     page_number = request.GET.get("page")
@@ -25,9 +27,16 @@ def blog_home(request):
 
 def post_detail(request, id, slug=None):
     logger.info('Creating Blog Detail View. ID: {}'.format(id))
-    blog = get_object_or_404(BlogPost, pk=id, status=BlogPost.Status.PUBLISHED)
-    blog.visited_count += 1
-    blog.save()
+    try:
+        blog = BlogPost.objects.select_related('hero_image', 'thumbnail').prefetch_related('tag').get(pk=id, status=BlogPost.Status.PUBLISHED)
+    except ObjectDoesNotExist as ex:
+        logger.exception(ex)
+        response = render(request, 'blog/error/404.html')
+        response.status_code = 404
+        return response
+    else:
+        blog.visited_count += 1
+        blog.save()
     return render(request, 'blog/blog.html', dict(blog=blog))
 
 

@@ -100,7 +100,8 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'blog',
     'ckeditor',
-    'portfolio'
+    'portfolio',
+    'compressor',
 ]
 
 MIDDLEWARE = [
@@ -213,20 +214,30 @@ CDN_URL = os.getenv('CDN_URL')
 USE_CDN = os.getenv('USE_CDN', 'FALSE').upper() == 'TRUE'
 WPM_READ = int(os.getenv('WPM_READ', 180))
 
+#  Django compressor
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)
+
+COMPRESS_ENABLED = True
+
 # Sentry SDK
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
-sentry_sdk.init(
-  dsn="https://86b26992e18b49449b144b1c7ad1d7e0@o4505572214046720.ingest.sentry.io/4505572215488512",
-  integrations=[DjangoIntegration()],
+if not DEBUG:
+    sentry_sdk.init(
+      dsn="https://86b26992e18b49449b144b1c7ad1d7e0@o4505572214046720.ingest.sentry.io/4505572215488512",
+      integrations=[DjangoIntegration()],
 
-  # Set traces_sample_rate to 1.0 to capture 100%
-  # of transactions for performance monitoring.
-  # We recommend adjusting this value in production.
-  traces_sample_rate=1.0,
+      # Set traces_sample_rate to 1.0 to capture 100%
+      # of transactions for performance monitoring.
+      # We recommend adjusting this value in production.
+      traces_sample_rate=1.0,
 
-  # If you wish to associate users to errors (assuming you are using
-  # django.contrib.auth) you may enable sending PII data.
-  send_default_pii=True
-)
+      # If you wish to associate users to errors (assuming you are using
+      # django.contrib.auth) you may enable sending PII data.
+      send_default_pii=True
+    )
