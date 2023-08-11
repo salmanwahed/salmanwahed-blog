@@ -1,0 +1,8 @@
+[Service]
+User=salman
+Group=salman
+WorkingDirectory=/home/salman/salmanwahed_com_project/salmanwahed_com
+ExecStart=/home/salman/salmanwahed_com_project/venv/bin/gunicorn --log-file /home/salman/salmanwahed_com_project/log/gunicorn.log --workers 3 --timeout 120 --bind 127.0.0.1:9002 salmanwahed_com.wsgi:application
+
+[Install]
+WantedBy=multi-user.target

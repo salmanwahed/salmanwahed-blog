@@ -8,7 +8,8 @@ cd salmanwahed_com
 python manage.py collectstatic
 python manage.py migrate
 deactivate
-sudo systemctl restart salmanwahed_com
+sudo systemctl restart web1 web2
 sudo systemctl restart nginx
+systemctl restart web1 web2 nginx
 # if there is any change in salmanwahed_com.service file
 sudo systemctl daemon-reload
