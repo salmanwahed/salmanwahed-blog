@@ -86,7 +86,7 @@ ALLOWED_HOSTS = ['.salmanwahed.com']
 if DEBUG:
     ALLOWED_HOSTS.extend(['127.0.0.1', 'localhost'])
 else:
-    ALLOWED_HOSTS.append('216.127.184.165')
+    ALLOWED_HOSTS.append(os.getenv('SERVER_IP'))
 
 # Application definition
 
@@ -229,7 +229,7 @@ from sentry_sdk.integrations.django import DjangoIntegration
 
 if not DEBUG:
     sentry_sdk.init(
-      dsn="https://86b26992e18b49449b144b1c7ad1d7e0@o4505572214046720.ingest.sentry.io/4505572215488512",
+      dsn=os.getenv('SENTRY_DSN'),
       integrations=[DjangoIntegration()],
 
       # Set traces_sample_rate to 1.0 to capture 100%
