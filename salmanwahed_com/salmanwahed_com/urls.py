@@ -21,7 +21,7 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     path('__debug__/', include('debug_toolbar.urls')),
-    path('dehawnamlas/', admin.site.urls),
+    path('nimda/dehawnamlas/', admin.site.urls),
     path('', include('blog.urls')),
     path('portfolio/', include('portfolio.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
