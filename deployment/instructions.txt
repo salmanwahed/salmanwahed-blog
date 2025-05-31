@@ -1,3 +1,6 @@
+CREATE USER <user> WITH PASSWORD '<password>';
+CREATE DATABASE <database> WITH OWNER <user> ENCODING 'unicode';
+
 git pull origin master
 # use key credentials or generate github.com > Settings > Developer settings > Personal access token
 

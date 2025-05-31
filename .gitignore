@@ -11,4 +11,5 @@ upload/
 log/
 credentials.txt
 /static/
-text_files/
+text_files
+.venv/
