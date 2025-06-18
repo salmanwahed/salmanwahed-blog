@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import ProjectImage, Project, Tag
+from .models import ProjectImage, Project, Tag, AppPrivacyPolicy
 from django import forms
 from ckeditor.widgets import CKEditorWidget
 
@@ -28,7 +28,12 @@ class TagAdmin(admin.ModelAdmin):
     list_display = ('tag_name', 'external_url', 'color_code', 'tag_color')
     readonly_fields = ('tag_color',)
 
+class AppPrivacyPolicyAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug',)
+
 
 admin.site.register(ProjectImage, ProjectImageAdmin)
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Tag, TagAdmin)
+admin.site.register(AppPrivacyPolicy, AppPrivacyPolicyAdmin)
+

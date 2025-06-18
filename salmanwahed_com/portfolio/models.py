@@ -84,3 +84,11 @@ class Project(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class AppPrivacyPolicy(models.Model):
+    name = models.TextField(max_length=255)
+    slug = models.TextField(max_length=255, unique=True, db_index=True)
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

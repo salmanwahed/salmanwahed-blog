@@ -1,0 +1,13 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ policy.name }} – Privacy Policy</title>
+  <link rel="stylesheet" href="{% static 'portfolio/css/privacy-policy.css' %}" type="text/css">
+</head>
+<body>
+  <h1>{{ policy.name }} – Privacy Policy</h1>
+  <div>{{ policy.body|safe }}</div>
+  <p><small>Last updated: {{ policy.updated_at }}</small></p>
+</body>
+</html>
