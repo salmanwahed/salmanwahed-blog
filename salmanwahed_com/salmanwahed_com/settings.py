@@ -30,10 +30,7 @@ else:
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if Path.exists(BASE_DIR.joinpath('credentials.txt')):
-    DEBUG = True
-else:
-    DEBUG = False
+DEBUG = Path.exists(BASE_DIR.joinpath('credentials.txt')) or os.getenv('DJANGO_DEBUG', '').upper() == 'TRUE'
 
 LOG_DIR = BASE_DIR.joinpath('log')
 LOG_FILE = 'salmanwahed_com.log'
@@ -153,7 +150,7 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379"
+        "LOCATION": os.getenv('REDIS_URL', 'redis://127.0.0.1:6379'),
     }
 }
 
