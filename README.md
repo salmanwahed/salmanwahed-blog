@@ -1,5 +1,7 @@
 # salmanwahed-blog
 
+![Django CI](https://github.com/salmanwahed/salmanwahed-blog/actions/workflows/django-ci.yml/badge.svg)
+
 Personal blog and portfolio website — [salmanwahed.com](https://salmanwahed.com)
 
 Built with Django 3.2, PostgreSQL, and Redis.
