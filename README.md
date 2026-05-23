@@ -1,7 +1,6 @@
 # salmanwahed-blog
 
 ![Django CI](https://github.com/salmanwahed/salmanwahed-blog/actions/workflows/django-ci.yml/badge.svg)
-[![codecov](https://codecov.io/gh/salmanwahed/salmanwahed-blog/branch/master/graph/badge.svg)](https://codecov.io/gh/salmanwahed/salmanwahed-blog)
 
 Personal blog and portfolio website — [salmanwahed.com](https://salmanwahed.com)
 

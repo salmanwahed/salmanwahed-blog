@@ -72,10 +72,4 @@ jobs:
           ruff check salmanwahed_com/
 
       - name: Run tests
-        run: coverage run salmanwahed_com/manage.py test blog portfolio
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          fail_ci_if_error: false
+        run: python salmanwahed_com/manage.py test blog portfolio

@@ -13,10 +13,3 @@ ignore = ["E501"]  # line length handled by formatter
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
-
-[tool.coverage.run]
-source = ["salmanwahed_com"]
-omit = ["*/migrations/*", "salmanwahed_com/manage.py", "salmanwahed_com/salmanwahed_com/wsgi.py"]
-
-[tool.coverage.report]
-skip_empty = true
