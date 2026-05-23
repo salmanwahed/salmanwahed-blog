@@ -1,8 +1,8 @@
+from ckeditor.widgets import CKEditorWidget
+from django import forms
 from django.contrib import admin
 
-from .models import ProjectImage, Project, Tag, AppPrivacyPolicy
-from django import forms
-from ckeditor.widgets import CKEditorWidget
+from .models import AppPrivacyPolicy, Project, ProjectImage, Tag
 
 
 class ProjectAdminForm(forms.ModelForm):
@@ -10,30 +10,43 @@ class ProjectAdminForm(forms.ModelForm):
 
     class Meta:
         model = Project
-        fields = ['name', 'short_description', 'tag', 'thumbnail', 'project_url', 'utm_url', 'source_url',
-                  'project_type', 'status', 'project_weight']
+        fields = [
+            "name",
+            "short_description",
+            "tag",
+            "thumbnail",
+            "project_url",
+            "utm_url",
+            "source_url",
+            "project_type",
+            "status",
+            "project_weight",
+        ]
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('name', 'project_type', 'status')
+    list_display = ("name", "project_type", "status")
     form = ProjectAdminForm
 
 
 class ProjectImageAdmin(admin.ModelAdmin):
-    list_display = ('name', 'image_url', 'image_type', 'image_preview')
-    readonly_fields = ('image_preview',)
+    list_display = ("name", "image_url", "image_type", "image_preview")
+    readonly_fields = ("image_preview",)
 
 
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('tag_name', 'external_url', 'color_code', 'tag_color')
-    readonly_fields = ('tag_color',)
+    list_display = ("tag_name", "external_url", "color_code", "tag_color")
+    readonly_fields = ("tag_color",)
+
 
 class AppPrivacyPolicyAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug',)
+    list_display = (
+        "name",
+        "slug",
+    )
 
 
 admin.site.register(ProjectImage, ProjectImageAdmin)
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(AppPrivacyPolicy, AppPrivacyPolicyAdmin)
-

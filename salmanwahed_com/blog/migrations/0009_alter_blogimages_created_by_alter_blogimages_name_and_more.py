@@ -4,60 +4,59 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('blog', '0008_tag_color_code'),
+        ("blog", "0008_tag_color_code"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='blogimages',
-            name='created_by',
+            model_name="blogimages",
+            name="created_by",
             field=models.CharField(blank=True, max_length=80, null=True),
         ),
         migrations.AlterField(
-            model_name='blogimages',
-            name='name',
-            field=models.CharField(max_length=255, verbose_name='File Name'),
+            model_name="blogimages",
+            name="name",
+            field=models.CharField(max_length=255, verbose_name="File Name"),
         ),
         migrations.AlterField(
-            model_name='blogpost',
-            name='remarks',
+            model_name="blogpost",
+            name="remarks",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
         migrations.AlterField(
-            model_name='blogpost',
-            name='short_desc',
-            field=models.TextField(blank=True, null=True, verbose_name='Short Description'),
+            model_name="blogpost",
+            name="short_desc",
+            field=models.TextField(blank=True, null=True, verbose_name="Short Description"),
         ),
         migrations.AlterField(
-            model_name='blogpost',
-            name='slug',
+            model_name="blogpost",
+            name="slug",
             field=models.SlugField(allow_unicode=True, blank=True, max_length=255, unique=True),
         ),
         migrations.AlterField(
-            model_name='blogpost',
-            name='title',
+            model_name="blogpost",
+            name="title",
             field=models.CharField(max_length=255),
         ),
         migrations.AlterField(
-            model_name='blogpost',
-            name='updated_by',
+            model_name="blogpost",
+            name="updated_by",
             field=models.CharField(blank=True, max_length=80, null=True),
         ),
         migrations.AlterField(
-            model_name='tag',
-            name='created_by',
+            model_name="tag",
+            name="created_by",
             field=models.CharField(blank=True, max_length=80, null=True),
         ),
         migrations.AlterField(
-            model_name='tag',
-            name='tag_name',
+            model_name="tag",
+            name="tag_name",
             field=models.CharField(max_length=255, unique=True),
         ),
         migrations.AlterField(
-            model_name='tag',
-            name='tag_name_bn',
+            model_name="tag",
+            name="tag_name_bn",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
     ]

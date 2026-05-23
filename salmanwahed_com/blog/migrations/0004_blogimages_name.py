@@ -4,16 +4,15 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('blog', '0003_blogpost_thumbnail_alter_blogpost_hero_image'),
+        ("blog", "0003_blogpost_thumbnail_alter_blogpost_hero_image"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='blogimages',
-            name='name',
-            field=models.CharField(default='Image', max_length=40, verbose_name='File Name'),
+            model_name="blogimages",
+            name="name",
+            field=models.CharField(default="Image", max_length=40, verbose_name="File Name"),
             preserve_default=False,
         ),
     ]

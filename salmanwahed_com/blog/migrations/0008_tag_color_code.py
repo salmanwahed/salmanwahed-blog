@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('blog', '0007_alter_blogpost_author_alter_blogpost_hero_image_and_more'),
+        ("blog", "0007_alter_blogpost_author_alter_blogpost_hero_image_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='tag',
-            name='color_code',
+            model_name="tag",
+            name="color_code",
             field=models.CharField(blank=True, max_length=8, null=True),
         ),
     ]

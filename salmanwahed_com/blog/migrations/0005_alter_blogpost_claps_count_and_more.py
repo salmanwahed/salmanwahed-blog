@@ -4,25 +4,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('blog', '0004_blogimages_name'),
+        ("blog", "0004_blogimages_name"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='blogpost',
-            name='claps_count',
+            model_name="blogpost",
+            name="claps_count",
             field=models.IntegerField(default=0),
         ),
         migrations.AlterField(
-            model_name='blogpost',
-            name='minutes_to_read',
+            model_name="blogpost",
+            name="minutes_to_read",
             field=models.IntegerField(default=0),
         ),
         migrations.AlterField(
-            model_name='blogpost',
-            name='visited_count',
+            model_name="blogpost",
+            name="visited_count",
             field=models.IntegerField(default=0),
         ),
     ]

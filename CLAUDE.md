@@ -28,7 +28,26 @@ python manage.py collectstatic      # Collect static files for production
 python manage.py shell_plus         # Interactive shell (ipython)
 ```
 
-No test suite is configured — `blog/tests.py` is empty. No linting tools are set up.
+Run tests with Docker:
+
+```bash
+docker compose run --rm web python salmanwahed_com/manage.py test blog portfolio
+```
+
+## Linting and Formatting
+
+**ruff** is configured in `pyproject.toml` (Python 3.8 target, line length 119).
+
+```bash
+pip install -r requirements-dev.txt   # install ruff locally (one-time)
+ruff format salmanwahed_com/          # auto-format
+ruff check salmanwahed_com/ --fix     # lint + auto-fix
+ruff check salmanwahed_com/           # lint only
+```
+
+A **git pre-commit hook** (`.git/hooks/pre-commit`) runs `ruff format` then `ruff check` on staged Python files automatically. It soft-skips if ruff is not installed. Install ruff with `pip install -r requirements-dev.txt` to activate it.
+
+The `/lint` Claude Code skill runs the full format + check cycle interactively.
 
 ## Architecture
 
@@ -38,7 +57,7 @@ No test suite is configured — `blog/tests.py` is empty. No linting tools are s
 - `BlogPost`: Posts with slug, CKEditor body, hero/thumbnail images, tags, `DRAFT`/`PUBLISHED` status, visit/clap counters
 - `BlogImages`: Stores images with CDN URL support and compression metadata; type is `HERO`, `THUMBNAIL`, or `BASIC`
 - `Tag`: Tags with name, Bengali name, and color code
-- `templatetags/blog_tags.py`: Custom template tags, including reading time calculation via BeautifulSoup (180 WPM default, overridable via `READING_SPEED_WPM` env var)
+- `templatetags/blog_extras.py`: Custom template tags, including reading time calculation via BeautifulSoup (180 WPM default, overridable via `WPM_READ` env var)
 
 **`portfolio/`** — Mounted at `/portfolio/`:
 - `Project`: With type (`MOBILE_APP`/`WEB_APP`), status (`LIVE`/`ONGOING`/`CLOSED`), and `weight` for ordering
