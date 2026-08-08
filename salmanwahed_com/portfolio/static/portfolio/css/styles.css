@@ -1,241 +1,422 @@
-@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;1,400&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Roboto+Mono:wght@300;400;500&display=swap");
+/* =========================================================
+   salmanwahed.com — portfolio app styles.css
+   Projects, About, Resume, Contact.
+   base.css is loaded as a separate <link> ahead of this file in
+   templates/base.html, so the @import that shipped with the handoff
+   has been removed -- django-compressor concatenates them into one
+   bundle and an @import would not survive that.
+   ========================================================= */
 
-body {
-  font-family: "Open Sans", sans-serif;
-  color: #212121;
-  background-color: #fafafa;
+/* ---------- Page header ---------- */
+.page-header { padding: 64px 0 36px; }
+.page-header h1 {
+  font-size: 46px;
+  line-height: 1.08;
+  letter-spacing: -.025em;
+  margin: 0 0 14px;
+}
+.page-header p {
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 0;
+  max-width: 58ch;
+}
+/* Button row under a page header -- used by the error pages. */
+.page-header .actions { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 26px; }
+
+.group-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--faint);
+  padding: 24px 0 16px;
 }
 
-h2,
-h3,
-h4,
-h5,
-hr {
-  clear: both;
+/* ---------- Featured professional project ---------- */
+.project-featured {
+  display: flex;
+  flex-direction: row;
+  gap: 34px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--card-pad);
+  box-shadow: 0 1px 0 var(--shadow);
+  margin-bottom: 18px;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: "Lato", sans-serif;
-  font-weight: 500;
+.project-featured .logo {
+  flex: none;
+  width: 150px; height: 150px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.project-featured .logo img,
+.project-featured .logo .media-placeholder { width: 100%; height: 100%; object-fit: cover; }
+
+/* min-width:0 lets the column shrink; the stacking at <=700px is what
+   actually prevents clipping on phones. Do not re-add a min-width here. */
+.project-featured .body { flex: 1; min-width: 0; }
+
+.project-featured .badges {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--on-accent);
+  background: var(--accent);
+  padding: 3px 9px;
+  border-radius: 6px;
+}
+.badge--meta {
+  background: none;
+  color: var(--faint);
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 12px;
+  padding: 0;
 }
 
-
-main {
-  flex: auto;
+.project-featured h2 {
+  font-size: 28px;
+  letter-spacing: -.02em;
+  margin: 0 0 10px;
+}
+.project-featured .desc {
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--muted);
+  margin: 0 0 18px;
+  max-width: 62ch;
 }
 
-article {
-  word-wrap: break-word;
+.project-stats { display: flex; gap: 26px; flex-wrap: wrap; margin-bottom: 18px; }
+.project-stats .value {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 22px;
+  color: var(--ink);
+}
+.project-stats .label {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--faint);
 }
 
-a {
-  text-decoration: none;
+/* ---------- Personal project grid ---------- */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  padding-bottom: 64px;
 }
 
-a:hover {
-  color: #448AFF !important;
+.project-card {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: var(--card-pad);
+  display: flex;
+  gap: 18px;
+  min-width: 0;
+  transition: border-color .2s ease, transform .2s ease;
+}
+.project-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+.project-card .icon {
+  flex: none;
+  width: 62px; height: 62px;
+  border-radius: 14px;
+  overflow: hidden;
+}
+.project-card .icon img,
+.project-card .icon .media-placeholder { width: 100%; height: 100%; object-fit: cover; }
+
+.project-card .body { flex: 1; min-width: 0; }
+.project-card h3 { font-size: 18px; margin: 0 0 6px; }
+.project-card p {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--muted);
+  margin: 0 0 12px;
 }
 
-pre {
-  font-family: "Roboto Mono", monospace;
-  font-size: .9rem;
-  font-weight: 400;
-  background-color: #f8f8f8;
-  padding: 0.5rem 1rem;
-  border: 1px solid #EAEAEA;
-  border-radius: 0.3rem
+/* ---------- About ---------- */
+.about {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: var(--gap-split);
+  align-items: start;
+  padding: 64px 0;
 }
 
-.wrapper {
+.about h1 {
+  font-size: 42px;
+  line-height: 1.1;
+  letter-spacing: -.025em;
+  margin: 0 0 26px;
+}
+.about p { font-size: 18.5px; line-height: 1.7; margin: 0 0 20px; color: var(--muted); }
+.about p:first-of-type { color: var(--ink); }
+.about .actions { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 28px; }
+
+.about .portrait {
+  width: 100%;
+  max-width: 340px;      /* keeps the portrait sane once the grid collapses */
+  aspect-ratio: 4 / 5;
+  border-radius: 16px;
+  object-fit: cover;
+  margin-bottom: 18px;
+}
+
+.toolkit {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  min-width: 0;
+}
+.toolkit .label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: 14px;
+}
+.skill-list { display: flex; gap: 8px; flex-wrap: wrap; list-style: none; margin: 0; padding: 0; }
+.skill {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 5px 11px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+
+/* ---------- App privacy policy ----------
+   Borrows .post / .post-body from the blog stylesheet; only needs the top
+   spacing that the post detail page gets from its back-link. */
+.policy { padding: 56px 0 64px; }
+
+/* ---------- Resume ---------- */
+.resume { max-width: 840px; margin: 0 auto; padding: 56px 0 64px; }
+
+.resume__header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 20px; flex-wrap: wrap;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+}
+.resume__header h1 { font-size: 38px; letter-spacing: -.025em; margin: 0 0 8px; }
+.resume__header .role { font-size: 18px; color: var(--muted); }
+.resume__header .contact-line {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--faint);
+  margin-top: 10px;
+}
+
+.resume__section { margin-top: 40px; }
+/* .resume__cols included so the Skills / Education headings match the
+   section labels above them. */
+.resume__section > .label,
+.resume__cols > section > .label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  margin-bottom: 18px;
+}
+
+.resume__job {
+  display: flex;
+  flex-direction: row;
+  gap: 22px;
+  padding-bottom: 26px;
+  margin-bottom: 26px;
+  border-bottom: 1px solid var(--border);
+}
+.resume__job:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+.resume__job .period {
+  flex: none;
+  width: 120px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--faint);
+  padding-top: 3px;
+}
+.resume__job .detail { flex: 1; min-width: 0; }
+.resume__job h3 { font-size: 19px; margin: 0 0 3px; }
+.resume__job .company,
+.resume__cols .company { font-size: 14.5px; color: var(--muted); margin-bottom: 12px; }
+.resume__cols h3 { font-size: 19px; margin: 0 0 3px; }
+.resume__job ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 16px; line-height: 1.7; }
+
+.resume__cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-top: 40px;
+}
+
+/* Print: clean resume export, so "Download PDF" can just call window.print() */
+@media print {
+  .navigation, .footer, .theme-toggle, .btn { display: none !important; }
+  body { background: #fff; color: #000; font-size: 11pt; }
+  .resume { padding: 0; max-width: none; }
+  a { color: #000; }
+}
+
+/* ---------- Contact ---------- */
+.contact {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap-split);
+  align-items: start;
+  padding: 72px 0;
+}
+
+.contact h1 {
+  font-size: 46px;
+  line-height: 1.08;
+  letter-spacing: -.025em;
+  margin: 0 0 18px;
+}
+.contact .lede {
+  font-size: 19px;
+  line-height: 1.65;
+  color: var(--muted);
+  margin: 0 0 30px;
+  max-width: 46ch;
+}
+
+.email-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 22px;
+  color: var(--ink);
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  padding: 16px 22px;
+  border-radius: 14px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.email-link:hover { border-color: var(--accent); color: var(--accent-ink); }
+.email-link .at { font-family: var(--font-mono); font-size: 15px; color: var(--accent-ink); }
+
+.social-links {
+  display: flex;
+  flex-wrap: wrap;       /* REQUIRED: without this the row's min-content width
+                            becomes the grid column minimum and pushes the
+                            heading + lede off-screen at 320px */
+  gap: 12px 18px;
+  min-width: 0;
+  margin-top: 34px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  list-style: none; padding: 0;
+}
+.social-links a { color: var(--muted); }
+.social-links a:hover { color: var(--accent-ink); }
+
+/* Contact form */
+.contact-form {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--card-pad);
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  gap: 16px;
 }
-
-.wip {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 50vh;
-  font-family: "Lato", sans-serif;
-  color: #ccc;
-  font-weight: 400;
-}
-
-.tags {
-  font-family: "Open Sans", sans-serif;
-  font-weight: 400;
-}
-
-.title {
-  font-size: 1.25rem;
-  color: #212121;
-  font-weight: 500;
-  font-family: "Lato", sans-serif;
-}
-
-.date {
-  font-size: .9rem;
-  fon-weight: 400;
-}
-
-.navigation {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 6rem;
-  width: 100%;
-}
-
-.navigation a,
-.navigation span {
-  display: inline;
-  font-size: 1.1rem;
-  font-family: "Lato", sans-serif;
-  font-weight: 700;
-  line-height: 6rem;
-  color: #212121;
-}
-
-.navigation-author {
-  display: inline-flex;
-  flex-direction: row;
-  justify-content: center;
-}
-
-.navigation-author .name {
-  margin-left: 1rem;
-  font-size: 1.8em;
-  text-decoration: none;
-  font-weight: 400;
-  font-family: 'Lato', sans-serif;
-}
-
-.navigation-avatar {
-  display: inline-block !important;
-  max-width: 50px;
-  max-height: 50px;
-}
-
-.navigation-avatar img {
-  max-width: 100%;
-  object-fit: contain;
-  border-radius: 30%;
-}
-
-.navigation ul {
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-.menu {
-  display: flex;
-  list-style: none;
-  margin-bottom: 0;
-  margin-top: 0;
-}
-
-.menu .menu-item {
-  margin: 0;
-  display: flex;
-  justify-content: center;
-}
-
-.menu .menu-item a,
-.menu .menu-item span {
-  margin-left: 1rem;
-  margin-right: 1rem;
-}
-
-input[type="checkbox"] {
-  display: none;
-}
-
-.hamburger {
-  display: none;
-  font-size: 24px;
-  user-select: none;
-}
-
-@media (max-width: 992px) {
-  .menu {
-    display: none;
-    position: absolute;
-    right: 0;
-    left: 0;
-    top: 6rem;
-    text-align: center;
-    background-color: #fff;
-    padding: 0;
-  }
-  .menu li:hover {
-    display: inline-block;
-    transition: 0.3s ease;
-  }
-
-  .menu li + li {
-    margin-top: 12px;
-  }
-  input[type="checkbox"]:checked ~ .menu {
-    display: block;
-  }
-  .hamburger {
-    display: block;
-  }
-
-  .menu-item {
-    border-bottom: 1px solid #f9f9f9;
-    padding-left: 0;
-  }
-
-  .navigation a,
-  .navigation span {
-    font-size: 1.3rem;
-    font-family: "Lato", sans-serif;
-    font-weight: 500;
-    line-height: 4rem;
-    color: #212121;
-  }
-}
-
-.list ul li .date {
-  text-align: left;
-  margin: 0;
-}
-
-.list img {
-  object-fit: contain;
-}
-.footer {
-  margin: 3rem 0 1rem;
-  padding: 0;
-  font-size: 1rem;
-}
-
-.footer ul {
-  list-style: none;
-  margin-top: 1rem;
-  font-size: 1.2rem;
-}
-
-.footer ul li {
-  display: inline-block;
-  position: relative;
-}
-
-.fa-twitter:hover {
-  color: skyblue;
-}
-
-.footer ul li a {
-  color: #212121;
+.contact-form label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .14em;
   text-transform: uppercase;
-  margin-left: 1rem;
-  margin-right: 1rem;
-  font-size: 1.6rem;
+  color: var(--faint);
+  margin-bottom: 7px;
+}
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  font-family: var(--font-serif);
+  font-size: 16px;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  outline: none;
+  transition: border-color .2s ease;
+}
+.contact-form input:focus,
+.contact-form textarea:focus { border-color: var(--accent); }
+.contact-form textarea { resize: vertical; min-height: 110px; }
+.contact-form .btn { justify-content: center; padding: 13px; }
+
+/* Honeypot. Moved off-screen rather than display:none -- some bots skip
+   fields that are outright hidden, and this keeps it out of the tab order
+   and away from screen readers via aria-hidden/tabindex in the widget. */
+.honeypot-wrap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Django messages / form errors */
+.form-error { color: #b8455f; font-size: 14px; margin-top: 6px; }
+.form-success {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 15px;
+}
+
+/* =========================================================
+   BREAKPOINTS
+   ========================================================= */
+
+@media (max-width: 860px) {
+  .about, .contact { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 780px) {
+  .project-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 700px) {
+  .page-header h1 { font-size: 34px; }
+  .about h1 { font-size: 32px; }
+  .contact h1 { font-size: 34px; }
+  .email-link { font-size: 17px; }
+
+  /* Stack the featured card — this is what prevents clipping on phones */
+  .project-featured { flex-direction: column; gap: 18px; }
+  .project-featured .logo { width: 88px; height: 88px; }
+
+  .resume__job { flex-direction: column; gap: 8px; }
+  .resume__job .period { width: auto; }
+  .resume__cols { grid-template-columns: 1fr; gap: 28px; }
 }

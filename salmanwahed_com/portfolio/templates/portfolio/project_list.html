@@ -1,33 +1,109 @@
-{% extends "portfolio/base.html" %}
+{% extends "base.html" %}
 {% load static %}
+{% block title %}Salman Wahed | Projects{% endblock %}
+{% block description %}Professional work and personal projects built by Salman Wahed.{% endblock %}
 {% block metatags %}
 <meta property="og:title" content="Projects: Salman Wahed">
 <meta property="og:image" content="{% static 'logo.png' %}">
 <meta property="og:description" content="Projects developed by Salman Wahed">
 {% endblock %}
-{% block title %}Salman Wahed | Portfolio{% endblock %}
 {% block content %}
-<h1 class="title">Apps</h1>
-<div class="row">
-    {% for project in object_list %}
-    <div class="col-lg-6 row my-3">
-        <a class="col-4"
-            href="{{project.utm_url}}">
-            <img class="img-thumbnail" src="{{project.thumbnail.image_url}}" />
-        </a>
-        <div class="col-8 d-flex flex-column ps-md-2 ps-1">
-            <a href="{{project.utm_url}}" target="_blank">
-                <h5>{{project.name}}</h5>
-            </a>
-            <p>{{project.short_description}}</p>
-            <div class="tags">
-                {% for tag in project.tag.all %}
-                <span class="badge rounded-pill text-white" style="background-color:{{tag.color_code}}">{{tag.tag_name}}</span>
+<div class="container">
+    <div class="page-header">
+        <h1>Things I've built.</h1>
+        <p>Products shipped with teams, and the smaller apps I maintain on my own.</p>
+    </div>
+
+    {% if professional_projects %}
+    <div class="group-label">Professional work</div>
+    {% for project in professional_projects %}
+    <article class="project-featured">
+        <div class="logo">
+            {% if project.thumbnail %}
+            <img src="{{ project.thumbnail.image_url }}" alt="{{ project.name }}">
+            {% else %}
+            <div class="media-placeholder">logo</div>
+            {% endif %}
+        </div>
+        <div class="body">
+            <div class="badges">
+                {% if project.is_featured %}<span class="badge">Featured</span>{% endif %}
+                {% if project.role or project.period %}
+                <span class="badge badge--meta">
+                    {{ project.role }}{% if project.role and project.period %} &middot; {% endif %}{{ project.period }}
+                </span>
+                {% endif %}
+            </div>
+
+            <h2>
+                {% if project.utm_url %}<a href="{{ project.utm_url }}" target="_blank" rel="noopener">{{ project.name }}</a>{% else %}{{ project.name }}{% endif %}
+            </h2>
+
+            {% if project.description %}
+            <div class="desc">{{ project.description|safe }}</div>
+            {% elif project.short_description %}
+            <div class="desc">{{ project.short_description }}</div>
+            {% endif %}
+
+            {% if project.stats.all %}
+            <div class="project-stats">
+                {% for stat in project.stats.all %}
+                <div>
+                    <div class="value">{{ stat.value }}</div>
+                    <div class="label">{{ stat.label }}</div>
+                </div>
                 {% endfor %}
             </div>
-        </div>
+            {% endif %}
 
-    </div>
+            <ul class="tag-list">
+                {% for tag in project.tag.all %}
+                <li>
+                    {% if tag.external_url %}
+                    <a href="{{ tag.external_url }}" class="tag" target="_blank" rel="noopener"{% if tag.color_code %} style="--tag: {{ tag.color_code }}"{% endif %}>{{ tag.tag_name }}</a>
+                    {% else %}
+                    <span class="tag"{% if tag.color_code %} style="--tag: {{ tag.color_code }}"{% endif %}>{{ tag.tag_name }}</span>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </article>
     {% endfor %}
+    {% endif %}
+
+    {% if personal_projects %}
+    <div class="group-label">Open source &amp; personal apps</div>
+    <div class="project-grid">
+        {% for project in personal_projects %}
+        <article class="project-card">
+            <div class="icon">
+                {% if project.thumbnail %}
+                <img src="{{ project.thumbnail.image_url }}" alt="{{ project.name }}">
+                {% else %}
+                <div class="media-placeholder">icon</div>
+                {% endif %}
+            </div>
+            <div class="body">
+                <h3>
+                    {% if project.utm_url %}<a href="{{ project.utm_url }}" target="_blank" rel="noopener">{{ project.name }}</a>{% else %}{{ project.name }}{% endif %}
+                </h3>
+                {% if project.short_description %}<p>{{ project.short_description }}</p>{% endif %}
+                <ul class="tag-list">
+                    {% for tag in project.tag.all %}
+                    <li>
+                        {% if tag.external_url %}
+                        <a href="{{ tag.external_url }}" class="tag" target="_blank" rel="noopener"{% if tag.color_code %} style="--tag: {{ tag.color_code }}"{% endif %}>{{ tag.tag_name }}</a>
+                        {% else %}
+                        <span class="tag"{% if tag.color_code %} style="--tag: {{ tag.color_code }}"{% endif %}>{{ tag.tag_name }}</span>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

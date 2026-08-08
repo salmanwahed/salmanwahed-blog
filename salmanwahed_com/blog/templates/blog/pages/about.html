@@ -1,32 +1,51 @@
-{% extends "blog/base.html" %}
+{% extends "base.html" %}
 {% block title %}Salman Wahed | About{% endblock %}
+{% block description %}Salman Wahed — software engineer with 11 years in backend development and native Android.{% endblock %}
 {% block content %}
-<h2>About</h2>
-<div class="row mt-1 align-items-start">
-    <div class="col-md-8 order-2 order-md-1">
-        <p>Hello! I'm Salman M Wahed, a passionate software engineer with over 11 years of experience in backend
-            development and native Android applications. I graduated from Shahjalal University of Science and Technology
-            with a BSc (Engg.) in Computer Science & Engineering, and have been actively contributing to the Bangladeshi
-            software industry ever since.</p>
+<div class="container">
+    <div class="about">
+        <div>
+            <div class="eyebrow">About</div>
+            <h1>Hello, I'm Salman M Wahed.</h1>
 
-        <p>Over the years, I’ve led teams, architected scalable systems, and worked on high-impact projects, including
-            a FinTech app used by millions. My technical toolkit includes Java, Spring Boot, Django, FastAPI, and
-            Android, with a strong focus on performance, reliability, and clean architecture.</p>
+            <p>A software engineer with over 11 years of experience in backend development and native
+               Android applications. I graduated from Shahjalal University of Science and Technology
+               with a BSc (Engg.) in Computer Science &amp; Engineering, and have been contributing to
+               the Bangladeshi software industry ever since.</p>
 
-        <p>Outside of coding, I enjoy swimming, cycling, and solving puzzles. I also love good sci-fi and am always up
-            for a conversation about futuristic worlds or mind-bending plots. If you have an idea you're excited about
-            or just want to chat about something interesting, feel free to reach out. I'm always open to new
-            collaborations and meaningful discussions.</p>
+            <p>Over the years I've led teams, architected scalable systems, and worked on high-impact
+               products &mdash; including a FinTech app used by millions. My toolkit spans Java, Spring
+               Boot, Django, FastAPI, and Android, with a strong focus on performance, reliability, and
+               clean architecture.</p>
 
-        <p>If you’d like to know more about my experience and past projects, feel free to
-            <a href="https://drive.google.com/file/d/13ditUMiJ2WjMYQRrf5zBCB3MJkFi2766/view?usp=sharing" target="_blank" rel="noopener noreferrer">check out my resume</a>.
-        </p>
+            <p>Outside of coding I enjoy swimming, cycling, and solving puzzles. I also love good sci-fi
+               and am always up for a conversation about futuristic worlds &mdash; or just something
+               interesting. If you have an idea you're excited about, reach out.</p>
 
-    </div>
-    <div class="col-md-4 order-1 order-md-2 mb-2">
-        <img class="img-fluid w-100 rounded" src="https://lh3.googleusercontent.com/a/ACg8ocLV4VHWIAKQCjxuZWWU1rwDQm6yu8NVVV_AKcpPFjRQHawCXmjf=s288-c-no"
-             alt="Salman Wahed">
+            <div class="actions">
+                <a href="{% url 'portfolio:resume' %}" class="btn btn--primary">View r&eacute;sum&eacute; &rarr;</a>
+                <a href="{% url 'portfolio:contact' %}" class="btn btn--ghost">Get in touch</a>
+            </div>
+        </div>
+
+        <div>
+            <img class="portrait"
+                 src="https://lh3.googleusercontent.com/a/ACg8ocLV4VHWIAKQCjxuZWWU1rwDQm6yu8NVVV_AKcpPFjRQHawCXmjf=s288-c-no"
+                 alt="Salman Wahed">
+            <div class="toolkit">
+                <div class="label">Toolkit</div>
+                <ul class="skill-list">
+                    <li class="skill">Java</li>
+                    <li class="skill">Spring Boot</li>
+                    <li class="skill">Django</li>
+                    <li class="skill">FastAPI</li>
+                    <li class="skill">Android</li>
+                    <li class="skill">Kotlin</li>
+                    <li class="skill">PostgreSQL</li>
+                    <li class="skill">Docker</li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
-
 {% endblock %}

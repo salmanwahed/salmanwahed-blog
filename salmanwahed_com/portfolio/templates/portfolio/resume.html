@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Salman Wahed | Resume{% endblock %}
+{% block description %}Resume of Salman Wahed — senior software engineer, backend and Android.{% endblock %}
+{% block content %}
+{# Content is written into the template on purpose: it changes once or twice a
+   year, and a model plus admin for it would be more moving parts than the page
+   is worth. The @media print block in portfolio/styles.css is what makes the
+   Download PDF button work. #}
+<div class="container">
+    <div class="resume">
+        <header class="resume__header">
+            <div>
+                <h1>Salman M Wahed</h1>
+                <div class="role">Senior Software Engineer &middot; Backend &amp; Android</div>
+                <div class="contact-line">hello@salmanwahed.com &middot; Bangladesh</div>
+            </div>
+            <button type="button" class="btn btn--primary" onclick="window.print()">&darr; Download PDF</button>
+        </header>
+
+        <section class="resume__section">
+            <div class="label">Summary</div>
+            <p>Engineer with 11+ years building backend services and native Android apps, including
+               FinTech products serving millions of users. Strong focus on scalable architecture,
+               performance, and reliable delivery.</p>
+        </section>
+
+        <section class="resume__section">
+            <div class="label">Experience</div>
+
+            <div class="resume__job">
+                <div class="period">2019 &mdash; Present</div>
+                <div class="detail">
+                    <h3>Senior Software Engineer &mdash; TallyKhata (FinTech)</h3>
+                    <div class="company">Digital bookkeeping &amp; financial services</div>
+                    <ul>
+                        <li>Built and scaled backend services for a product used by millions of small businesses.</li>
+                        <li>Led performance and reliability initiatives across the Android client and APIs.</li>
+                        <li>Drove clean-architecture practices and mentored engineers on the team.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="resume__job">
+                <div class="period">2016 &mdash; 2019</div>
+                <div class="detail">
+                    <h3>Software Engineer &mdash; [Company]</h3>
+                    <div class="company">Backend &amp; Android development</div>
+                    <ul>
+                        <li>Add a line about your role, the systems you owned, and the impact you had.</li>
+                        <li>Edit these bullets &mdash; they're placeholders for your real history.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="resume__job">
+                <div class="period">2014 &mdash; 2016</div>
+                <div class="detail">
+                    <h3>Junior Software Engineer &mdash; [Company]</h3>
+                    <div class="company">Where it started</div>
+                    <ul>
+                        <li>Describe early projects and the foundations you built here.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <div class="resume__cols">
+            <section>
+                <div class="label">Skills</div>
+                <ul class="skill-list">
+                    <li class="skill">Java</li>
+                    <li class="skill">Spring Boot</li>
+                    <li class="skill">Django</li>
+                    <li class="skill">FastAPI</li>
+                    <li class="skill">Android</li>
+                    <li class="skill">Kotlin</li>
+                    <li class="skill">PostgreSQL</li>
+                    <li class="skill">Docker</li>
+                    <li class="skill">AWS</li>
+                </ul>
+            </section>
+            <section>
+                <div class="label">Education</div>
+                <h3>BSc (Engg.) in CSE</h3>
+                <div class="company">Shahjalal University of Science and Technology</div>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -32,7 +32,11 @@ def blog_home(request):
     show_pagination = True if paginator.num_pages > 1 else False
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
-    return render(request, "blog/blog_list.html", {"page_obj": page_obj, "show_pagination": show_pagination})
+    return render(
+        request,
+        "blog/blog_list.html",
+        {"page_obj": page_obj, "show_pagination": show_pagination, "active": "blog"},
+    )
 
 
 @cache_page(timeout=15 * 60, key_prefix=BlogConfig.name)
@@ -52,13 +56,13 @@ def post_detail(request, id, slug=None):
     else:
         blog.visited_count += 1
         blog.save()
-    return render(request, "blog/blog.html", {"blog": blog})
+    return render(request, "blog/blog.html", {"blog": blog, "active": "blog"})
 
 
 @login_required
 def post_preview(request, id, slug=None):
     blog = get_object_or_404(BlogPost, pk=id, status=BlogPost.Status.DRAFT)
-    return render(request, "blog/blog.html", {"blog": blog})
+    return render(request, "blog/blog.html", {"blog": blog, "active": "blog"})
 
 
 @cache_page(timeout=15 * 60, key_prefix=BlogConfig.name)
@@ -69,7 +73,11 @@ def tagged_posts(request, tag):
     show_pagination = True if paginator.num_pages > 1 else False
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
-    return render(request, "blog/blog_list.html", {"page_obj": page_obj, "show_pagination": show_pagination})
+    return render(
+        request,
+        "blog/blog_list.html",
+        {"page_obj": page_obj, "show_pagination": show_pagination, "tag": tag, "active": "blog"},
+    )
 
 
 @never_cache
@@ -90,8 +98,9 @@ def server_error(request, *args, **kwargs):
 
 class AboutView(TemplateView):
     template_name = "blog/pages/about.html"
+    extra_context = {"active": "about"}
 
-    @method_decorator(cache_page(timeout=60 * 60, key_prefix=BlogConfig.name))  # Cache for 15 minutes
+    @method_decorator(cache_page(timeout=60 * 60, key_prefix=BlogConfig.name))
     def dispatch(self, request, *args, **kwargs):
         logger.info("Creating About View")
         return super().dispatch(request, *args, **kwargs)

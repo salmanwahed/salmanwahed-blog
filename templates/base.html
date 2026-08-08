@@ -1,0 +1,66 @@
+<!doctype html>
+{% load static %}
+{% load compress %}
+<html lang="en" data-theme="light">
+<head>
+    {# Must run before the stylesheet so the correct theme is set before first paint. #}
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('sw-theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Salman Wahed">
+    <meta name="description" content="{% block description %}Salman Wahed — software engineer working on backend systems and native Android.{% endblock %}">
+    <meta name="theme-color" content="#f2f5f6" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0d1317" media="(prefers-color-scheme: dark)">
+    {% block metatags %}{% endblock %}
+
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'logo.png' %}">
+
+    {% compress css %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/code.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'blog/css/styles.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'portfolio/css/styles.css' %}" type="text/css">
+    {% block styles %}{% endblock %}
+    {% endcompress %}
+
+    <title>{% block title %}Salman Wahed{% endblock %}</title>
+
+    {# Google Analytics. Was previously live on the portfolio pages only; now
+       site-wide. AdSense, which used to load alongside it, has been dropped.
+       This is the only third-party request the site makes -- delete this block
+       and nothing but your own domain is contacted. #}
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JW2JQTRJMP"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-JW2JQTRJMP');
+    </script>
+</head>
+<body>
+    <div class="wrapper">
+        {% include "partials/_nav.html" %}
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+        {% include "partials/_footer.html" %}
+    </div>
+
+    {% compress js %}
+    <script src="{% static 'js/theme.js' %}"></script>
+    {% block scripts %}{% endblock %}
+    {% endcompress %}
+</body>
+</html>

@@ -4,7 +4,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Personal blog and portfolio website built with Django 3.2. The Django project root is `salmanwahed_com/` (one level below the repo root).
+Personal blog and portfolio website built with Django 4.2 (unpinned in
+`requirements.txt` -- it arrives transitively via django-compressor). The Django project root is `salmanwahed_com/` (one level below the repo root).
 
 ## Running Locally with Docker
 
@@ -54,13 +55,14 @@ The `/lint` Claude Code skill runs the full format + check cycle interactively.
 ### Django Apps
 
 **`blog/`** — Main app mounted at `/`:
-- `BlogPost`: Posts with slug, CKEditor body, hero/thumbnail images, tags, `DRAFT`/`PUBLISHED` status, visit/clap counters
+- `BlogPost`: Posts with slug, Markdown body (`body_format` is `MD` or `HTML`; legacy CKEditor posts stay HTML), hero/thumbnail images, tags, `DRAFT`/`PUBLISHED` status, visit/clap counters
 - `BlogImages`: Stores images with CDN URL support and compression metadata; type is `HERO`, `THUMBNAIL`, or `BASIC`
 - `Tag`: Tags with name, Bengali name, and color code
-- `templatetags/blog_extras.py`: Custom template tags, including reading time calculation via BeautifulSoup (180 WPM default, overridable via `WPM_READ` env var)
+- `templatetags/blog_extras.py`: `render_body` (branches on `body_format`; Markdown via python-markdown + Pygments) and `minutes_to_read` (BeautifulSoup over the rendered HTML, 180 WPM default, overridable via `WPM_READ`)
 
 **`portfolio/`** — Mounted at `/portfolio/`:
-- `Project`: With type (`MOBILE_APP`/`WEB_APP`), status (`LIVE`/`ONGOING`/`CLOSED`), and `weight` for ordering
+- `Project`: With type (`MOBILE_APP`/`WEB_APP`), status (`LIVE`/`ONGOING`/`CLOSED`), `category` (`PROFESSIONAL`/`PERSONAL`, which splits the projects page), `role`/`period`/`is_featured` for the featured card, and `weight` for ordering
+- `ProjectStat`: Headline numbers on a featured card, edited as an admin inline
 - `AppPrivacyPolicy`: Privacy policy docs for mobile apps, served at `/portfolio/app/privacy-policy/<slug>/`
 - `Tag`: Tech/skill tags with external URLs (separate from blog tags)
 
@@ -74,7 +76,9 @@ The `/lint` Claude Code skill runs the full format + check cycle interactively.
 | `/post/preview/<id>` | `post_preview` | Login required, draft preview |
 | `/about/` | `AboutView` | Cached 1 hr |
 | `/clear-cache/` | `clear_cache` | Login required, flushes Redis |
-| `/portfolio/` | `ProjectListView` | Cached 45 min |
+| `/portfolio/` | `ProjectListView` | Cached 45 min, split professional/personal |
+| `/resume/` | `ResumeView` | Cached 1 hr, content hardcoded in template |
+| `/contact/` | `ContactView` | **Never cached** (CSRF), honeypot + per-IP throttle |
 | `/nimda/dehawnamlas/` | Django admin | Obfuscated admin URL |
 
 ### Configuration
@@ -83,7 +87,9 @@ The `/lint` Claude Code skill runs the full format + check cycle interactively.
 
 **Caching**: Redis at `redis://127.0.0.1:6379`. Views use per-view cache decorators with varying TTLs. Clear via `/clear-cache/` (login required) or `python manage.py shell` + `cache.clear()`.
 
-**Static/Media**: Static files at `BASE_DIR/static`, media uploads at `BASE_DIR/upload`. Django Compressor is used for CSS/JS compression in production.
+**Static/Media**: Shared front-end assets live in `BASE_DIR/assets` (on `STATICFILES_DIRS`); `BASE_DIR/static` is `STATIC_ROOT` (collectstatic output); media uploads at `BASE_DIR/upload`. Django Compressor concatenates base.css + code.css + both app stylesheets into a single bundle.
+
+**Templates**: One shared `templates/base.html` with `templates/partials/_nav.html` and `_footer.html`. Views pass an `active` context var so the nav can mark the current page. There is no Bootstrap, jQuery or Font Awesome -- do not reintroduce their classes.
 
 **Logging**: File-based to `log/salmanwahed_com.log`; console output added in DEBUG mode. Sentry SDK active in production.
 

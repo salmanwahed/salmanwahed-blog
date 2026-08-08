@@ -65,6 +65,10 @@ class Project(models.Model):
         ONGOING = "ONGOING", _("Ongoing")
         CLOSED = "CLOSED", _("Closed")
 
+    class Category(models.TextChoices):
+        PROFESSIONAL = "PROFESSIONAL", _("Professional work")
+        PERSONAL = "PERSONAL", _("Open source & personal app")
+
     name = models.CharField(max_length=100)
     short_description = models.CharField(max_length=200, blank=True, null=True, verbose_name="Short Description")
     description = models.TextField(null=True, blank=True)
@@ -80,6 +84,12 @@ class Project(models.Model):
         max_length=20, choices=ProjectType.choices, default=ProjectType.MOBILE_APP, verbose_name="Project Type"
     )
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.LIVE)
+    # Splits the projects page into the "Professional work" case studies and the
+    # "Open source & personal apps" grid below them.
+    category = models.CharField(max_length=20, choices=Category.choices, default=Category.PERSONAL, db_index=True)
+    role = models.CharField(max_length=100, blank=True, help_text="e.g. Senior Software Engineer")
+    period = models.CharField(max_length=50, blank=True, help_text="e.g. 2019 — Present")
+    is_featured = models.BooleanField(default=False, help_text='Shows the "Featured" badge.')
     project_weight = models.SmallIntegerField(default=0)
     source_url = models.URLField(verbose_name="Source URL", blank=True, null=True)
     utm_url = models.URLField(verbose_name="UTM Url", blank=True, null=True)
@@ -88,6 +98,21 @@ class Project(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ProjectStat(models.Model):
+    """A single headline number on a featured project card, e.g. "8M+ / Users"."""
+
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="stats")
+    label = models.CharField(max_length=40, help_text="e.g. Users")
+    value = models.CharField(max_length=20, help_text="e.g. 8M+")
+    order = models.SmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "id"]
+
+    def __str__(self):
+        return f"{self.value} {self.label}"
 
 
 class AppPrivacyPolicy(models.Model):

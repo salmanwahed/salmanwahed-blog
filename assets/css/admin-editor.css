@@ -1,0 +1,106 @@
+/* =========================================================
+   admin-editor.css -- EasyMDE tweaks for the Django admin.
+   Admin-only: never loaded on the public site.
+   ========================================================= */
+
+.EasyMDEContainer {
+  max-width: 900px;
+}
+
+.EasyMDEContainer .CodeMirror {
+  font-family: ui-monospace, "JetBrains Mono", SFMono-Regular, Menlo, monospace;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/* ---------- Text toolbar ----------
+   EasyMDE ships Font Awesome icon markup and, left to itself, downloads Font
+   Awesome from a CDN to render it. autoDownloadFontAwesome is off, so the <i>
+   elements are hidden and each button gets a short label instead. No icon font,
+   no third-party request. Tooltips still carry the full button name. */
+.editor-toolbar button i {
+  display: none;
+}
+
+.editor-toolbar button::after {
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .01em;
+}
+
+.editor-toolbar button.bold::after           { content: "B"; font-weight: 700; }
+.editor-toolbar button.italic::after         { content: "I"; font-style: italic; }
+.editor-toolbar button.heading::after        { content: "H"; font-weight: 700; }
+.editor-toolbar button.quote::after          { content: "\201C"; }
+.editor-toolbar button.unordered-list::after { content: "\2022"; }
+.editor-toolbar button.ordered-list::after   { content: "1."; }
+.editor-toolbar button.link::after           { content: "Link"; }
+.editor-toolbar button.image::after          { content: "Img"; }
+.editor-toolbar button.code::after           { content: "Code"; }
+.editor-toolbar button.table::after          { content: "Table"; }
+.editor-toolbar button.preview::after        { content: "Preview"; }
+.editor-toolbar button.side-by-side::after   { content: "Split"; }
+.editor-toolbar button.fullscreen::after     { content: "Full"; }
+.editor-toolbar button.guide::after          { content: "?"; }
+
+/* Buttons are sized for icons; text labels need room to breathe. */
+.editor-toolbar button {
+  width: auto;
+  min-width: 30px;
+  padding: 0 7px;
+}
+
+/* ---------- Preview pane ----------
+   Roughly matches the published article: serif body, mono code. */
+.editor-preview,
+.editor-preview-side {
+  font-family: Georgia, "Newsreader", serif;
+  font-size: 16px;
+  line-height: 1.7;
+  padding: 20px 24px;
+}
+
+.editor-preview pre,
+.editor-preview-side pre {
+  font-family: ui-monospace, "JetBrains Mono", SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  background: #f4f6f7;
+  border: 1px solid #dde4e8;
+  border-radius: 8px;
+  padding: 14px 16px;
+  overflow: auto;
+}
+
+.editor-preview code,
+.editor-preview-side code {
+  font-family: ui-monospace, "JetBrains Mono", SFMono-Regular, Menlo, monospace;
+  font-size: .88em;
+}
+
+.editor-preview pre code,
+.editor-preview-side pre code {
+  background: none;
+  padding: 0;
+}
+
+.editor-preview blockquote,
+.editor-preview-side blockquote {
+  margin: 0 0 1rem;
+  padding-left: 16px;
+  border-left: 2px solid #2f6fb0;
+  color: #566673;
+}
+
+.editor-preview table,
+.editor-preview-side table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.editor-preview th, .editor-preview td,
+.editor-preview-side th, .editor-preview-side td {
+  border: 1px solid #dde4e8;
+  padding: 6px 10px;
+  text-align: left;
+}

@@ -19,11 +19,13 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
+# portfolio is included before blog on purpose: blog.urls ends with a
+# "<str:filename>" catch-all that would otherwise swallow single-segment paths.
 urlpatterns = [
     path("__debug__/", include("debug_toolbar.urls")),
     path("nimda/dehawnamlas/", admin.site.urls),
+    path("", include("portfolio.urls")),
     path("", include("blog.urls")),
-    path("portfolio/", include("portfolio.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = "blog.views.page_not_found"

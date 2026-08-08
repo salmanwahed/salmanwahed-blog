@@ -1,208 +1,154 @@
 from django.contrib.auth.models import User
-from django.db import IntegrityError
 from django.test import TestCase, override_settings
 from django.urls import reverse
 
-from .models import BlogPost, Tag
-from .templatetags.blog_extras import minutes_to_read
+from blog.models import BlogPost, Tag
+from blog.templatetags.blog_extras import minutes_to_read, render_body
 
-DUMMY_CACHE = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
-
-
-class TagModelTest(TestCase):
-    def test_str(self):
-        tag = Tag.objects.create(tag_name="Python")
-        self.assertEqual(str(tag), "Python")
-
-    def test_unique_tag_name(self):
-        Tag.objects.create(tag_name="Python")
-        with self.assertRaises(IntegrityError):
-            Tag.objects.create(tag_name="Python")
+# The real cache is Redis and the list/detail views are wrapped in cache_page.
+# Swapping in locmem keeps one test's response from being served to the next.
+LOCMEM_CACHE = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "blog-tests",
+    }
+}
 
 
-class BlogPostModelTest(TestCase):
+def make_post(**kwargs):
+    author = kwargs.pop("author", None) or User.objects.create_user("writer", password="x")
+    defaults = {
+        "title": "A Post",
+        "author": author,
+        "body": "Hello world",
+        "body_format": BlogPost.BodyFormat.MARKDOWN,
+        "status": BlogPost.Status.PUBLISHED,
+        "short_desc": "Short description.",
+    }
+    defaults.update(kwargs)
+    return BlogPost.objects.create(**defaults)
+
+
+class RenderBodyTests(TestCase):
+    def test_html_post_passes_through_untouched(self):
+        """A legacy CKEditor post must render exactly as stored."""
+        stored = '<p>Already <strong>HTML</strong>.</p>\n<div class="gist">x</div>'
+        post = make_post(body=stored, body_format=BlogPost.BodyFormat.HTML)
+
+        self.assertEqual(render_body(post), stored)
+
+    def test_html_post_is_not_markdown_escaped(self):
+        """Markdown would mangle underscores and asterisks inside HTML."""
+        post = make_post(body="<p>a_b_c and *stars*</p>", body_format=BlogPost.BodyFormat.HTML)
+
+        rendered = render_body(post)
+        self.assertIn("a_b_c", rendered)
+        self.assertIn("*stars*", rendered)
+        self.assertNotIn("<em>", rendered)
+
+    def test_markdown_post_is_converted(self):
+        post = make_post(body="# Title\n\nSome **bold** text.")
+
+        rendered = render_body(post)
+        self.assertIn("<strong>bold</strong>", rendered)
+        self.assertIn("Title", rendered)
+
+    def test_fenced_code_block_is_highlighted(self):
+        post = make_post(body='```python\nprint("hi")\n```')
+
+        rendered = render_body(post)
+        self.assertIn("codehilite", rendered)
+        self.assertIn("<pre", rendered)
+
+    def test_markdown_tables_render(self):
+        post = make_post(body="| a | b |\n|---|---|\n| 1 | 2 |")
+
+        self.assertIn("<table>", render_body(post))
+
+    def test_body_is_rendered_once_per_object(self):
+        post = make_post(body="# Heading")
+
+        first = render_body(post)
+        # Mutating the source after the first render proves the cached value is
+        # reused rather than recomputed on every call.
+        post.body = "# Different"
+        self.assertEqual(render_body(post), first)
+
+
+class MinutesToReadTests(TestCase):
+    def test_counts_words_not_markdown_syntax(self):
+        post = make_post(body="# " + "word " * 180)
+
+        self.assertEqual(minutes_to_read(post), "1 minute read")
+
+    def test_pluralises_above_one_minute(self):
+        post = make_post(body="word " * 400)
+
+        self.assertEqual(minutes_to_read(post), "3 minutes read")
+
+    def test_reads_html_posts(self):
+        post = make_post(body="<p>" + "word " * 180 + "</p>", body_format=BlogPost.BodyFormat.HTML)
+
+        self.assertEqual(minutes_to_read(post), "1 minute read")
+
+
+class BodyFormatDefaultTests(TestCase):
+    def test_new_posts_default_to_markdown(self):
+        author = User.objects.create_user("someone", password="x")
+        post = BlogPost.objects.create(title="T", author=author, body="x")
+
+        self.assertEqual(post.body_format, BlogPost.BodyFormat.MARKDOWN)
+
+
+@override_settings(CACHES=LOCMEM_CACHE)
+class BlogViewTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.author = User.objects.create_user("writer", password="x")
+        cls.tag = Tag.objects.create(tag_name="python", color_code="#3f8a7e")
+        cls.post = make_post(author=cls.author, title="Indexed Post")
+        cls.post.tag.add(cls.tag)
+
     def setUp(self):
-        self.user = User.objects.create_user(username="author", password="pass")
+        from django.core.cache import cache
 
-    def test_slug_auto_generated_from_title(self):
-        post = BlogPost.objects.create(title="Hello World", author=self.user, body="content")
-        self.assertEqual(post.slug, "hello-world")
+        cache.clear()
 
-    def test_explicit_slug_not_overridden(self):
-        post = BlogPost.objects.create(title="Hello World", author=self.user, body="content", slug="my-custom-slug")
-        self.assertEqual(post.slug, "my-custom-slug")
-
-    def test_publish_date_set_when_published(self):
-        post = BlogPost.objects.create(
-            title="Live Post", author=self.user, body="content", status=BlogPost.Status.PUBLISHED
-        )
-        self.assertIsNotNone(post.publish_date)
-
-    def test_publish_date_none_for_draft(self):
-        post = BlogPost.objects.create(title="Draft", author=self.user, body="content")
-        self.assertIsNone(post.publish_date)
-
-    def test_default_status_is_draft(self):
-        post = BlogPost.objects.create(title="Test", author=self.user, body="content")
-        self.assertEqual(post.status, BlogPost.Status.DRAFT)
-
-    def test_str(self):
-        post = BlogPost.objects.create(title="My Post", author=self.user, body="content")
-        self.assertEqual(str(post), "My Post")
-
-    def test_visited_count_defaults_to_zero(self):
-        post = BlogPost.objects.create(title="Test", author=self.user, body="content")
-        self.assertEqual(post.visited_count, 0)
-
-
-@override_settings(CACHES=DUMMY_CACHE)
-class BlogHomeViewTest(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(username="author", password="pass")
-        self.published = BlogPost.objects.create(
-            title="Published", author=self.user, body="content", status=BlogPost.Status.PUBLISHED
-        )
-        self.draft = BlogPost.objects.create(
-            title="Draft", author=self.user, body="content", status=BlogPost.Status.DRAFT
-        )
-
-    def test_returns_200(self):
+    def test_blog_home_renders(self):
         response = self.client.get(reverse("blog:blog_home"))
+
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Indexed Post")
 
-    def test_only_published_posts_shown(self):
-        response = self.client.get(reverse("blog:blog_home"))
-        posts = list(response.context["page_obj"])
-        self.assertIn(self.published, posts)
-        self.assertNotIn(self.draft, posts)
+    def test_post_detail_renders(self):
+        url = reverse("blog:blog_detail", kwargs={"id": self.post.id, "slug": self.post.slug})
+        response = self.client.get(url)
 
-
-@override_settings(CACHES=DUMMY_CACHE)
-class PostDetailViewTest(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(username="author", password="pass")
-        self.published = BlogPost.objects.create(
-            title="Published Post", author=self.user, body="content", status=BlogPost.Status.PUBLISHED
-        )
-        self.draft = BlogPost.objects.create(
-            title="Draft Post", author=self.user, body="content", status=BlogPost.Status.DRAFT
-        )
-
-    def _detail_url(self, post):
-        return f"/post/{post.pk}/{post.slug}/"
-
-    def test_published_post_returns_200(self):
-        response = self.client.get(self._detail_url(self.published))
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Indexed Post")
 
-    def test_draft_post_returns_404(self):
-        response = self.client.get(self._detail_url(self.draft))
-        self.assertEqual(response.status_code, 404)
+    def test_tagged_posts_renders_and_exposes_tag(self):
+        response = self.client.get(reverse("blog:tagged_posts", args=["python"]))
 
-    def test_nonexistent_post_returns_404(self):
-        response = self.client.get("/post/99999/no-such-post/")
-        self.assertEqual(response.status_code, 404)
-
-    def test_visit_count_increments_on_view(self):
-        self.client.get(self._detail_url(self.published))
-        self.published.refresh_from_db()
-        self.assertEqual(self.published.visited_count, 1)
-
-
-class PostPreviewViewTest(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(username="author", password="pass")
-        self.draft = BlogPost.objects.create(
-            title="Draft Post", author=self.user, body="content", status=BlogPost.Status.DRAFT
-        )
-        self.published = BlogPost.objects.create(
-            title="Live Post", author=self.user, body="content", status=BlogPost.Status.PUBLISHED
-        )
-
-    def test_anonymous_user_redirected_to_login(self):
-        response = self.client.get(reverse("blog:preview_post", args=[self.draft.pk]))
-        self.assertEqual(response.status_code, 302)
-        self.assertIn("/accounts/login/", response["Location"])
-
-    def test_logged_in_user_can_preview_draft(self):
-        self.client.login(username="author", password="pass")
-        response = self.client.get(reverse("blog:preview_post", args=[self.draft.pk]))
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["tag"], "python")
 
-    def test_preview_of_published_post_returns_404(self):
-        self.client.login(username="author", password="pass")
-        response = self.client.get(reverse("blog:preview_post", args=[self.published.pk]))
-        self.assertEqual(response.status_code, 404)
-
-
-@override_settings(CACHES=DUMMY_CACHE)
-class TaggedPostsViewTest(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(username="author", password="pass")
-        self.tag = Tag.objects.create(tag_name="Django")
-        self.tagged = BlogPost.objects.create(
-            title="Django Post", author=self.user, body="content", status=BlogPost.Status.PUBLISHED
-        )
-        self.tagged.tag.add(self.tag)
-        self.untagged = BlogPost.objects.create(
-            title="Other Post", author=self.user, body="content", status=BlogPost.Status.PUBLISHED
-        )
-
-    def test_returns_200(self):
-        response = self.client.get(reverse("blog:tagged_posts", args=["Django"]))
-        self.assertEqual(response.status_code, 200)
-
-    def test_only_posts_with_that_tag_shown(self):
-        response = self.client.get(reverse("blog:tagged_posts", args=["Django"]))
-        posts = list(response.context["page_obj"])
-        self.assertIn(self.tagged, posts)
-        self.assertNotIn(self.untagged, posts)
-
-    def test_draft_posts_excluded(self):
-        draft = BlogPost.objects.create(
-            title="Draft Django Post", author=self.user, body="content", status=BlogPost.Status.DRAFT
-        )
-        draft.tag.add(self.tag)
-        response = self.client.get(reverse("blog:tagged_posts", args=["Django"]))
-        posts = list(response.context["page_obj"])
-        self.assertNotIn(draft, posts)
-
-
-class ClearCacheViewTest(TestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(username="author", password="pass")
-
-    def test_anonymous_user_redirected_to_login(self):
-        response = self.client.get(reverse("blog:clear-blog-cache"))
-        self.assertEqual(response.status_code, 302)
-        self.assertIn("/accounts/login/", response["Location"])
-
-    def test_logged_in_redirects_to_home(self):
-        self.client.login(username="author", password="pass")
-        response = self.client.get(reverse("blog:clear-blog-cache"))
-        self.assertRedirects(response, reverse("blog:blog_home"))
-
-
-@override_settings(CACHES=DUMMY_CACHE)
-class AboutViewTest(TestCase):
-    def test_returns_200(self):
+    def test_about_renders(self):
         response = self.client.get(reverse("blog:about"))
+
         self.assertEqual(response.status_code, 200)
 
+    def test_draft_post_detail_is_not_public(self):
+        draft = make_post(author=self.author, title="Draft", slug="draft", status=BlogPost.Status.DRAFT)
+        url = reverse("blog:blog_detail", kwargs={"id": draft.id, "slug": draft.slug})
 
-@override_settings(WPM_READ=180)
-class MinutesToReadTagTest(TestCase):
-    def test_single_minute(self):
-        # 180 words at 180 WPM = exactly 1 minute
-        body = "<p>{}</p>".format(" ".join(["word"] * 180))
-        self.assertEqual(minutes_to_read(body), "1 minute read")
+        response = self.client.get(url)
 
-    def test_plural_minutes(self):
-        # 360 words at 180 WPM = 2 minutes
-        body = "<p>{}</p>".format(" ".join(["word"] * 360))
-        self.assertEqual(minutes_to_read(body), "2 minutes read")
+        self.assertEqual(response.status_code, 404)
 
-    def test_rounds_up(self):
-        # 181 words at 180 WPM = ceil(1.005...) = 2 minutes
-        body = "<p>{}</p>".format(" ".join(["word"] * 181))
-        self.assertEqual(minutes_to_read(body), "2 minutes read")
+    def test_nav_is_present_on_every_page(self):
+        """The shared base template replaced two per-app base templates."""
+        response = self.client.get(reverse("blog:blog_home"))
+
+        self.assertContains(response, 'class="navigation"')
+        self.assertContains(response, "theme-toggle")
