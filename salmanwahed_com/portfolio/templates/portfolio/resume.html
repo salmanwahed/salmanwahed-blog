@@ -2,10 +2,12 @@
 {% block title %}Salman Wahed | Resume{% endblock %}
 {% block description %}Resume of Salman Wahed — senior software engineer, backend and Android.{% endblock %}
 {% block content %}
-{# Content is written into the template on purpose: it changes once or twice a
-   year, and a model plus admin for it would be more moving parts than the page
-   is worth. The @media print block in portfolio/styles.css is what makes the
-   Download PDF button work. #}
+{% comment %}
+  Content is written into the template on purpose: it changes once or twice a
+  year, and a model plus admin for it would be more moving parts than the page
+  is worth. The @media print block in portfolio/styles.css is what makes the
+  Download PDF button work.
+{% endcomment %}
 <div class="container">
     <div class="resume">
         <header class="resume__header">

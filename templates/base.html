@@ -37,10 +37,12 @@
 
     <title>{% block title %}Salman Wahed{% endblock %}</title>
 
-    {# Google Analytics. Was previously live on the portfolio pages only; now
-       site-wide. AdSense, which used to load alongside it, has been dropped.
-       This is the only third-party request the site makes -- delete this block
-       and nothing but your own domain is contacted. #}
+    {% comment %}
+      Google Analytics. Was previously live on the portfolio pages only; now
+      site-wide. AdSense, which used to load alongside it, has been dropped.
+      This is the only third-party request the site makes -- delete this block
+      and nothing but your own domain is contacted.
+    {% endcomment %}
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-JW2JQTRJMP"></script>
     <script>
       window.dataLayer = window.dataLayer || [];

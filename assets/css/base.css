@@ -241,14 +241,17 @@ main { flex: auto; }
   padding: 0;
 }
 .menu .menu-item { margin: 0; }
-.menu .menu-item a {
+/* :not(.btn) keeps this off the "Hire me" CTA. Without it this selector
+   (0-2-1) outranks .btn--primary (0-1-0) and paints the button label muted
+   grey on the accent fill instead of --on-accent. */
+.menu .menu-item a:not(.btn) {
   font-family: var(--font-sans);
   font-size: 14.5px;
   font-weight: 500;
   color: var(--muted);
 }
-.menu .menu-item a:hover,
-.menu .menu-item a.is-active { color: var(--ink); }
+.menu .menu-item a:not(.btn):hover,
+.menu .menu-item a:not(.btn).is-active { color: var(--ink); }
 
 /* Theme toggle */
 .theme-toggle {
@@ -431,7 +434,7 @@ input[type="checkbox"].nav-toggle { display: none; }
   }
   input[type="checkbox"].nav-toggle:checked ~ .menu { display: flex; }
 
-  .menu .menu-item a { display: block; padding: 13px 0; font-size: 16px; }
+  .menu .menu-item a:not(.btn) { display: block; padding: 13px 0; font-size: 16px; }
   /* 44px minimum touch targets inside the dropdown */
   .menu .theme-toggle { width: 100%; height: 44px; }
   .menu .btn { width: 100%; min-height: 44px; }
