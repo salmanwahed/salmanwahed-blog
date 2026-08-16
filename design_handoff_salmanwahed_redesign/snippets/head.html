@@ -1,0 +1,12 @@
+{# ---- Put this in <head>, BEFORE any stylesheet. Prevents theme flash. ---- #}
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('sw-theme');
+      if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  })();
+</script>

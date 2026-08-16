@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{ margin:0; font-family:'Newsreader',Georgia,serif; }
+  a{ color:var(--accent-ink); text-decoration:none; }
+  a:hover{ color:var(--accent); }
+  :root{
+    --bg:#f2f5f6; --bg-elev:#ffffff; --ink:#131c24; --muted:#566673; --faint:#63707c;
+    --border:#dde4e8; --accent:#0d7d6d; --accent-ink:#0a6759; --accent-soft:#e2eeec; --shadow:rgba(18,35,48,.07); --on-accent:#ffffff;
+  }
+  [data-theme="dark"]{
+    --bg:#0d1317; --bg-elev:#151e24; --ink:#e6eef2; --muted:#94a4b1; --faint:#7b8b98;
+    --border:#232f38; --accent:#2bbda3; --accent-ink:#54d6bd; --accent-soft:#12241f; --shadow:rgba(0,0,0,.5); --on-accent:#0d1317;
+  }
+  ::selection{ background:var(--accent); color:var(--on-accent); }
+
+  /* Responsive: media queries can't be inline, so breakpoints drive these
+     variables and the inline styles below consume them. */
+  :root{
+    --pad:32px; --gap-split:56px;
+    --h1-hero:52px; --h1-page:46px; --h1-post:40px; --h1-about:42px;
+    --lede:20px; --post-title:24px;
+    --post-row-dir:row; --post-gap:34px; --post-thumb-w:210px; --post-thumb-h:140px;
+    --grid-projects:repeat(2,1fr); --grid-about:1.4fr 1fr; --grid-contact:1fr 1fr;
+    --feat-logo:150px; --email-size:22px;
+    --resume-dir:row; --resume-period-w:120px; --resume-cols:1fr 1fr;
+    --nav-menu-display:flex; --hamburger-display:none;
+    --menu-dir:row; --menu-align:center; --menu-gap:26px; --menu-position:static;
+    --menu-top:auto; --menu-inset:auto; --menu-bg:transparent; --menu-border:none;
+    --menu-pad:0; --menu-link-pad:0;
+    --card-pad:34px; --tap-min:auto; --toggle-w:36px; --toggle-h:36px; --feat-dir:row;
+  }
+  @media (max-width:992px){
+    :root{
+      --nav-menu-display:none; --hamburger-display:flex;
+      --menu-dir:column; --menu-align:stretch; --menu-gap:2px; --menu-position:absolute;
+      --menu-top:74px; --menu-inset:0; --menu-bg:var(--bg-elev);
+      --menu-border:1px solid var(--border); --menu-pad:12px var(--pad) 18px;
+      --menu-link-pad:13px 0;
+      --tap-min:44px; --toggle-w:100%; --toggle-h:44px;
+    }
+    [data-menu="open"]{ --nav-menu-display:flex; }
+  }
+  @media (max-width:860px){
+    :root{ --grid-about:1fr; --grid-contact:1fr; --gap-split:38px; }
+  }
+  @media (max-width:780px){
+    :root{ --grid-projects:1fr; }
+  }
+  @media (max-width:768px){
+    :root{ --post-row-dir:column; --post-gap:18px; --post-thumb-w:100%; --post-thumb-h:190px; }
+  }
+  @media (max-width:700px){
+    :root{
+      --pad:20px; --card-pad:20px; --feat-dir:column;
+      --h1-hero:34px; --h1-page:34px; --h1-post:30px; --h1-about:32px;
+      --lede:17px; --post-title:20px; --feat-logo:88px; --email-size:17px;
+      --resume-dir:column; --resume-period-w:auto; --resume-cols:1fr;
+    }
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; }
+  }
+  @keyframes fadeUp{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:none; } }
+</style>
+</helmet>
+<div data-theme="{{ theme }}" data-menu="{{ menuState }}" style="min-height:100vh; background:var(--bg); color:var(--ink); --accent:{{ accent }}; --on-accent:{{ onAccent }}; --accent-ink:{{ accentInk }}; --accent-soft:{{ accentSoft }}; transition:background .35s ease, color .35s ease;">
+
+  <nav style="position:sticky; top:0; z-index:50; background:color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-bottom:1px solid var(--border);">
+    <div style="max-width:1080px; margin:0 auto; padding:0 var(--pad); height:74px; display:flex; align-items:center; justify-content:space-between; gap:24px;">
+      <div onClick="{{ goBlog }}" style="display:flex; align-items:center; gap:13px; cursor:pointer;">
+        <div style="width:38px; height:38px; border-radius:11px; background:var(--ink); color:var(--bg); display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-weight:600; font-size:14px;">SW</div>
+        <span style="font-family:'Manrope',sans-serif; font-weight:600; font-size:18px; letter-spacing:-.01em; color:var(--ink);">Salman Wahed</span>
+      </div>
+      <button onClick="{{ toggleMenu }}" aria-label="Toggle menu" style="display:var(--hamburger-display); align-items:center; justify-content:center; width:42px; height:42px; margin-left:auto; border:1px solid var(--border); border-radius:9px; background:var(--bg-elev); color:var(--ink); font-size:17px; cursor:pointer;">{{ menuGlyph }}</button>
+      <div style="display:var(--nav-menu-display); flex-direction:var(--menu-dir); align-items:var(--menu-align); gap:var(--menu-gap); position:var(--menu-position); top:var(--menu-top); left:var(--menu-inset); right:var(--menu-inset); background:var(--menu-bg); border-bottom:var(--menu-border); padding:var(--menu-pad); z-index:60;">
+        <a onClick="{{ goBlog }}" style="cursor:pointer; font-family:'Manrope',sans-serif; font-size:14.5px; font-weight:500; padding:var(--menu-link-pad); color:{{ cBlog }}; transition:color .2s;" style-hover="color:var(--ink);">Blog</a>
+        <a onClick="{{ goProjects }}" style="cursor:pointer; font-family:'Manrope',sans-serif; font-size:14.5px; font-weight:500; padding:var(--menu-link-pad); color:{{ cProjects }}; transition:color .2s;" style-hover="color:var(--ink);">Projects</a>
+        <a onClick="{{ goAbout }}" style="cursor:pointer; font-family:'Manrope',sans-serif; font-size:14.5px; font-weight:500; padding:var(--menu-link-pad); color:{{ cAbout }}; transition:color .2s;" style-hover="color:var(--ink);">About</a>
+        <a onClick="{{ goResume }}" style="cursor:pointer; font-family:'Manrope',sans-serif; font-size:14.5px; font-weight:500; padding:var(--menu-link-pad); color:{{ cResume }}; transition:color .2s;" style-hover="color:var(--ink);">Resume</a>
+        <button onClick="{{ toggleTheme }}" aria-label="Toggle theme" style="width:var(--toggle-w); height:var(--toggle-h); min-height:var(--tap-min); flex:none; border-radius:9px; border:1px solid var(--border); background:var(--bg-elev); color:var(--ink); cursor:pointer; font-size:15px; display:flex; align-items:center; justify-content:center; transition:border-color .2s;" style-hover="border-color:var(--accent);">{{ themeGlyph }}</button>
+        <sc-if value="{{ showHire }}" hint-placeholder-val="{{ true }}">
+          <a onClick="{{ goContact }}" style="cursor:pointer; font-family:'Manrope',sans-serif; font-size:14.5px; font-weight:600; color:var(--on-accent); background:var(--accent); padding:9px 17px; min-height:var(--tap-min); display:flex; align-items:center; justify-content:center; border-radius:9px; transition:transform .15s, filter .2s;" style-hover="filter:brightness(1.07); transform:translateY(-1px);">Hire me</a>
+        </sc-if>
+      </div>
+    </div>
+  </nav>
+
+  <main style="max-width:1080px; margin:0 auto; padding:0 var(--pad);">
+
+    <!-- ===================== BLOG ===================== -->
+    <sc-if value="{{ isBlog }}" hint-placeholder-val="{{ true }}">
+    <section style="">
+      <header style="padding:64px 0 40px; border-bottom:1px solid var(--border);">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--accent-ink); margin-bottom:18px;">Software Engineer · Backend &amp; Android</div>
+        <h1 style="font-family:'Manrope',sans-serif; font-weight:600; font-size:var(--h1-hero); line-height:1.05; letter-spacing:-.025em; margin:0 0 18px; max-width:18ch; text-wrap:balance; color:var(--ink);">Building reliable systems, one clean line at a time.</h1>
+        <p style="font-size:var(--lede); line-height:1.6; color:var(--muted); margin:0; max-width:60ch; text-wrap:pretty;">I'm Salman — eleven years of backend engineering and native Android, from FinTech apps used by millions to small tools I build for fun. This is where I write about the craft.</p>
+      </header>
+
+      <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--faint); padding:42px 0 8px;">Latest writing</div>
+
+      <ul style="list-style:none; margin:0; padding:0;">
+        <li onClick="{{ goPost }}" style="display:flex; flex-direction:var(--post-row-dir); gap:var(--post-gap); padding:32px 0; border-bottom:1px solid var(--border); cursor:pointer;">
+          <div style="flex:none; width:var(--post-thumb-w); height:var(--post-thumb-h); border-radius:12px; overflow:hidden; background:repeating-linear-gradient(135deg,var(--accent-soft),var(--accent-soft) 9px,var(--bg-elev) 9px,var(--bg-elev) 18px); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; color:var(--faint); font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase;">cover image</div>
+          <div style="flex:1; min-width:0;">
+            <h2 style="font-family:'Manrope',sans-serif; font-weight:600; font-size:var(--post-title); line-height:1.25; letter-spacing:-.015em; margin:0 0 10px; color:var(--ink); text-wrap:pretty;">Securing a New VPS: The Initial Steps After Purchase and the Best Practices</h2>
+            <div style="font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--faint); margin-bottom:12px;">09 Aug 2023 · 4 min read</div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
+              <span style="font-family:'JetBrains Mono',monospace; font-size:11.5px; padding:3px 10px; border-radius:50rem; color:#b8455f; background:rgba(184,69,95,.12); border:1px solid rgba(184,69,95,.22);">devops</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:11.5px; padding:3px 10px; border-radius:50rem; color:#5e7fb3; background:rgba(94,127,179,.12); border:1px solid rgba(94,127,179,.22);">system-administration</span>
+            </div>
+            <p style="font-size:16.5px; line-height:1.6; color:var(--muted); margin:0; text-wrap:pretty;">After acquiring a VPS from any provider, we typically gain shell access to the root user. The first steps should include installing essential libraries and implementing basic security measures before any deployment.</p>
+          </div>
+        </li>
+        <li onClick="{{ goPost }}" style="display:flex; flex-direction:var(--post-row-dir); gap:var(--post-gap); padding:32px 0; border-bottom:1px solid var(--border); cursor:pointer;">
+          <div style="flex:none; width:var(--post-thumb-w); height:var(--post-thumb-h); border-radius:12px; overflow:hidden; background:repeating-linear-gradient(135deg,var(--accent-soft),var(--accent-soft) 9px,var(--bg-elev) 9px,var(--bg-elev) 18px); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; color:var(--faint); font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase;">cover image</div>
+          <div style="flex:1; min-width:0;">
+            <h2 style="font-family:'Manrope',sans-serif; font-weight:600; font-size:var(--post-title); line-height:1.25; letter-spacing:-.015em; margin:0 0 10px; color:var(--ink); text-wrap:pretty;">Simplify Your REST API Development with Flask, SQLAlchemy, and Docker</h2>
+            <div style="font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--faint); margin-bottom:12px;">21 May 2023 · 6 min read</div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
+              <span style="font-family:'JetBrains Mono',monospace; font-size:11.5px; padding:3px 10px; border-radius:50rem; color:#3f8a7e; background:rgba(63,138,126,.12); border:1px solid rgba(63,138,126,.22);">flask</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:11.5px; padding:3px 10px; border-radius:50rem; color:#b8455f; background:rgba(184,69,95,.12); border:1px solid rgba(184,69,95,.22);">devops</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:11.5px; padding:3px 10px; border-radius:50rem; color:#5f8c4e; background:rgba(95,140,78,.12); border:1px solid rgba(95,140,78,.22);">sqlalchemy</span>
+            </div>
+            <p style="font-size:16.5px; line-height:1.6; color:var(--muted); margin:0; text-wrap:pretty;">Flask-RESTful simplifies the API development process, while SQLAlchemy handles seamless database integration. Dockerizing the project ensures consistent, scalable deployment across environments.</p>
+          </div>
+        </li>
+        <li onClick="{{ goPost }}" style="display:flex; flex-direction:var(--post-row-dir); gap:var(--post-gap); padding:32px 0; border-bottom:1px solid var(--border); cursor:pointer;">
+          <div style="flex:none; width:var(--post-thumb-w); height:var(--post-thumb-h); border-radius:12px; overflow:hidden; background:repeating-linear-gradient(135deg,var(--accent-soft),var(--accent-soft) 9px,var(--bg-elev) 9px,var(--bg-elev) 18px); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; color:var(--faint); font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase;">cover image</div>
+          <div style="flex:1; min-width:0;">
+            <h2 style="font-family:'Manrope',sans-serif; font-weight:600; font-size:var(--post-title); line-height:1.25; letter-spacing:-.015em; margin:0 0 10px; color:var(--ink); text-wrap:pretty;">Dependency Injection Made Easy: Simple Examples to Understand Key Concepts</h2>
+            <div style="font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--faint); margin-bottom:12px;">31 Mar 2023 · 5 min read</div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
+              <span style="font-family:'JetBrains Mono',monospace; font-size:11.5px; padding:3px 10px; border-radius:50rem; color:#b07d35; background:rgba(176,125,53,.12); border:1px solid rgba(176,125,53,.22);">java</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:11.5px; padding:3px 10px; border-radius:50rem; color:#7b6bbf; background:rgba(123,107,191,.12); border:1px solid rgba(123,107,191,.22);">software-engineering</span>
+            </div>
+            <p style="font-size:16.5px; line-height:1.6; color:var(--muted); margin:0; text-wrap:pretty;">Dependency Injection is a design pattern used to increase modularity and reduce coupling between software components. Here's how it works, with examples you can actually follow.</p>
+          </div>
+        </li>
+        <li onClick="{{ goPost }}" style="display:flex; flex-direction:var(--post-row-dir); gap:var(--post-gap); padding:32px 0; border-bottom:1px solid var(--border); cursor:pointer;">
+          <div style="flex:none; width:var(--post-thumb-w); height:var(--post-thumb-h); border-radius:12px; overflow:hidden; background:repeating-linear-gradient(135deg,var(--accent-soft),var(--accent-soft) 9px,var(--bg-elev) 9px,var(--bg-elev) 18px); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; color:var(--faint); font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase;">cover image</div>
+          <div style="flex:1; min-width:0;">
+            <h2 style="font-family:'Manrope',sans-serif; font-weight:600; font-size:var(--post-title); line-height:1.25; letter-spacing:-.015em; margin:0 0 10px; color:var(--ink); text-wrap:pretty;">Exploring the Basics of Depth First Search (DFS) Algorithm</h2>
+            <div style="font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--faint); margin-bottom:12px;">18 Oct 2022 · 7 min read</div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;">
+              <span style="font-family:'JetBrains Mono',monospace; font-size:11.5px; padding:3px 10px; border-radius:50rem; color:#b06a8f; background:rgba(176,106,143,.12); border:1px solid rgba(176,106,143,.22);">programming</span>
+            </div>
+            <p style="font-size:16.5px; line-height:1.6; color:var(--muted); margin:0; text-wrap:pretty;">Depth First Search is an algorithm for traversing graph or tree data structures. Often mentioned alongside Breadth First Search, it has some fundamental differences worth understanding.</p>
+          </div>
+        </li>
+      </ul>
+    </section>
+    </sc-if>
+
+    <!-- ===================== POST DETAIL ===================== -->
+    <sc-if value="{{ isPost }}" hint-placeholder-val="{{ false }}">
+    <article style="max-width:760px; margin:0 auto; ">
+      <a onClick="{{ goBlog }}" style="display:inline-block; cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--accent-ink); margin:48px 0 28px;">← Back to blog</a>
+      <h1 style="font-family:'Manrope',sans-serif; font-weight:600; font-size:var(--h1-post); line-height:1.12; letter-spacing:-.025em; margin:0 0 16px; color:var(--ink); text-wrap:balance;">Securing a New VPS: The Initial Steps After Purchase and the Best Practices</h1>
+      <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap; font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--faint); margin-bottom:14px;">
+        <span>09 Aug 2023</span><span>·</span><span>4 min read</span>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:34px;">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:11.5px; padding:3px 10px; border-radius:50rem; color:#b8455f; background:rgba(184,69,95,.12); border:1px solid rgba(184,69,95,.22);">devops</span>
+        <span style="font-family:'JetBrains Mono',monospace; font-size:11.5px; padding:3px 10px; border-radius:50rem; color:#5e7fb3; background:rgba(94,127,179,.12); border:1px solid rgba(94,127,179,.22);">system-administration</span>
+      </div>
+      <div style="width:100%; height:clamp(180px,42vw,300px); border-radius:14px; margin-bottom:40px; background:repeating-linear-gradient(135deg,var(--accent-soft),var(--accent-soft) 11px,var(--bg-elev) 11px,var(--bg-elev) 22px); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; color:var(--faint); font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase;">cover image</div>
+
+      <p style="font-size:19px; line-height:1.75; color:var(--ink); margin:0 0 24px; text-wrap:pretty;">After acquiring a VPS from any provider, we typically gain shell access to the root user. At this point, our first steps should include installing essential libraries and implementing basic security measures before proceeding with any deployment tasks. These tasks are also relevant for other freshly installed servers.</p>
+
+      <h2 style="font-family:'Manrope',sans-serif; font-weight:600; font-size:25px; letter-spacing:-.015em; margin:40px 0 14px; color:var(--ink);">Update and Upgrade Packages</h2>
+      <p style="font-size:19px; line-height:1.75; color:var(--ink); margin:0 0 18px; text-wrap:pretty;">SSH into the server and update the package lists, then upgrade the installed packages to their latest versions.</p>
+      <pre style="font-family:'JetBrains Mono',monospace; font-size:14px; line-height:1.7; background:var(--bg-elev); color:var(--ink); padding:18px 20px; border:1px solid var(--border); border-radius:10px; overflow:auto; margin:0 0 28px;">sudo apt update
+sudo apt upgrade</pre>
+
+      <h2 style="font-family:'Manrope',sans-serif; font-weight:600; font-size:25px; letter-spacing:-.015em; margin:40px 0 14px; color:var(--ink);">Install Essential Packages</h2>
+      <p style="font-size:19px; line-height:1.75; color:var(--ink); margin:0 0 18px; text-wrap:pretty;">These packages are often necessary for day-to-day server management and administration.</p>
+      <pre style="font-family:'JetBrains Mono',monospace; font-size:14px; line-height:1.7; background:var(--bg-elev); color:var(--ink); padding:18px 20px; border:1px solid var(--border); border-radius:10px; overflow:auto; margin:0 0 28px;">sudo apt install curl wget vim net-tools git</pre>
+
+      <h2 style="font-family:'Manrope',sans-serif; font-weight:600; font-size:25px; letter-spacing:-.015em; margin:40px 0 14px; color:var(--ink);">Secure SSH Login</h2>
+      <p style="font-size:19px; line-height:1.75; color:var(--ink); margin:0 0 18px; text-wrap:pretty;">To enhance security it's good practice to disallow root login and configure public-key authentication, disabling password-based login entirely. First, create a non-root user:</p>
+      <pre style="font-family:'JetBrains Mono',monospace; font-size:14px; line-height:1.7; background:var(--bg-elev); color:var(--ink); padding:18px 20px; border:1px solid var(--border); border-radius:10px; overflow:auto; margin:0 0 28px;">sudo adduser &lt;username&gt;
+sudo usermod -aG sudo &lt;username&gt;</pre>
+      <p style="font-size:19px; line-height:1.75; color:var(--ink); margin:0 0 18px; text-wrap:pretty;">Open <code style="font-family:'JetBrains Mono',monospace; font-size:.86em; background:var(--accent-soft); color:var(--accent-ink); padding:1px 6px; border-radius:5px;">/etc/ssh/sshd_config</code>, set <code style="font-family:'JetBrains Mono',monospace; font-size:.86em; background:var(--accent-soft); color:var(--accent-ink); padding:1px 6px; border-radius:5px;">PermitRootLogin</code> to <code style="font-family:'JetBrains Mono',monospace; font-size:.86em; background:var(--accent-soft); color:var(--accent-ink); padding:1px 6px; border-radius:5px;">no</code>, and restart the service once your key is in place.</p>
+
+      <h2 style="font-family:'Manrope',sans-serif; font-weight:600; font-size:25px; letter-spacing:-.015em; margin:40px 0 14px; color:var(--ink);">Firewall Configuration</h2>
+      <p style="font-size:19px; line-height:1.75; color:var(--ink); margin:0 0 18px; text-wrap:pretty;">Ubuntu ships with <code style="font-family:'JetBrains Mono',monospace; font-size:.86em; background:var(--accent-soft); color:var(--accent-ink); padding:1px 6px; border-radius:5px;">ufw</code>. Enable it and allow only the connections you need.</p>
+      <pre style="font-family:'JetBrains Mono',monospace; font-size:14px; line-height:1.7; background:var(--bg-elev); color:var(--ink); padding:18px 20px; border:1px solid var(--border); border-radius:10px; overflow:auto; margin:0 0 28px;">sudo ufw allow ssh
+sudo ufw allow http
+sudo ufw allow https
+sudo ufw enable</pre>
+      <p style="font-size:19px; line-height:1.75; color:var(--ink); margin:0 0 48px; text-wrap:pretty;">Our basic setup is finished. From here you can go further — installing <code style="font-family:'JetBrains Mono',monospace; font-size:.86em; background:var(--accent-soft); color:var(--accent-ink); padding:1px 6px; border-radius:5px;">fail2ban</code> and enabling automatic security updates are great next steps.</p>
+
+      <div style="border-top:1px solid var(--border); padding:28px 0 60px; display:flex; gap:16px; align-items:center;">
+        <div style="width:52px; height:52px; border-radius:50%; flex:none; background:var(--ink); color:var(--bg); display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-weight:600; font-size:16px;">SW</div>
+        <div>
+          <div style="font-family:'Manrope',sans-serif; font-weight:600; font-size:16px; color:var(--ink);">Salman Wahed</div>
+          <div style="font-size:15px; color:var(--muted);">Backend &amp; Android engineer. Writing about the craft from Bangladesh.</div>
+        </div>
+      </div>
+    </article>
+    </sc-if>
+
+    <!-- ===================== PROJECTS ===================== -->
+    <sc-if value="{{ isProjects }}" hint-placeholder-val="{{ false }}">
+    <section style="">
+      <header style="padding:64px 0 36px;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--accent-ink); margin-bottom:16px;">Selected work</div>
+        <h1 style="font-family:'Manrope',sans-serif; font-weight:600; font-size:var(--h1-page); line-height:1.08; letter-spacing:-.025em; margin:0 0 14px; color:var(--ink);">Projects</h1>
+        <p style="font-size:19px; line-height:1.6; color:var(--muted); margin:0; max-width:58ch; text-wrap:pretty;">Production systems I've shipped as a professional engineer, plus open-source apps I build on my own time.</p>
+      </header>
+
+      <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--faint); padding:24px 0 16px;">Professional work</div>
+      <div style="display:flex; flex-direction:var(--feat-dir); gap:var(--post-gap); background:var(--bg-elev); border:1px solid var(--border); border-radius:18px; padding:var(--card-pad); box-shadow:0 1px 0 var(--shadow); margin-bottom:18px; flex-wrap:wrap;">
+        <div style="flex:none; width:var(--feat-logo); height:var(--feat-logo); border-radius:20px; background:repeating-linear-gradient(135deg,var(--accent-soft),var(--accent-soft) 9px,var(--bg) 9px,var(--bg) 18px); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; color:var(--faint); font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; text-align:center;">app logo</div>
+        <div style="flex:1; min-width:0;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+            <span style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--on-accent); background:var(--accent); padding:3px 9px; border-radius:6px;">Featured</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--faint);">FinTech · Android &amp; Backend</span>
+          </div>
+          <h2 style="font-family:'Manrope',sans-serif; font-weight:600; font-size:28px; letter-spacing:-.02em; margin:0 0 10px; color:var(--ink);">TallyKhata</h2>
+          <p style="font-size:17px; line-height:1.65; color:var(--muted); margin:0 0 18px; max-width:62ch; text-wrap:pretty;">A digital bookkeeping and financial-services app for small businesses across Bangladesh. I worked on performance-critical backend services and the native Android client, focused on reliability at scale and clean architecture.</p>
+          <div style="display:flex; gap:26px; flex-wrap:wrap; margin-bottom:18px;">
+            <div><div style="font-family:'Manrope',sans-serif; font-weight:600; font-size:22px; color:var(--ink);">Millions</div><div style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--faint);">of users</div></div>
+            <div><div style="font-family:'Manrope',sans-serif; font-weight:600; font-size:22px; color:var(--ink);">Senior Eng.</div><div style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--faint);">role</div></div>
+            <div><div style="font-family:'Manrope',sans-serif; font-weight:600; font-size:22px; color:var(--ink);">99.9%</div><div style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--faint);">uptime target</div></div>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <span style="font-family:'JetBrains Mono',monospace; font-size:11.5px; padding:3px 10px; border-radius:50rem; color:#b07d35; background:rgba(176,125,53,.12); border:1px solid rgba(176,125,53,.22);">java</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:11.5px; padding:3px 10px; border-radius:50rem; color:#5f8c4e; background:rgba(95,140,78,.12); border:1px solid rgba(95,140,78,.22);">spring-boot</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:11.5px; padding:3px 10px; border-radius:50rem; color:#7b6bbf; background:rgba(123,107,191,.12); border:1px solid rgba(123,107,191,.22);">kotlin</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:11.5px; padding:3px 10px; border-radius:50rem; color:#3f8a7e; background:rgba(63,138,126,.12); border:1px solid rgba(63,138,126,.22);">android</span>
+          </div>
+        </div>
+      </div>
+      <div style="border:1px dashed var(--border); border-radius:14px; padding:22px var(--card-pad); display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:8px;">
+        <span style="font-size:16px; color:var(--faint); font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.06em;">+ add another professional role here</span>
+        <span style="font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--faint);">duplicate the card above</span>
+      </div>
+
+      <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--faint); padding:44px 0 18px;">Open source &amp; personal apps</div>
+      <div style="display:grid; grid-template-columns:var(--grid-projects); gap:18px; padding-bottom:64px;">
+        <div style="background:var(--bg-elev); border:1px solid var(--border); border-radius:14px; padding:var(--card-pad); display:flex; gap:18px; min-width:0;">
+          <div style="flex:none; width:62px; height:62px; border-radius:14px; background:repeating-linear-gradient(135deg,var(--accent-soft),var(--accent-soft) 7px,var(--bg) 7px,var(--bg) 14px); border:1px solid var(--border);"></div>
+          <div style="flex:1; min-width:0;">
+            <h3 style="font-family:'Manrope',sans-serif; font-weight:600; font-size:18px; margin:0 0 6px; color:var(--ink);">SadaSidhe — সাদাসিধে কথা</h3>
+            <p style="font-size:14.5px; line-height:1.55; color:var(--muted); margin:0 0 12px;">A curated collection of published articles by Muhammad Zafar Iqbal.</p>
+            <div style="display:flex; gap:7px; flex-wrap:wrap;">
+              <span style="font-family:'JetBrains Mono',monospace; font-size:11px; padding:2px 9px; border-radius:50rem; color:#3f8a7e; background:rgba(63,138,126,.12); border:1px solid rgba(63,138,126,.22);">android</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:11px; padding:2px 9px; border-radius:50rem; color:#b07d35; background:rgba(176,125,53,.12); border:1px solid rgba(176,125,53,.22);">firebase</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:11px; padding:2px 9px; border-radius:50rem; color:#7b6bbf; background:rgba(123,107,191,.12); border:1px solid rgba(123,107,191,.22);">kotlin</span>
+            </div>
+          </div>
+        </div>
+        <div style="background:var(--bg-elev); border:1px solid var(--border); border-radius:14px; padding:var(--card-pad); display:flex; gap:18px; min-width:0;">
+          <div style="flex:none; width:62px; height:62px; border-radius:14px; background:repeating-linear-gradient(135deg,var(--accent-soft),var(--accent-soft) 7px,var(--bg) 7px,var(--bg) 14px); border:1px solid var(--border);"></div>
+          <div style="flex:1; min-width:0;">
+            <h3 style="font-family:'Manrope',sans-serif; font-weight:600; font-size:18px; margin:0 0 6px; color:var(--ink);">TDS News</h3>
+            <p style="font-size:14.5px; line-height:1.55; color:var(--muted); margin:0 0 12px;">A feed reader for The Daily Star with searching and bookmarking built in.</p>
+            <div style="display:flex; gap:7px; flex-wrap:wrap;">
+              <span style="font-family:'JetBrains Mono',monospace; font-size:11px; padding:2px 9px; border-radius:50rem; color:#3f8a7e; background:rgba(63,138,126,.12); border:1px solid rgba(63,138,126,.22);">android</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:11px; padding:2px 9px; border-radius:50rem; color:#7b6bbf; background:rgba(123,107,191,.12); border:1px solid rgba(123,107,191,.22);">kotlin</span>
+            </div>
+          </div>
+        </div>
+        <div style="background:var(--bg-elev); border:1px solid var(--border); border-radius:14px; padding:var(--card-pad); display:flex; gap:18px; min-width:0;">
+          <div style="flex:none; width:62px; height:62px; border-radius:14px; background:repeating-linear-gradient(135deg,var(--accent-soft),var(--accent-soft) 7px,var(--bg) 7px,var(--bg) 14px); border:1px solid var(--border);"></div>
+          <div style="flex:1; min-width:0;">
+            <h3 style="font-family:'Manrope',sans-serif; font-weight:600; font-size:18px; margin:0 0 6px; color:var(--ink);">Alo Plus — আলো প্লাস</h3>
+            <p style="font-size:14.5px; line-height:1.55; color:var(--muted); margin:0 0 12px;">A news aggregator that scrapes content from sources and saves it for later reference.</p>
+            <div style="display:flex; gap:7px; flex-wrap:wrap;">
+              <span style="font-family:'JetBrains Mono',monospace; font-size:11px; padding:2px 9px; border-radius:50rem; color:#3f8a7e; background:rgba(63,138,126,.12); border:1px solid rgba(63,138,126,.22);">android</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:11px; padding:2px 9px; border-radius:50rem; color:#7b6bbf; background:rgba(123,107,191,.12); border:1px solid rgba(123,107,191,.22);">kotlin</span>
+            </div>
+          </div>
+        </div>
+        <div style="background:var(--bg-elev); border:1px solid var(--border); border-radius:14px; padding:var(--card-pad); display:flex; gap:18px; min-width:0;">
+          <div style="flex:none; width:62px; height:62px; border-radius:14px; background:repeating-linear-gradient(135deg,var(--accent-soft),var(--accent-soft) 7px,var(--bg) 7px,var(--bg) 14px); border:1px solid var(--border);"></div>
+          <div style="flex:1; min-width:0;">
+            <h3 style="font-family:'Manrope',sans-serif; font-weight:600; font-size:18px; margin:0 0 6px; color:var(--ink);">History '71</h3>
+            <p style="font-size:14.5px; line-height:1.55; color:var(--muted); margin:0 0 12px;">A book app of Dr. Muhammad Zafar Iqbal's writing on Bangladesh's liberation war.</p>
+            <div style="display:flex; gap:7px; flex-wrap:wrap;">
+              <span style="font-family:'JetBrains Mono',monospace; font-size:11px; padding:2px 9px; border-radius:50rem; color:#b07d35; background:rgba(176,125,53,.12); border:1px solid rgba(176,125,53,.22);">java</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:11px; padding:2px 9px; border-radius:50rem; color:#3f8a7e; background:rgba(63,138,126,.12); border:1px solid rgba(63,138,126,.22);">android</span>
+            </div>
+          </div>
+        </div>
+        <div style="background:var(--bg-elev); border:1px solid var(--border); border-radius:14px; padding:var(--card-pad); display:flex; gap:18px; min-width:0;">
+          <div style="flex:none; width:62px; height:62px; border-radius:14px; background:repeating-linear-gradient(135deg,var(--accent-soft),var(--accent-soft) 7px,var(--bg) 7px,var(--bg) 14px); border:1px solid var(--border);"></div>
+          <div style="flex:1; min-width:0;">
+            <h3 style="font-family:'Manrope',sans-serif; font-weight:600; font-size:18px; margin:0 0 6px; color:var(--ink);">Latest News — সর্বশেষ খবর</h3>
+            <p style="font-size:14.5px; line-height:1.55; color:var(--muted); margin:0 0 12px;">A lightweight feed parser — a basic version of the Alo Plus application.</p>
+            <div style="display:flex; gap:7px; flex-wrap:wrap;">
+              <span style="font-family:'JetBrains Mono',monospace; font-size:11px; padding:2px 9px; border-radius:50rem; color:#b07d35; background:rgba(176,125,53,.12); border:1px solid rgba(176,125,53,.22);">java</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:11px; padding:2px 9px; border-radius:50rem; color:#3f8a7e; background:rgba(63,138,126,.12); border:1px solid rgba(63,138,126,.22);">android</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    </sc-if>
+
+    <!-- ===================== ABOUT ===================== -->
+    <sc-if value="{{ isAbout }}" hint-placeholder-val="{{ false }}">
+    <section style=" padding:64px 0;">
+      <div style="display:grid; grid-template-columns:var(--grid-about); gap:var(--gap-split); align-items:start;">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--accent-ink); margin-bottom:16px;">About</div>
+          <h1 style="font-family:'Manrope',sans-serif; font-weight:600; font-size:var(--h1-about); line-height:1.1; letter-spacing:-.025em; margin:0 0 26px; color:var(--ink); text-wrap:balance;">Hello, I'm Salman M Wahed.</h1>
+          <p style="font-size:18.5px; line-height:1.7; color:var(--ink); margin:0 0 20px; text-wrap:pretty;">A software engineer with over 11 years of experience in backend development and native Android applications. I graduated from Shahjalal University of Science and Technology with a BSc (Engg.) in Computer Science &amp; Engineering, and have been contributing to the Bangladeshi software industry ever since.</p>
+          <p style="font-size:18.5px; line-height:1.7; color:var(--muted); margin:0 0 20px; text-wrap:pretty;">Over the years I've led teams, architected scalable systems, and worked on high-impact products — including a FinTech app used by millions. My toolkit spans Java, Spring Boot, Django, FastAPI, and Android, with a strong focus on performance, reliability, and clean architecture.</p>
+          <p style="font-size:18.5px; line-height:1.7; color:var(--muted); margin:0 0 28px; text-wrap:pretty;">Outside of coding I enjoy swimming, cycling, and solving puzzles. I also love good sci-fi and am always up for a conversation about futuristic worlds — or just something interesting. If you have an idea you're excited about, reach out.</p>
+          <div style="display:flex; gap:14px; flex-wrap:wrap;">
+            <a onClick="{{ goResume }}" style="cursor:pointer; font-family:'Manrope',sans-serif; font-weight:600; font-size:15px; color:var(--on-accent); background:var(--accent); padding:11px 20px; border-radius:10px;" style-hover="filter:brightness(1.07);">View résumé →</a>
+            <a onClick="{{ goContact }}" style="cursor:pointer; font-family:'Manrope',sans-serif; font-weight:600; font-size:15px; color:var(--ink); background:var(--bg-elev); border:1px solid var(--border); padding:11px 20px; border-radius:10px;" style-hover="border-color:var(--accent);">Get in touch</a>
+          </div>
+        </div>
+        <div>
+          <div style="width:100%; max-width:340px; aspect-ratio:4/5; border-radius:16px; background:repeating-linear-gradient(135deg,var(--accent-soft),var(--accent-soft) 11px,var(--bg-elev) 11px,var(--bg-elev) 22px); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; color:var(--faint); font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; margin-bottom:18px;">your portrait</div>
+          <div style="background:var(--bg-elev); border:1px solid var(--border); border-radius:14px; padding:20px;">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); margin-bottom:14px;">Toolkit</div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <span style="font-family:'JetBrains Mono',monospace; font-size:12px; padding:5px 11px; border-radius:8px; background:var(--accent-soft); color:var(--accent-ink);">Java</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:12px; padding:5px 11px; border-radius:8px; background:var(--accent-soft); color:var(--accent-ink);">Spring Boot</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:12px; padding:5px 11px; border-radius:8px; background:var(--accent-soft); color:var(--accent-ink);">Django</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:12px; padding:5px 11px; border-radius:8px; background:var(--accent-soft); color:var(--accent-ink);">FastAPI</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:12px; padding:5px 11px; border-radius:8px; background:var(--accent-soft); color:var(--accent-ink);">Android</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:12px; padding:5px 11px; border-radius:8px; background:var(--accent-soft); color:var(--accent-ink);">Kotlin</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:12px; padding:5px 11px; border-radius:8px; background:var(--accent-soft); color:var(--accent-ink);">PostgreSQL</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:12px; padding:5px 11px; border-radius:8px; background:var(--accent-soft); color:var(--accent-ink);">Docker</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    </sc-if>
+
+    <!-- ===================== RESUME ===================== -->
+    <sc-if value="{{ isResume }}" hint-placeholder-val="{{ false }}">
+    <section style=" padding:56px 0 64px; max-width:840px; margin:0 auto;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:20px; flex-wrap:wrap; padding-bottom:28px; border-bottom:1px solid var(--border);">
+        <div>
+          <h1 style="font-family:'Manrope',sans-serif; font-weight:600; font-size:38px; letter-spacing:-.025em; margin:0 0 8px; color:var(--ink);">Salman M Wahed</h1>
+          <div style="font-size:18px; color:var(--muted);">Senior Software Engineer · Backend &amp; Android</div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--faint); margin-top:10px;">hello@salmanwahed.com · Bangladesh</div>
+        </div>
+        <button onClick="{{ printResume }}" style="font-family:'Manrope',sans-serif; font-weight:600; font-size:14.5px; color:var(--on-accent); background:var(--accent); border:none; padding:11px 18px; border-radius:10px; cursor:pointer; white-space:nowrap;" style-hover="filter:brightness(1.07);">↓ Download PDF</button>
+      </div>
+
+      <div style="margin-top:36px;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent-ink); margin-bottom:12px;">Summary</div>
+        <p style="font-size:17px; line-height:1.7; color:var(--ink); margin:0; text-wrap:pretty;">Engineer with 11+ years building backend services and native Android apps, including FinTech products serving millions of users. Strong focus on scalable architecture, performance, and reliable delivery.</p>
+      </div>
+
+      <div style="margin-top:40px;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent-ink); margin-bottom:18px;">Experience</div>
+
+        <div style="display:flex; flex-direction:var(--resume-dir); gap:22px; padding-bottom:26px; margin-bottom:26px; border-bottom:1px solid var(--border);">
+          <div style="flex:none; width:var(--resume-period-w); font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--faint); padding-top:3px;">2019 — Present</div>
+          <div style="flex:1;">
+            <h3 style="font-family:'Manrope',sans-serif; font-weight:600; font-size:19px; margin:0 0 3px; color:var(--ink);">Senior Software Engineer — TallyKhata (FinTech)</h3>
+            <div style="font-size:14.5px; color:var(--muted); margin-bottom:12px;">Digital bookkeeping &amp; financial services</div>
+            <ul style="margin:0; padding-left:18px; color:var(--muted); font-size:16px; line-height:1.7;">
+              <li>Built and scaled backend services for a product used by millions of small businesses.</li>
+              <li>Led performance and reliability initiatives across the Android client and APIs.</li>
+              <li>Drove clean-architecture practices and mentored engineers on the team.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:var(--resume-dir); gap:22px; padding-bottom:26px; margin-bottom:26px; border-bottom:1px solid var(--border);">
+          <div style="flex:none; width:var(--resume-period-w); font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--faint); padding-top:3px;">2016 — 2019</div>
+          <div style="flex:1;">
+            <h3 style="font-family:'Manrope',sans-serif; font-weight:600; font-size:19px; margin:0 0 3px; color:var(--ink);">Software Engineer — <span style="color:var(--faint);">[Company]</span></h3>
+            <div style="font-size:14.5px; color:var(--muted); margin-bottom:12px;">Backend &amp; Android development</div>
+            <ul style="margin:0; padding-left:18px; color:var(--muted); font-size:16px; line-height:1.7;">
+              <li>Add a line about your role, the systems you owned, and the impact you had.</li>
+              <li>Edit these bullets — they're placeholders for your real history.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:var(--resume-dir); gap:22px;">
+          <div style="flex:none; width:var(--resume-period-w); font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--faint); padding-top:3px;">2014 — 2016</div>
+          <div style="flex:1;">
+            <h3 style="font-family:'Manrope',sans-serif; font-weight:600; font-size:19px; margin:0 0 3px; color:var(--ink);">Junior Software Engineer — <span style="color:var(--faint);">[Company]</span></h3>
+            <div style="font-size:14.5px; color:var(--muted); margin-bottom:12px;">Where it started</div>
+            <ul style="margin:0; padding-left:18px; color:var(--muted); font-size:16px; line-height:1.7;">
+              <li>Describe early projects and the foundations you built here.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:var(--resume-cols); gap:40px; margin-top:40px;">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent-ink); margin-bottom:14px;">Skills</div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <span style="font-family:'JetBrains Mono',monospace; font-size:12px; padding:5px 11px; border-radius:8px; background:var(--accent-soft); color:var(--accent-ink);">Java</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:12px; padding:5px 11px; border-radius:8px; background:var(--accent-soft); color:var(--accent-ink);">Spring Boot</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:12px; padding:5px 11px; border-radius:8px; background:var(--accent-soft); color:var(--accent-ink);">Django</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:12px; padding:5px 11px; border-radius:8px; background:var(--accent-soft); color:var(--accent-ink);">FastAPI</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:12px; padding:5px 11px; border-radius:8px; background:var(--accent-soft); color:var(--accent-ink);">Android</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:12px; padding:5px 11px; border-radius:8px; background:var(--accent-soft); color:var(--accent-ink);">Kotlin</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:12px; padding:5px 11px; border-radius:8px; background:var(--accent-soft); color:var(--accent-ink);">PostgreSQL</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:12px; padding:5px 11px; border-radius:8px; background:var(--accent-soft); color:var(--accent-ink);">Docker</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:12px; padding:5px 11px; border-radius:8px; background:var(--accent-soft); color:var(--accent-ink);">AWS</span>
+          </div>
+        </div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent-ink); margin-bottom:14px;">Education</div>
+          <h3 style="font-family:'Manrope',sans-serif; font-weight:600; font-size:17px; margin:0 0 4px; color:var(--ink);">BSc (Engg.) in CSE</h3>
+          <div style="font-size:15px; color:var(--muted);">Shahjalal University of Science and Technology</div>
+        </div>
+      </div>
+    </section>
+    </sc-if>
+
+    <!-- ===================== CONTACT ===================== -->
+    <sc-if value="{{ isContact }}" hint-placeholder-val="{{ false }}">
+    <section style=" padding:72px 0;">
+      <div style="display:grid; grid-template-columns:var(--grid-contact); gap:var(--gap-split); align-items:start;">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--accent-ink); margin-bottom:16px;">Contact</div>
+          <h1 style="font-family:'Manrope',sans-serif; font-weight:600; font-size:var(--h1-page); line-height:1.08; letter-spacing:-.025em; margin:0 0 18px; color:var(--ink); text-wrap:balance;">Let's build something.</h1>
+          <p style="font-size:19px; line-height:1.65; color:var(--muted); margin:0 0 30px; max-width:46ch; text-wrap:pretty;">Open to select freelance, consulting, and full-time engineering work. The fastest way to reach me is email.</p>
+          <a href="mailto:hello@salmanwahed.com" style="display:inline-flex; align-items:center; gap:12px; font-family:'Manrope',sans-serif; font-weight:600; font-size:var(--email-size); color:var(--ink); background:var(--bg-elev); border:1px solid var(--border); padding:16px 22px; border-radius:14px; max-width:100%; overflow-wrap:anywhere;" style-hover="border-color:var(--accent); color:var(--accent-ink);">
+            <span style="font-family:'JetBrains Mono',monospace; font-size:15px; color:var(--accent-ink);">@</span>hello@salmanwahed.com
+          </a>
+          <div style="display:flex; flex-wrap:wrap; gap:12px 18px; margin-top:34px; min-width:0; font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:.06em; text-transform:uppercase;">
+            <a href="#" style="color:var(--muted);" style-hover="color:var(--accent-ink);">GitHub</a>
+            <a href="#" style="color:var(--muted);" style-hover="color:var(--accent-ink);">LinkedIn</a>
+            <a href="#" style="color:var(--muted);" style-hover="color:var(--accent-ink);">Stack Overflow</a>
+            <a href="#" style="color:var(--muted);" style-hover="color:var(--accent-ink);">Twitter</a>
+          </div>
+        </div>
+        <div style="background:var(--bg-elev); border:1px solid var(--border); border-radius:18px; padding:var(--card-pad); min-width:0;">
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <div>
+              <label style="display:block; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); margin-bottom:7px;">Name</label>
+              <input type="text" placeholder="Your name" style="width:100%; font-family:'Newsreader',serif; font-size:16px; color:var(--ink); background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:12px 14px; outline:none;" style-focus="border-color:var(--accent);">
+            </div>
+            <div>
+              <label style="display:block; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); margin-bottom:7px;">Email</label>
+              <input type="email" placeholder="you@example.com" style="width:100%; font-family:'Newsreader',serif; font-size:16px; color:var(--ink); background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:12px 14px; outline:none;" style-focus="border-color:var(--accent);">
+            </div>
+            <div>
+              <label style="display:block; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); margin-bottom:7px;">Message</label>
+              <textarea rows="4" placeholder="Tell me about your project…" style="width:100%; font-family:'Newsreader',serif; font-size:16px; color:var(--ink); background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:12px 14px; outline:none; resize:vertical;" style-focus="border-color:var(--accent);"></textarea>
+            </div>
+            <button style="font-family:'Manrope',sans-serif; font-weight:600; font-size:15px; color:var(--on-accent); background:var(--accent); border:none; padding:13px; border-radius:10px; cursor:pointer;" style-hover="filter:brightness(1.07);">Send message</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    </sc-if>
+
+  </main>
+
+  <footer style="border-top:1px solid var(--border); margin-top:40px;">
+    <div style="max-width:1080px; margin:0 auto; padding:36px var(--pad); display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;">
+      <div style="font-size:15px; color:var(--muted);">Crafted with <span style="color:var(--accent);">♥</span> from Bangladesh · © 2026</div>
+      <div style="display:flex; flex-wrap:wrap; gap:10px 20px; min-width:0; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:.08em; text-transform:uppercase;">
+        <a href="#" style="color:var(--muted);" style-hover="color:var(--accent-ink);">GitHub</a>
+        <a href="#" style="color:var(--muted);" style-hover="color:var(--accent-ink);">Stack Overflow</a>
+        <a href="#" style="color:var(--muted);" style-hover="color:var(--accent-ink);">LinkedIn</a>
+        <a href="#" style="color:var(--muted);" style-hover="color:var(--accent-ink);">Twitter</a>
+      </div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#2f6fb0&quot;,&quot;options&quot;:[&quot;#2f6fb0&quot;,&quot;#0d7d6d&quot;,&quot;#6a5acd&quot;,&quot;#c2553f&quot;],&quot;tsType&quot;:&quot;string&quot;},&quot;defaultTheme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;showHireCta&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { page: 'blog', theme: null, menuOpen: false };
+
+  go(page) {
+    this.setState({ page, menuOpen: false });
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0 });
+  }
+
+  hexToRgb(h) {
+    const s = String(h).replace('#', '').trim();
+    const f = s.length === 3 ? s.split('').map((c) => c + c).join('') : s;
+    const n = parseInt(f, 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+
+  toHex(rgb) {
+    return '#' + rgb.map((v) => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')).join('');
+  }
+
+  mix(a, b, t) {
+    const x = this.hexToRgb(a), y = this.hexToRgb(b);
+    return this.toHex([0, 1, 2].map((i) => x[i] + (y[i] - x[i]) * t));
+  }
+
+  lum(hex) {
+    const [r, g, b] = this.hexToRgb(hex).map((v) => {
+      const c = v / 255;
+      return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  }
+
+  contrast(a, b) {
+    const l1 = this.lum(a), l2 = this.lum(b);
+    return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+  }
+
+  renderVals() {
+    const p = this.state.page;
+    const theme = this.state.theme || this.props.defaultTheme || 'light';
+    const dark = theme === 'dark';
+    const accent = this.props.accent || '#2f6fb0';
+    const bg = dark ? '#0d1317' : '#f2f5f6';
+    const inkOnAccent = dark ? '#0d1317' : '#101820';
+    // foreground follows the accent's own luminance, not the theme
+    const onAccent = this.contrast(accent, '#ffffff') >= this.contrast(accent, inkOnAccent)
+      ? '#ffffff' : inkOnAccent;
+    // ink/soft derive from the active accent so one tweak moves the whole family
+    const accentInk = dark ? this.mix(accent, '#ffffff', 0.34) : this.mix(accent, '#000000', 0.24);
+    const accentSoft = this.mix(bg, accent, dark ? 0.14 : 0.12);
+    const mk = (k) => (p === k ? 'var(--ink)' : 'var(--muted)');
+    return {
+      theme,
+      accent,
+      onAccent,
+      accentInk,
+      accentSoft,
+      isBlog: p === 'blog',
+      isPost: p === 'post',
+      isProjects: p === 'projects',
+      isAbout: p === 'about',
+      isResume: p === 'resume',
+      isContact: p === 'contact',
+      showHire: this.props.showHireCta !== false,
+      cBlog: mk('blog'),
+      cProjects: mk('projects'),
+      cAbout: mk('about'),
+      cResume: mk('resume'),
+      cContact: mk('contact'),
+      themeGlyph: theme === 'light' ? '☾' : '☀',
+      menuState: this.state.menuOpen ? 'open' : 'closed',
+      menuGlyph: this.state.menuOpen ? '✕' : '☰',
+      toggleMenu: () => this.setState((s) => ({ menuOpen: !s.menuOpen })),
+      goBlog: () => this.go('blog'),
+      goPost: () => this.go('post'),
+      goProjects: () => this.go('projects'),
+      goAbout: () => this.go('about'),
+      goResume: () => this.go('resume'),
+      goContact: () => this.go('contact'),
+      toggleTheme: () => this.setState((s) => ({
+        theme: (s.theme || this.props.defaultTheme || 'light') === 'light' ? 'dark' : 'light',
+      })),
+      printResume: () => { if (typeof window !== 'undefined') window.print(); },
+    };
+  }
+}
+</script>
+</body>
+</html>
