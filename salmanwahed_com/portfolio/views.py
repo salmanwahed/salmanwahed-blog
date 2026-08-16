@@ -61,8 +61,18 @@ class ContactView(FormView):
         context = super().get_context_data(**kwargs)
         context["active"] = "contact"
         context["contact_email"] = settings.CONTACT_EMAIL
+        context["contact_form_enabled"] = settings.CONTACT_FORM_ENABLED
         context.setdefault("sent", False)
         return context
+
+    def post(self, request, *args, **kwargs):
+        # The form is hidden while CONTACT_FORM_ENABLED is off, but the URL still
+        # accepts POST. Refuse to process it rather than run the send path
+        # against an unconfigured relay, which would only produce failed
+        # deliveries and Sentry noise from bots probing the endpoint.
+        if not settings.CONTACT_FORM_ENABLED:
+            return self.get(request, *args, **kwargs)
+        return super().post(request, *args, **kwargs)
 
     def _client_ip(self):
         # nginx sets X-Real-IP from $remote_addr, so unlike the leftmost entry

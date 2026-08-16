@@ -231,15 +231,28 @@ COMPRESS_ENABLED = True
 CONTACT_EMAIL = os.getenv("CONTACT_EMAIL", "hello@salmanwahed.com")
 CONTACT_RATE_LIMIT = int(os.getenv("CONTACT_RATE_LIMIT", 5))  # submissions per IP per hour
 
-if DEBUG:
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-else:
-    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-    EMAIL_HOST = os.getenv("EMAIL_HOST")
-    EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
-    EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-    EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-    EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "TRUE").upper() == "TRUE"
+# The contact page shows a mailto link only until outbound SMTP is configured.
+# With no working relay the form can accept a message and then fail to deliver
+# it, which loses the enquiry silently -- a plain mailto cannot. Set to TRUE to
+# bring the form back once sending is verified.
+CONTACT_FORM_ENABLED = os.getenv("CONTACT_FORM_ENABLED", "FALSE").upper() == "TRUE"
+
+# Console in development, SMTP in production. EMAIL_BACKEND overrides the
+# choice, which is the only way to exercise a real send locally: DEBUG cannot
+# simply be switched off to test mail, because that also drops 127.0.0.1 from
+# ALLOWED_HOSTS and every request starts 400ing.
+_default_backend = (
+    "django.core.mail.backends.console.EmailBackend" if DEBUG else "django.core.mail.backends.smtp.EmailBackend"
+)
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", _default_backend)
+
+# Read unconditionally. They were previously set only on the production branch,
+# so a local SMTP test silently fell back to Django's localhost:25 defaults.
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "TRUE").upper() == "TRUE"
 
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", CONTACT_EMAIL)
 

@@ -3,12 +3,13 @@
 {% block description %}Get in touch with Salman Wahed about freelance, consulting or full-time engineering work.{% endblock %}
 {% block content %}
 <div class="container">
-    <div class="contact">
+    <div class="contact{% if not contact_form_enabled %} contact--solo{% endif %}">
         <div>
             <div class="eyebrow">Contact</div>
             <h1>Let's build something.</h1>
-            <p class="lede">Open to select freelance, consulting, and full-time engineering work.
-               The fastest way to reach me is email.</p>
+            <p class="lede">Open to discussing and implementing new ideas, consultations,
+               engineering work, and full-time opportunities. The fastest way to
+               reach me is email.</p>
 
             <a class="email-link" href="mailto:{{ contact_email }}">
                 <span class="at">@</span>{{ contact_email }}
@@ -22,7 +23,13 @@
             </ul>
         </div>
 
-        {% if sent %}
+        {% if not contact_form_enabled %}
+        {% comment %}
+          Form hidden until outbound SMTP is configured -- see
+          CONTACT_FORM_ENABLED in settings. The mailto above is the live route,
+          and it reaches the same inbox.
+        {% endcomment %}
+        {% elif sent %}
         <div class="contact-form">
             <div class="form-success">
                 Thanks &mdash; your message is on its way. I'll reply to you by email.

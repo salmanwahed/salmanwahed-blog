@@ -285,6 +285,17 @@
   padding: 72px 0;
 }
 
+/* No form on the page: collapse to one column and cap the measure, so the
+   content reads as a deliberate single column rather than a two-column grid
+   with an empty half. */
+.contact--solo {
+  grid-template-columns: minmax(0, 640px);
+  justify-content: center;
+  text-align: center;
+  padding: 96px 0;
+}
+.contact--solo .social-links { justify-content: center; }
+
 .contact h1 {
   font-size: 46px;
   line-height: 1.08;
@@ -298,6 +309,10 @@
   margin: 0 0 30px;
   max-width: 46ch;
 }
+/* Must follow .contact .lede: both selectors score 0-2-0, so source order is
+   what decides. Declared earlier, the 46ch measure would still win and the
+   paragraph would sit left of the centred column instead of inside it. */
+.contact--solo .lede { max-width: 54ch; margin-left: auto; margin-right: auto; }
 
 .email-link {
   display: inline-flex;
