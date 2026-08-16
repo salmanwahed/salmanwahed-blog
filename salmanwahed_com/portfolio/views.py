@@ -31,8 +31,23 @@ class ProjectListView(ListView):
         # Split in Python rather than with two queries: the list is short and is
         # already loaded with its tags and stats prefetched.
         projects = list(context["object_list"])
-        context["professional_projects"] = [p for p in projects if p.category == Project.Category.PROFESSIONAL]
-        context["personal_projects"] = [p for p in projects if p.category == Project.Category.PERSONAL]
+
+        # Flagged work leads the page whatever its category, so a personal app
+        # worth showing off is not buried under the professional section.
+        context["featured_projects"] = [p for p in projects if p.is_featured]
+
+        # Below that, each category splits again: a project that is not flagged
+        # can still earn the wide card by having stats to show (see
+        # Project.uses_featured_card). Grid cards have nowhere to put numbers.
+        for key, category in (
+            ("professional", Project.Category.PROFESSIONAL),
+            ("personal", Project.Category.PERSONAL),
+        ):
+            rest = [p for p in projects if not p.is_featured and p.category == category]
+            context[f"{key}_projects"] = rest
+            context[f"{key}_showcase"] = [p for p in rest if p.uses_featured_card]
+            context[f"{key}_grid"] = [p for p in rest if not p.uses_featured_card]
+
         context["active"] = "projects"
         return context
 

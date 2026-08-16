@@ -67,7 +67,7 @@ class Project(models.Model):
 
     class Category(models.TextChoices):
         PROFESSIONAL = "PROFESSIONAL", _("Professional work")
-        PERSONAL = "PERSONAL", _("Open source & personal app")
+        PERSONAL = "PERSONAL", _("Personal Works")
 
     name = models.CharField(max_length=100)
     short_description = models.CharField(max_length=200, blank=True, null=True, verbose_name="Short Description")
@@ -84,17 +84,42 @@ class Project(models.Model):
         max_length=20, choices=ProjectType.choices, default=ProjectType.MOBILE_APP, verbose_name="Project Type"
     )
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.LIVE)
-    # Splits the projects page into the "Professional work" case studies and the
-    # "Open source & personal apps" grid below them.
+    # Splits the projects page into its "Professional work" and "Personal
+    # Works" sections. Within each, is_featured decides the card shape.
     category = models.CharField(max_length=20, choices=Category.choices, default=Category.PERSONAL, db_index=True)
-    role = models.CharField(max_length=100, blank=True, help_text="e.g. Senior Software Engineer")
-    period = models.CharField(max_length=50, blank=True, help_text="e.g. 2019 — Present")
+    # The two halves of the meta badge on a featured card, rendered as
+    # "primary · secondary". Deliberately unnamed for content: they hold a job
+    # title and dates on one project and a market segment and a tech stack on
+    # the next.
+    meta_primary = models.CharField(
+        max_length=100,
+        blank=True,
+        verbose_name="Meta primary",
+        help_text="First half of the badge on a featured card. e.g. FinTech, or Senior Software Engineer",
+    )
+    meta_secondary = models.CharField(
+        max_length=100,
+        blank=True,
+        verbose_name="Meta secondary",
+        help_text="Second half, shown after a divider. e.g. Backend & Android, or 2019 — Present",
+    )
     is_featured = models.BooleanField(default=False, help_text='Shows the "Featured" badge.')
     project_weight = models.SmallIntegerField(default=0)
     source_url = models.URLField(verbose_name="Source URL", blank=True, null=True)
     utm_url = models.URLField(verbose_name="UTM Url", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def uses_featured_card(self):
+        """Whether this project earns the wide card rather than a grid card.
+
+        Either it is flagged, or it has headline stats -- a project with numbers
+        worth quoting needs the room to show them, and a grid card has nowhere
+        to put them. Reads self.stats.all() rather than .exists() so the view's
+        prefetch is used instead of one query per project.
+        """
+        return self.is_featured or bool(self.stats.all())
 
     def __str__(self):
         return self.name
@@ -104,8 +129,8 @@ class ProjectStat(models.Model):
     """A single headline number on a featured project card, e.g. "8M+ / Users"."""
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="stats")
-    label = models.CharField(max_length=40, help_text="e.g. Users")
-    value = models.CharField(max_length=20, help_text="e.g. 8M+")
+    label = models.CharField(max_length=100, help_text="e.g. Users")
+    value = models.CharField(max_length=100, help_text="e.g. 8M+")
     order = models.SmallIntegerField(default=0)
 
     class Meta:

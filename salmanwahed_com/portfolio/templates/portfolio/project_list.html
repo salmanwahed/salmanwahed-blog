@@ -14,96 +14,44 @@
         <p>Products shipped with teams, and the smaller apps I maintain on my own.</p>
     </div>
 
-    {% if professional_projects %}
-    <div class="group-label">Professional work</div>
-    {% for project in professional_projects %}
-    <article class="project-featured">
-        <div class="logo">
-            {% if project.thumbnail %}
-            <img src="{{ project.thumbnail.image_url }}" alt="{{ project.name }}">
-            {% else %}
-            <div class="media-placeholder">logo</div>
-            {% endif %}
-        </div>
-        <div class="body">
-            <div class="badges">
-                {% if project.is_featured %}<span class="badge">Featured</span>{% endif %}
-                {% if project.role or project.period %}
-                <span class="badge badge--meta">
-                    {{ project.role }}{% if project.role and project.period %} &middot; {% endif %}{{ project.period }}
-                </span>
-                {% endif %}
-            </div>
-
-            <h2>
-                {% if project.utm_url %}<a href="{{ project.utm_url }}" target="_blank" rel="noopener">{{ project.name }}</a>{% else %}{{ project.name }}{% endif %}
-            </h2>
-
-            {% if project.description %}
-            <div class="desc">{{ project.description|safe }}</div>
-            {% elif project.short_description %}
-            <div class="desc">{{ project.short_description }}</div>
-            {% endif %}
-
-            {% if project.stats.all %}
-            <div class="project-stats">
-                {% for stat in project.stats.all %}
-                <div>
-                    <div class="value">{{ stat.value }}</div>
-                    <div class="label">{{ stat.label }}</div>
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
-
-            <ul class="tag-list">
-                {% for tag in project.tag.all %}
-                <li>
-                    {% if tag.external_url %}
-                    <a href="{{ tag.external_url }}" class="tag" target="_blank" rel="noopener"{% if tag.color_code %} style="--tag: {{ tag.color_code }}"{% endif %}>{{ tag.tag_name }}</a>
-                    {% else %}
-                    <span class="tag"{% if tag.color_code %} style="--tag: {{ tag.color_code }}"{% endif %}>{{ tag.tag_name }}</span>
-                    {% endif %}
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-    </article>
+    {% comment %}
+      Flagged work leads the page regardless of category. Inside each category
+      section below, a project still gets the wide card if it has stats to show
+      -- see Project.uses_featured_card -- and a grid card otherwise.
+    {% endcomment %}
+    {% if featured_projects %}
+    <div class="group-label">Featured</div>
+    {% for project in featured_projects %}
+    {% include "portfolio/_project_featured.html" %}
     {% endfor %}
     {% endif %}
 
-    {% if personal_projects %}
-    <div class="group-label">Open source &amp; personal apps</div>
+    {% if professional_projects %}
+    <div class="group-label">Professional work</div>
+    {% for project in professional_showcase %}
+    {% include "portfolio/_project_featured.html" %}
+    {% endfor %}
+    {% if professional_grid %}
     <div class="project-grid">
-        {% for project in personal_projects %}
-        <article class="project-card">
-            <div class="icon">
-                {% if project.thumbnail %}
-                <img src="{{ project.thumbnail.image_url }}" alt="{{ project.name }}">
-                {% else %}
-                <div class="media-placeholder">icon</div>
-                {% endif %}
-            </div>
-            <div class="body">
-                <h3>
-                    {% if project.utm_url %}<a href="{{ project.utm_url }}" target="_blank" rel="noopener">{{ project.name }}</a>{% else %}{{ project.name }}{% endif %}
-                </h3>
-                {% if project.short_description %}<p>{{ project.short_description }}</p>{% endif %}
-                <ul class="tag-list">
-                    {% for tag in project.tag.all %}
-                    <li>
-                        {% if tag.external_url %}
-                        <a href="{{ tag.external_url }}" class="tag" target="_blank" rel="noopener"{% if tag.color_code %} style="--tag: {{ tag.color_code }}"{% endif %}>{{ tag.tag_name }}</a>
-                        {% else %}
-                        <span class="tag"{% if tag.color_code %} style="--tag: {{ tag.color_code }}"{% endif %}>{{ tag.tag_name }}</span>
-                        {% endif %}
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </article>
+        {% for project in professional_grid %}
+        {% include "portfolio/_project_card.html" %}
         {% endfor %}
     </div>
+    {% endif %}
+    {% endif %}
+
+    {% if personal_projects %}
+    <div class="group-label">Personal Works</div>
+    {% for project in personal_showcase %}
+    {% include "portfolio/_project_featured.html" %}
+    {% endfor %}
+    {% if personal_grid %}
+    <div class="project-grid">
+        {% for project in personal_grid %}
+        {% include "portfolio/_project_card.html" %}
+        {% endfor %}
+    </div>
+    {% endif %}
     {% endif %}
 </div>
 {% endblock %}

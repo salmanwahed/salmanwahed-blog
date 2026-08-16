@@ -1,0 +1,58 @@
+{% comment %}
+  The wide card, used for flagged projects and for any project with stats to
+  show (Project.uses_featured_card). The Featured badge is tied to the flag
+  itself, so a card shown for its numbers is not mislabelled.
+  Expects `project` in the context.
+{% endcomment %}
+<article class="project-featured">
+    <div class="logo">
+        {% if project.thumbnail %}
+        <img src="{{ project.thumbnail.image_url }}" alt="{{ project.name }}">
+        {% else %}
+        <div class="media-placeholder">logo</div>
+        {% endif %}
+    </div>
+    <div class="body">
+        <div class="badges">
+            {% if project.is_featured %}<span class="badge">Featured</span>{% endif %}
+            {% if project.meta_primary or project.meta_secondary %}
+            <span class="badge badge--meta">
+                {{ project.meta_primary }}{% if project.meta_primary and project.meta_secondary %} &middot; {% endif %}{{ project.meta_secondary }}
+            </span>
+            {% endif %}
+        </div>
+
+        <h2>
+            {% if project.utm_url %}<a href="{{ project.utm_url }}" target="_blank" rel="noopener">{{ project.name }}</a>{% else %}{{ project.name }}{% endif %}
+        </h2>
+
+        {% if project.description %}
+        <div class="desc">{{ project.description|safe }}</div>
+        {% elif project.short_description %}
+        <div class="desc">{{ project.short_description }}</div>
+        {% endif %}
+
+        {% if project.stats.all %}
+        <div class="project-stats">
+            {% for stat in project.stats.all %}
+            <div>
+                <div class="value">{{ stat.value }}</div>
+                <div class="label">{{ stat.label }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <ul class="tag-list">
+            {% for tag in project.tag.all %}
+            <li>
+                {% if tag.external_url %}
+                <a href="{{ tag.external_url }}" class="tag" target="_blank" rel="noopener"{% if tag.color_code %} style="--tag: {{ tag.color_code }}"{% endif %}>{{ tag.tag_name }}</a>
+                {% else %}
+                <span class="tag"{% if tag.color_code %} style="--tag: {{ tag.color_code }}"{% endif %}>{{ tag.tag_name }}</span>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</article>

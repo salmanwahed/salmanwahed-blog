@@ -1,5 +1,6 @@
 from smtplib import SMTPException
 from unittest import mock
+from uuid import uuid4
 
 from django.core import mail
 from django.core.cache import cache
@@ -12,6 +13,29 @@ from portfolio.forms import ContactForm
 from portfolio.models import AppPrivacyPolicy, Project, ProjectImage, ProjectStat, Tag
 from portfolio.views import ContactView, ProjectListView
 
+# ProjectListView and the policy/resume views are wrapped in cache_page. Any
+# real backend lets a page cached by one test class be served to the next, which
+# made these tests pass alone and fail in a full run. DummyCache stores nothing,
+# so every request renders from the database and the assertions describe the
+# template rather than whatever ran first.
+NO_PAGE_CACHE = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
+
+
+def get_projects_page(client):
+    """GET /portfolio/ with a URL no other test can share.
+
+    ProjectListView is wrapped in cache_page, and overriding CACHES alone did
+    not reliably stop a page cached by one test class being served to the next
+    -- these tests passed in isolation and failed in a full run, showing objects
+    that were not in the database. cache_page keys on the full path including
+    the query string, so a unique one per request cannot collide. The view
+    ignores the parameter.
+    """
+    return client.get(f"{reverse('portfolio:portfolio_view')}?t={uuid4().hex}")
+
+
+# The contact throttle counts submissions in the cache, so those tests need a
+# backend that actually retains values.
 LOCMEM_CACHE = {
     "default": {
         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
@@ -28,15 +52,15 @@ VALID_SUBMISSION = {
 }
 
 
-@override_settings(CACHES=LOCMEM_CACHE)
+@override_settings(CACHES=NO_PAGE_CACHE)
 class ProjectListViewTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.professional = Project.objects.create(
             name="TallyKhata",
             category=Project.Category.PROFESSIONAL,
-            role="Senior Software Engineer",
-            period="2019 — Present",
+            meta_primary="Senior Software Engineer",
+            meta_secondary="2019 — Present",
             is_featured=True,
             description="Digital bookkeeping for small businesses.",
             project_weight=10,
@@ -51,29 +75,30 @@ class ProjectListViewTests(TestCase):
     def setUp(self):
         cache.clear()
 
-    def test_projects_are_split_by_category(self):
-        """Professional work renders as a featured card, personal work as a grid card.
+    def test_featured_work_leads_and_the_rest_is_filed_by_category(self):
+        """Asserted against rendered HTML rather than response.context.
 
-        Asserted against the rendered HTML rather than response.context: this
-        view is wrapped in cache_page, and the test client's context capture is
-        not dependable through that decorator once a full suite has run.
+        The view is wrapped in cache_page, and the test client's context capture
+        is not dependable through that decorator once a full suite has run.
         """
-        response = self.client.get(reverse("portfolio:portfolio_view"))
+        response = get_projects_page(self.client)
         html = response.content.decode()
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Professional work", html)
-        self.assertIn("Open source &amp; personal apps", html)
+        self.assertIn(">Featured<", html)
+        self.assertIn(">Personal Works<", html)
 
-        featured = html.split('class="project-grid"')[0]
-        grid = html.split('class="project-grid"')[1]
+        featured_band = html.split('class="project-grid"')[0]
+        grids = html.split('class="project-grid"')[1]
 
-        self.assertIn("TallyKhata", featured)
-        self.assertNotIn("TallyKhata", grid)
-        self.assertIn("SadaSidhe", grid)
-        self.assertNotIn("SadaSidhe", featured)
+        # TallyKhata is featured, so it leads the page rather than sitting in
+        # the professional section.
+        self.assertIn("TallyKhata", featured_band)
+        self.assertNotIn("TallyKhata", grids)
+        self.assertIn("SadaSidhe", grids)
+        self.assertNotIn("SadaSidhe", featured_band)
 
-    def test_context_exposes_both_project_groups(self):
+    def test_context_groups_featured_separately_from_the_categories(self):
         """The split itself, checked on the view rather than through the client."""
         view = ProjectListView()
         view.request = RequestFactory().get("/portfolio/")
@@ -81,12 +106,13 @@ class ProjectListViewTests(TestCase):
 
         context = view.get_context_data()
 
-        self.assertEqual(list(context["professional_projects"]), [self.professional])
+        self.assertEqual(list(context["featured_projects"]), [self.professional])
+        self.assertEqual(list(context["professional_projects"]), [], "featured work is not listed twice")
         self.assertEqual(list(context["personal_projects"]), [self.personal])
         self.assertEqual(context["active"], "projects")
 
     def test_featured_card_shows_badge_role_and_stats(self):
-        response = self.client.get(reverse("portfolio:portfolio_view"))
+        response = get_projects_page(self.client)
 
         self.assertContains(response, "Featured")
         self.assertContains(response, "Senior Software Engineer")
@@ -94,7 +120,7 @@ class ProjectListViewTests(TestCase):
         self.assertContains(response, "Users")
 
     def test_personal_project_appears_in_grid(self):
-        response = self.client.get(reverse("portfolio:portfolio_view"))
+        response = get_projects_page(self.client)
 
         self.assertContains(response, "SadaSidhe")
         self.assertContains(response, "A simple notes app.")
@@ -237,7 +263,7 @@ class ContactFormDisabledTests(TestCase):
         self.assertFalse(response.context["sent"])
 
 
-@override_settings(CACHES=LOCMEM_CACHE)
+@override_settings(CACHES=NO_PAGE_CACHE)
 class StaticPageTests(TestCase):
     def setUp(self):
         cache.clear()
@@ -325,7 +351,7 @@ class PortfolioModelStringTests(TestCase):
             AppPrivacyPolicy.objects.create(name="Another", slug="rate-sage", body="Body")
 
 
-@override_settings(CACHES=LOCMEM_CACHE)
+@override_settings(CACHES=NO_PAGE_CACHE)
 class AppPrivacyPolicyViewTests(TestCase):
     def setUp(self):
         cache.clear()
@@ -409,3 +435,139 @@ class ClientIpTests(TestCase):
         second = self._view_for(HTTP_X_REAL_IP="203.0.113.8")._throttle_key()
 
         self.assertNotEqual(first, second)
+
+
+@override_settings(CACHES=NO_PAGE_CACHE)
+class FeaturedRenderingTests(TestCase):
+    """is_featured decides the card shape, independently of category."""
+
+    def setUp(self):
+        cache.clear()
+
+    def _html(self):
+        return get_projects_page(self.client).content.decode()
+
+    def test_featured_personal_project_gets_the_wide_card(self):
+        Project.objects.create(
+            name="SadaSidhe",
+            category=Project.Category.PERSONAL,
+            is_featured=True,
+            description="A personal app worth showing off.",
+        )
+
+        html = self._html()
+
+        featured_block = html.split('class="project-grid"')[0]
+        self.assertIn("project-featured", html)
+        self.assertIn("SadaSidhe", featured_block)
+
+    def test_unfeatured_professional_project_goes_in_the_grid(self):
+        Project.objects.create(
+            name="Quiet Contract",
+            category=Project.Category.PROFESSIONAL,
+            is_featured=False,
+            short_description="Not headline work.",
+        )
+
+        html = self._html()
+
+        self.assertIn("project-card", html)
+        self.assertIn("Quiet Contract", html.split('class="project-grid"')[1])
+
+    def test_featured_personal_work_outranks_unfeatured_professional_work(self):
+        """The whole point of the featured band: prominence beats category."""
+        Project.objects.create(
+            name="Personal Star",
+            category=Project.Category.PERSONAL,
+            is_featured=True,
+        )
+        Project.objects.create(
+            name="Quiet Contract",
+            category=Project.Category.PROFESSIONAL,
+            is_featured=False,
+        )
+
+        html = self._html()
+
+        self.assertLess(
+            html.index("Personal Star"),
+            html.index("Quiet Contract"),
+            "a featured personal project must appear above unfeatured professional work",
+        )
+
+    def test_featured_projects_of_both_categories_share_the_band(self):
+        Project.objects.create(name="Personal Star", category=Project.Category.PERSONAL, is_featured=True)
+        Project.objects.create(name="Work Star", category=Project.Category.PROFESSIONAL, is_featured=True)
+
+        html = self._html()
+        band = html.split('<div class="group-label">')[1]
+
+        self.assertTrue(band.startswith("Featured<"))
+        self.assertIn("Personal Star", band)
+        self.assertIn("Work Star", band)
+
+    def test_featured_badge_shows_on_the_card(self):
+        Project.objects.create(name="Badged", category=Project.Category.PERSONAL, is_featured=True)
+
+        self.assertIn("Featured", self._html())
+
+
+@override_settings(CACHES=NO_PAGE_CACHE)
+class StatsEarnTheWideCardTests(TestCase):
+    """Stats are the second route to the wide card: a grid card cannot show them."""
+
+    def setUp(self):
+        cache.clear()
+
+    def _html(self):
+        return get_projects_page(self.client).content.decode()
+
+    def test_unflagged_project_with_stats_gets_the_wide_card(self):
+        project = Project.objects.create(
+            name="Quiet Contract",
+            category=Project.Category.PROFESSIONAL,
+            is_featured=False,
+            description="No badge, but numbers worth showing.",
+        )
+        ProjectStat.objects.create(project=project, label="Users", value="8M+")
+
+        html = self._html()
+
+        self.assertIn("project-featured", html)
+        self.assertIn("8M+", html, "the stats are the reason for the wide card, so they must render")
+        self.assertNotIn("project-card", html, "it should not also appear as a grid card")
+
+    def test_the_card_is_not_labelled_featured_without_the_flag(self):
+        """A card shown for its numbers must not claim to be featured."""
+        project = Project.objects.create(name="Quiet Contract", is_featured=False)
+        ProjectStat.objects.create(project=project, label="Users", value="8M+")
+
+        self.assertNotIn(">Featured<", self._html())
+
+    def test_unflagged_project_without_stats_stays_in_the_grid(self):
+        Project.objects.create(name="Small App", category=Project.Category.PERSONAL, is_featured=False)
+
+        html = self._html()
+
+        self.assertIn("project-card", html)
+        self.assertIn("Small App", html.split('class="project-grid"')[1])
+
+    def test_stats_do_not_promote_into_the_featured_band(self):
+        """Only the flag leads the page; stats earn the card, not the position."""
+        with_stats = Project.objects.create(name="Statty", category=Project.Category.PERSONAL)
+        ProjectStat.objects.create(project=with_stats, label="Users", value="8M+")
+        Project.objects.create(name="Flagged", category=Project.Category.PERSONAL, is_featured=True)
+
+        html = self._html()
+
+        self.assertLess(html.index("Flagged"), html.index("Statty"))
+
+    def test_uses_featured_card_property(self):
+        plain = Project.objects.create(name="Plain")
+        flagged = Project.objects.create(name="Flagged", is_featured=True)
+        statty = Project.objects.create(name="Statty")
+        ProjectStat.objects.create(project=statty, label="Users", value="8M+")
+
+        self.assertFalse(plain.uses_featured_card)
+        self.assertTrue(flagged.uses_featured_card)
+        self.assertTrue(statty.uses_featured_card)

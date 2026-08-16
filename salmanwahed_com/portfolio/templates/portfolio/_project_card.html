@@ -1,0 +1,30 @@
+{% comment %}
+  The compact grid card, used for everything not marked featured.
+  Expects `project` in the context.
+{% endcomment %}
+<article class="project-card">
+    <div class="icon">
+        {% if project.thumbnail %}
+        <img src="{{ project.thumbnail.image_url }}" alt="{{ project.name }}">
+        {% else %}
+        <div class="media-placeholder">icon</div>
+        {% endif %}
+    </div>
+    <div class="body">
+        <h3>
+            {% if project.utm_url %}<a href="{{ project.utm_url }}" target="_blank" rel="noopener">{{ project.name }}</a>{% else %}{{ project.name }}{% endif %}
+        </h3>
+        {% if project.short_description %}<p>{{ project.short_description }}</p>{% endif %}
+        <ul class="tag-list">
+            {% for tag in project.tag.all %}
+            <li>
+                {% if tag.external_url %}
+                <a href="{{ tag.external_url }}" class="tag" target="_blank" rel="noopener"{% if tag.color_code %} style="--tag: {{ tag.color_code }}"{% endif %}>{{ tag.tag_name }}</a>
+                {% else %}
+                <span class="tag"{% if tag.color_code %} style="--tag: {{ tag.color_code }}"{% endif %}>{{ tag.tag_name }}</span>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</article>
