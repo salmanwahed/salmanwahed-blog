@@ -27,7 +27,13 @@ python manage.py migrate            # Apply migrations
 python manage.py makemigrations     # Create migrations after model changes
 python manage.py collectstatic      # Collect static files for production
 python manage.py shell_plus         # Interactive shell (ipython)
+python manage.py clear_cache        # Flush the page cache (--alias X, --all)
 ```
+
+`clear_cache` is the scriptable counterpart to the `/clear-cache/` URL, which
+needs a logged-in session. Useful after publishing, since the post list and
+detail views are cached for 15 minutes and the projects page for 45. It exits
+non-zero with a readable message if the backend is unreachable.
 
 Run tests with Docker:
 

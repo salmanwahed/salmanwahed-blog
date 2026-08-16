@@ -1,10 +1,14 @@
 import shutil
 import tempfile
+from io import StringIO
 from pathlib import Path
+from unittest import mock
 
 from django.contrib.admin.sites import AdminSite
 from django.contrib.auth.models import User
-from django.core.cache import cache
+from django.core.cache import cache, caches
+from django.core.management import call_command
+from django.core.management.base import CommandError
 from django.test import RequestFactory, TestCase, override_settings
 from django.urls import reverse
 
@@ -401,3 +405,57 @@ class BlogPostAdminTests(TestCase):
         post = self._save(BlogPost(title="Unattributed", body="x"))
 
         self.assertEqual(post.author, self.user)
+
+
+@override_settings(CACHES=LOCMEM_CACHE)
+class ClearCacheCommandTests(TestCase):
+    """The command exists so a deploy script can flush without a logged-in session."""
+
+    def test_it_clears_the_default_cache(self):
+        cache.set("stale", "value")
+        out = StringIO()
+
+        call_command("clear_cache", stdout=out)
+
+        self.assertIsNone(cache.get("stale"))
+        self.assertIn("default", out.getvalue())
+
+    def test_it_names_the_backend_it_cleared(self):
+        out = StringIO()
+
+        call_command("clear_cache", stdout=out)
+
+        self.assertIn("LocMemCache", out.getvalue())
+
+    def test_unknown_alias_is_a_clean_error(self):
+        """A typo should fail the command, not raise KeyError from deep inside."""
+        with self.assertRaises(CommandError) as ctx:
+            call_command("clear_cache", alias="nope")
+
+        self.assertIn("nope", str(ctx.exception))
+        self.assertIn("default", str(ctx.exception), "the message should list what is configured")
+
+    @override_settings(
+        CACHES={
+            "default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache", "LOCATION": "cmd-a"},
+            "secondary": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache", "LOCATION": "cmd-b"},
+        }
+    )
+    def test_all_flag_clears_every_alias(self):
+        caches["default"].set("a", 1)
+        caches["secondary"].set("b", 2)
+        out = StringIO()
+
+        call_command("clear_cache", all=True, stdout=out)
+
+        self.assertIsNone(caches["default"].get("a"))
+        self.assertIsNone(caches["secondary"].get("b"))
+        self.assertIn("secondary", out.getvalue())
+
+    def test_a_failing_backend_is_reported_as_a_command_error(self):
+        """A dead Redis must exit non-zero with a readable message, not a traceback."""
+        with mock.patch.object(type(caches["default"]), "clear", side_effect=RuntimeError("connection refused")):
+            with self.assertRaises(CommandError) as ctx:
+                call_command("clear_cache")
+
+        self.assertIn("connection refused", str(ctx.exception))
