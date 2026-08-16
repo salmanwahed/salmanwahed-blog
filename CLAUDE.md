@@ -35,6 +35,24 @@ Run tests with Docker:
 docker compose run --rm web python salmanwahed_com/manage.py test blog portfolio
 ```
 
+## Test Coverage
+
+**coverage.py** is configured in `pyproject.toml` (`[tool.coverage.*]`), measuring
+`blog` and `portfolio` with branch coverage on. Migrations, `apps.py` and the test
+modules themselves are excluded; `fail_under = 80` makes the report exit non-zero
+below that.
+
+Run from the **repo root** — coverage only reads `pyproject.toml` from the current
+directory, and `PYTHONPATH` is what lets `manage.py` resolve its imports from there:
+
+```bash
+PYTHONPATH=salmanwahed_com coverage run salmanwahed_com/manage.py test blog portfolio && coverage report
+```
+
+`pip install -r requirements-dev.txt` installs it. The `[toml]` extra matters: on
+Python 3.8 there is no stdlib `tomllib`, and without `tomli` coverage silently
+ignores its configuration instead of erroring.
+
 ## Linting and Formatting
 
 **ruff** is configured in `pyproject.toml` (Python 3.8 target, line length 119).

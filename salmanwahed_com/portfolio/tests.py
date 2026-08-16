@@ -1,11 +1,16 @@
+from smtplib import SMTPException
+from unittest import mock
+
 from django.core import mail
 from django.core.cache import cache
+from django.db import transaction
+from django.db.utils import IntegrityError
 from django.test import RequestFactory, TestCase, override_settings
 from django.urls import reverse
 
 from portfolio.forms import ContactForm
-from portfolio.models import Project, ProjectStat
-from portfolio.views import ProjectListView
+from portfolio.models import AppPrivacyPolicy, Project, ProjectImage, ProjectStat, Tag
+from portfolio.views import ContactView, ProjectListView
 
 LOCMEM_CACHE = {
     "default": {
@@ -126,8 +131,19 @@ class ContactFormTests(TestCase):
         self.assertIn("email", form.errors)
 
 
-@override_settings(CACHES=LOCMEM_CACHE, CONTACT_EMAIL="hello@example.com", CONTACT_RATE_LIMIT=2)
+@override_settings(
+    CACHES=LOCMEM_CACHE,
+    CONTACT_EMAIL="hello@example.com",
+    CONTACT_RATE_LIMIT=2,
+    CONTACT_FORM_ENABLED=True,
+)
 class ContactViewTests(TestCase):
+    """The form path, exercised with CONTACT_FORM_ENABLED on.
+
+    The flag is off in production for now, but these still guard the behaviour
+    so turning it back on is a one-line change rather than a rewrite.
+    """
+
     def setUp(self):
         cache.clear()
         mail.outbox = []
@@ -192,6 +208,35 @@ class ContactViewTests(TestCase):
         self.assertIn("no-cache", response["Cache-Control"])
 
 
+@override_settings(CACHES=LOCMEM_CACHE, CONTACT_EMAIL="hello@example.com", CONTACT_FORM_ENABLED=False)
+class ContactFormDisabledTests(TestCase):
+    """Current production shape: mailto only, no form."""
+
+    def setUp(self):
+        cache.clear()
+        mail.outbox = []
+
+    def test_form_is_not_rendered(self):
+        response = self.client.get(reverse("portfolio:contact"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "contact-form")
+        self.assertNotContains(response, "Send message")
+
+    def test_email_address_is_still_offered(self):
+        response = self.client.get(reverse("portfolio:contact"))
+
+        self.assertContains(response, "mailto:hello@example.com")
+
+    def test_post_is_ignored_and_sends_nothing(self):
+        """Bots probing the URL must not reach the send path."""
+        response = self.client.post(reverse("portfolio:contact"), VALID_SUBMISSION)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 0)
+        self.assertFalse(response.context["sent"])
+
+
 @override_settings(CACHES=LOCMEM_CACHE)
 class StaticPageTests(TestCase):
     def setUp(self):
@@ -211,3 +256,156 @@ class StaticPageTests(TestCase):
 
     def test_existing_portfolio_url_is_unchanged(self):
         self.assertEqual(reverse("portfolio:portfolio_view"), "/portfolio/")
+
+
+@override_settings(CDN_URL="https://cdn.example.com/", USE_CDN=False)
+class ProjectImageTests(TestCase):
+    def test_name_defaults_to_the_uploaded_filename(self):
+        image = ProjectImage.objects.create(orig_image="portfolio/logo.png")
+
+        self.assertEqual(image.name, "logo.png")
+
+    def test_image_url_serves_locally_when_cdn_is_off(self):
+        image = ProjectImage.objects.create(orig_image="portfolio/logo.png")
+
+        self.assertEqual(image.image_url, "/upload/portfolio/logo.png")
+
+    @override_settings(USE_CDN=True)
+    def test_image_url_serves_from_cdn_when_enabled(self):
+        image = ProjectImage.objects.create(orig_image="portfolio/logo.png")
+
+        self.assertEqual(image.image_url, "https://cdn.example.com/upload/portfolio/logo.png")
+
+    @override_settings(USE_CDN=True)
+    def test_stored_compressed_url_is_reused_not_recomputed(self):
+        """Once stored, the CDN URL is returned as-is even if CDN_URL changes."""
+        image = ProjectImage.objects.create(
+            orig_image="portfolio/logo.png",
+            compressed_image="https://old-cdn.example.com/logo.png",
+        )
+
+        self.assertEqual(image.image_url, "https://old-cdn.example.com/logo.png")
+
+    def test_admin_preview_renders_an_img_tag(self):
+        image = ProjectImage.objects.create(orig_image="portfolio/logo.png")
+
+        self.assertIn('<img src="/upload/portfolio/logo.png"', image.image_preview())
+
+    def test_str_includes_name_and_pk(self):
+        image = ProjectImage.objects.create(orig_image="portfolio/logo.png")
+
+        self.assertEqual(str(image), f"logo.png({image.pk})")
+
+
+class PortfolioModelStringTests(TestCase):
+    def test_tag_str_is_the_tag_name(self):
+        self.assertEqual(str(Tag.objects.create(tag_name="kotlin")), "kotlin")
+
+    def test_tag_colour_swatch_uses_the_colour_code(self):
+        tag = Tag.objects.create(tag_name="kotlin", color_code="#7f52ff")
+
+        self.assertIn("background-color:#7f52ff", tag.tag_color())
+
+    def test_project_str_is_the_name(self):
+        self.assertEqual(str(Project.objects.create(name="Rate-Sage")), "Rate-Sage")
+
+    def test_project_stat_str_pairs_value_and_label(self):
+        project = Project.objects.create(name="Rate-Sage")
+        stat = ProjectStat.objects.create(project=project, label="Users", value="8M+")
+
+        self.assertEqual(str(stat), "8M+ Users")
+
+    def test_privacy_policy_slug_must_be_unique(self):
+        """The slug is the public URL key, so a duplicate must not be storable."""
+        AppPrivacyPolicy.objects.create(name="Rate-Sage Policy", slug="rate-sage", body="Body")
+
+        # atomic() keeps the failed INSERT from poisoning the test's outer
+        # transaction, which would break teardown.
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            AppPrivacyPolicy.objects.create(name="Another", slug="rate-sage", body="Body")
+
+
+@override_settings(CACHES=LOCMEM_CACHE)
+class AppPrivacyPolicyViewTests(TestCase):
+    def setUp(self):
+        cache.clear()
+
+    def test_policy_is_served_by_slug(self):
+        AppPrivacyPolicy.objects.create(name="Rate-Sage Policy", slug="rate-sage", body="We store nothing.")
+
+        response = self.client.get(reverse("portfolio:app_privacy_policy", args=["rate-sage"]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Rate-Sage Policy")
+
+    def test_unknown_slug_is_404(self):
+        response = self.client.get(reverse("portfolio:app_privacy_policy", args=["does-not-exist"]))
+
+        self.assertEqual(response.status_code, 404)
+
+
+@override_settings(
+    CACHES=LOCMEM_CACHE,
+    CONTACT_EMAIL="hello@example.com",
+    CONTACT_RATE_LIMIT=5,
+    CONTACT_FORM_ENABLED=True,
+)
+class ContactSendFailureTests(TestCase):
+    """An unreachable relay must not look like a delivered message."""
+
+    def setUp(self):
+        cache.clear()
+        mail.outbox = []
+
+    def test_smtp_failure_is_reported_and_not_counted_as_sent(self):
+        with mock.patch(
+            "portfolio.views.EmailMessage.send",
+            side_effect=SMTPException("relay unreachable"),
+        ):
+            response = self.client.post(reverse("portfolio:contact"), VALID_SUBMISSION)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.context["sent"])
+        self.assertContains(response, "could not be sent")
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_failed_send_does_not_consume_the_throttle_allowance(self):
+        """A broken relay must not lock the visitor out of retrying later."""
+        with mock.patch(
+            "portfolio.views.EmailMessage.send",
+            side_effect=SMTPException("relay unreachable"),
+        ):
+            self.client.post(reverse("portfolio:contact"), VALID_SUBMISSION)
+
+        self.client.post(reverse("portfolio:contact"), VALID_SUBMISSION)
+
+        self.assertEqual(len(mail.outbox), 1, "the retry should still have been allowed through")
+
+
+@override_settings(CACHES=LOCMEM_CACHE, CONTACT_FORM_ENABLED=True)
+class ClientIpTests(TestCase):
+    """The throttle is per-IP, so it must read the header nginx actually sets."""
+
+    def setUp(self):
+        cache.clear()
+
+    def _view_for(self, **headers):
+        view = ContactView()
+        view.request = RequestFactory().post(reverse("portfolio:contact"), **headers)
+        return view
+
+    def test_x_real_ip_is_preferred(self):
+        view = self._view_for(HTTP_X_REAL_IP="203.0.113.7", REMOTE_ADDR="127.0.0.1")
+
+        self.assertEqual(view._client_ip(), "203.0.113.7")
+
+    def test_remote_addr_is_the_fallback(self):
+        view = self._view_for(REMOTE_ADDR="198.51.100.4")
+
+        self.assertEqual(view._client_ip(), "198.51.100.4")
+
+    def test_throttle_key_is_scoped_per_ip(self):
+        first = self._view_for(HTTP_X_REAL_IP="203.0.113.7")._throttle_key()
+        second = self._view_for(HTTP_X_REAL_IP="203.0.113.8")._throttle_key()
+
+        self.assertNotEqual(first, second)

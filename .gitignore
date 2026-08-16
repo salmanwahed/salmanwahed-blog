@@ -13,3 +13,9 @@ credentials.txt
 /static/
 text_files
 .venv/
+# Personal Claude Code permission settings
+.claude/settings.local.json
+
+# Coverage output
+.coverage
+htmlcov/
