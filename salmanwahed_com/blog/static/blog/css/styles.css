@@ -161,6 +161,10 @@
   font-size: 19px;
   line-height: 1.75;
   color: var(--ink);
+  /* Newsreader is loaded as a variable font over 400-600. Long-form copy was
+     already the darkest ink on the page, so the washed-out look came from the
+     stroke, not the colour -- 450 thickens it without reading as semibold. */
+  font-weight: 450;
   /* Contains anything wider than the 760px column -- a big table, a long
      code line -- so it scrolls here instead of forcing the whole page
      sideways. `auto`, not `hidden`: nothing gets silently clipped. */

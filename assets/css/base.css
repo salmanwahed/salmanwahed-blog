@@ -63,8 +63,11 @@
   --bg:          #f2f5f6;
   --bg-elev:     #ffffff;
   --ink:         #131c24;
-  --muted:       #566673;
-  --faint:       #63707c;
+  /* Contrast against --bg: muted 7.1:1, faint 6.2:1. The earlier pair sat at
+     5.4:1 and 4.6:1 -- technically past AA, but secondary copy set in a light
+     serif read washed out on screen, so both were pulled down. */
+  --muted:       #46545f;
+  --faint:       #4f5d69;
   --border:      #dde4e8;
 
   --accent:      #2f6fb0;
@@ -95,7 +98,9 @@
   --bg-elev:     #151e24;
   --ink:         #e6eef2;
   --muted:       #94a4b1;
-  --faint:       #7b8b98;
+  /* Raised from #7b8b98 (5.3:1) so faint text carries roughly the same weight
+     in both themes -- see the light palette above. */
+  --faint:       #8b9aa7;
   --border:      #232f38;
 
   --accent:      #2f6fb0;
