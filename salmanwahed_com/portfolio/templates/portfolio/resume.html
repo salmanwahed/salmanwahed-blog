@@ -1,66 +1,157 @@
 {% extends "base.html" %}
 {% block title %}Salman Wahed | Resume{% endblock %}
-{% block description %}Resume of Salman Wahed — senior software engineer, backend and Android.{% endblock %}
+{% block description %}Resume of Salman Wahed — software engineer working on backend services, AI agents and full-stack applications.{% endblock %}
 {% block content %}
 {% comment %}
   Content is written into the template on purpose: it changes once or twice a
   year, and a model plus admin for it would be more moving parts than the page
   is worth. The @media print block in portfolio/styles.css is what makes the
   Download PDF button work.
+
+  The phone number and personal gmail address on the PDF resume are left off
+  deliberately -- this page is public, and hello@salmanwahed.com already routes
+  to the same inbox.
 {% endcomment %}
 <div class="container">
     <div class="resume">
         <header class="resume__header">
             <div>
                 <h1>Salman M Wahed</h1>
-                <div class="role">Senior Software Engineer &middot; Backend &amp; Android</div>
-                <div class="contact-line">hello@salmanwahed.com &middot; Bangladesh</div>
+                <div class="role">Software Engineer &middot; Backend, AI Agents &amp; Full-Stack</div>
+                <div class="contact-line">hello@salmanwahed.com &middot; Fredericton, NB, Canada</div>
             </div>
             <button type="button" class="btn btn--primary" onclick="window.print()">&darr; Download PDF</button>
         </header>
 
         <section class="resume__section">
             <div class="label">Summary</div>
-            <p>Engineer with 11+ years building backend services and native Android apps, including
-               FinTech products serving millions of users. Strong focus on scalable architecture,
-               performance, and reliable delivery.</p>
+            <p>Software engineer with 12+ years designing and building scalable backend services,
+               full-stack web applications and mobile apps. Currently building agentic AI
+               applications and LLM-backed services in the healthcare and life sciences domain.
+               Works mainly in Python and Java, with a bias toward systems that stay maintainable
+               long after launch.</p>
         </section>
 
         <section class="resume__section">
             <div class="label">Experience</div>
 
             <div class="resume__job">
-                <div class="period">2019 &mdash; Present</div>
+                <div class="period">Apr 2026 &mdash; Present</div>
                 <div class="detail">
-                    <h3>Senior Software Engineer &mdash; TallyKhata (FinTech)</h3>
-                    <div class="company">Digital bookkeeping &amp; financial services</div>
+                    <h3>Software Engineer &mdash; Quantiphi</h3>
+                    <div class="company">Fredericton, New Brunswick, Canada</div>
                     <ul>
-                        <li>Built and scaled backend services for a product used by millions of small businesses.</li>
-                        <li>Led performance and reliability initiatives across the Android client and APIs.</li>
-                        <li>Drove clean-architecture practices and mentored engineers on the team.</li>
+                        <li>Build agentic applications and multi-step AI agent workflows for healthcare and life sciences clients.</li>
+                        <li>Integrate LLMs into production services and design the APIs around them.</li>
+                        <li>Develop backend services in Spring Boot.</li>
                     </ul>
                 </div>
             </div>
 
             <div class="resume__job">
-                <div class="period">2016 &mdash; 2019</div>
+                <div class="period">Jul 2021 &mdash; Aug 2025</div>
                 <div class="detail">
-                    <h3>Software Engineer &mdash; [Company]</h3>
-                    <div class="company">Backend &amp; Android development</div>
+                    <h3>Lead Software Engineer &mdash; TallyKhata</h3>
+                    <div class="company">Dhaka, Bangladesh &middot; FinTech</div>
                     <ul>
-                        <li>Add a line about your role, the systems you owned, and the impact you had.</li>
-                        <li>Edit these bullets &mdash; they're placeholders for your real history.</li>
+                        <li>Led backend development of a FinTech platform serving 5M+ users.</li>
+                        <li>Built Spring Boot and Django microservices for payment, ledger and reporting workflows.</li>
+                        <li>Implemented event-driven workflows and scheduled background jobs.</li>
+                        <li>Worked closely with product managers to align technical milestones with business goals.</li>
                     </ul>
                 </div>
             </div>
 
             <div class="resume__job">
-                <div class="period">2014 &mdash; 2016</div>
+                <div class="period">Jul 2017 &mdash; Jun 2021</div>
                 <div class="detail">
-                    <h3>Junior Software Engineer &mdash; [Company]</h3>
-                    <div class="company">Where it started</div>
+                    <h3>Software Engineer &mdash; TigerIT Bangladesh Ltd</h3>
+                    <div class="company">Dhaka, Bangladesh</div>
                     <ul>
-                        <li>Describe early projects and the foundations you built here.</li>
+                        <li>Developed Java backend and Android modules for national-scale ID verification systems.</li>
+                        <li>Built REST services with Spring Boot and Flask, keeping older clients working across releases.</li>
+                        <li>Designed and optimised database schemas and stored procedures.</li>
+                        <li>Shipped a native Android app for a government traffic case management system.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="resume__job">
+                <div class="period">Feb 2013 &mdash; Jun 2017</div>
+                <div class="detail">
+                    <h3>Software Engineer &mdash; Dimik Computing</h3>
+                    <div class="company">Dhaka, Bangladesh &middot; Where it started</div>
+                    <ul>
+                        <li>Built scalable ETL pipelines processing multi-source datasets.</li>
+                        <li>Developed Flask REST services deployed on AWS infrastructure.</li>
+                        <li>Automated data ingestion with web crawlers and transformation jobs.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="resume__section">
+            <div class="label">Skills</div>
+            {% comment %}
+              Grouped rather than one long pill list: unlabelled, thirty-odd
+              tags read as a keyword dump and say nothing about depth.
+            {% endcomment %}
+            <div class="skill-groups">
+                <div class="skill-group">
+                    <div class="name">Backend &amp; APIs</div>
+                    <ul class="skill-list">
+                        <li class="skill">Python</li>
+                        <li class="skill">Django</li>
+                        <li class="skill">FastAPI</li>
+                        <li class="skill">Flask</li>
+                        <li class="skill">Java</li>
+                        <li class="skill">Spring Boot</li>
+                        <li class="skill">REST APIs</li>
+                        <li class="skill">Microservices</li>
+                    </ul>
+                </div>
+                <div class="skill-group">
+                    <div class="name">AI &amp; Agents</div>
+                    <ul class="skill-list">
+                        <li class="skill">LangChain</li>
+                        <li class="skill">LangGraph</li>
+                        <li class="skill">RAG</li>
+                        <li class="skill">LLM API integration</li>
+                        <li class="skill">Agentic workflows</li>
+                    </ul>
+                </div>
+                <div class="skill-group">
+                    <div class="name">Web</div>
+                    <ul class="skill-list">
+                        <li class="skill">React</li>
+                        <li class="skill">Next.js</li>
+                        <li class="skill">TypeScript</li>
+                        <li class="skill">JavaScript</li>
+                    </ul>
+                </div>
+                <div class="skill-group">
+                    <div class="name">Mobile</div>
+                    <ul class="skill-list">
+                        <li class="skill">Android</li>
+                        <li class="skill">Kotlin Multiplatform</li>
+                        <li class="skill">React Native</li>
+                    </ul>
+                </div>
+                <div class="skill-group">
+                    <div class="name">Cloud &amp; DevOps</div>
+                    <ul class="skill-list">
+                        <li class="skill">AWS</li>
+                        <li class="skill">Docker</li>
+                        <li class="skill">CI/CD</li>
+                    </ul>
+                </div>
+                <div class="skill-group">
+                    <div class="name">Databases</div>
+                    <ul class="skill-list">
+                        <li class="skill">PostgreSQL</li>
+                        <li class="skill">MySQL</li>
+                        <li class="skill">DynamoDB</li>
+                        <li class="skill">Redis</li>
                     </ul>
                 </div>
             </div>
@@ -68,23 +159,17 @@
 
         <div class="resume__cols">
             <section>
-                <div class="label">Skills</div>
-                <ul class="skill-list">
-                    <li class="skill">Java</li>
-                    <li class="skill">Spring Boot</li>
-                    <li class="skill">Django</li>
-                    <li class="skill">FastAPI</li>
-                    <li class="skill">Android</li>
-                    <li class="skill">Kotlin</li>
-                    <li class="skill">PostgreSQL</li>
-                    <li class="skill">Docker</li>
-                    <li class="skill">AWS</li>
-                </ul>
+                <div class="label">Education</div>
+                <h3>BSc (Engg.) in Computer Science &amp; Engineering</h3>
+                <div class="company">Shahjalal University of Science &amp; Technology, Sylhet &mdash; 2013</div>
             </section>
             <section>
-                <div class="label">Education</div>
-                <h3>BSc (Engg.) in CSE</h3>
-                <div class="company">Shahjalal University of Science and Technology</div>
+                <div class="label">Beyond work</div>
+                <ul class="resume__list">
+                    <li>Volunteer developer at Civic Tech Fredericton.</li>
+                    <li>Close to 10k reputation on Stack Overflow.</li>
+                    <li>Top-rated freelancer on Upwork.</li>
+                </ul>
             </section>
         </div>
     </div>

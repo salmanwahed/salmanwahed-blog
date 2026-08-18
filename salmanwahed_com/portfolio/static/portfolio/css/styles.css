@@ -261,6 +261,20 @@
 .resume__cols h3 { font-size: 19px; margin: 0 0 3px; }
 .resume__job ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 16px; line-height: 1.7; }
 
+/* Skill groups reuse the job row shape -- a fixed-width label on the left, the
+   content flowing beside it -- so the two blocks line up down the page. */
+.skill-groups { display: grid; gap: 16px; }
+.skill-group { display: flex; flex-direction: row; gap: 22px; align-items: baseline; }
+.skill-group .name {
+  flex: none;
+  width: 120px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--faint);
+}
+
+.resume__list { margin: 0; padding-left: 18px; color: var(--muted); font-size: 16px; line-height: 1.7; }
+
 .resume__cols {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -433,5 +447,7 @@
 
   .resume__job { flex-direction: column; gap: 8px; }
   .resume__job .period { width: auto; }
+  .skill-group { flex-direction: column; gap: 8px; }
+  .skill-group .name { width: auto; }
   .resume__cols { grid-template-columns: 1fr; gap: 28px; }
 }
