@@ -256,6 +256,11 @@
 }
 .resume__job .detail { flex: 1; min-width: 0; }
 .resume__job h3 { font-size: 19px; margin: 0 0 3px; }
+/* Company links keep the heading colour and only announce themselves on
+   hover -- the global `a` rule would otherwise paint every job title in the
+   accent, which reads as a link farm on a page this dense. */
+.resume__job h3 a { color: inherit; }
+.resume__job h3 a:hover { color: var(--accent-ink); text-decoration: underline; }
 .resume__job .company,
 .resume__cols .company { font-size: 14.5px; color: var(--muted); margin-bottom: 12px; }
 .resume__cols h3 { font-size: 19px; margin: 0 0 3px; }

@@ -35,10 +35,18 @@
         <section class="resume__section">
             <div class="label">Experience</div>
 
+            {% comment %}
+              Company names link out, because most of these are not names a
+              reader outside Bangladesh will recognise. They inherit --ink
+              rather than taking the site accent colour: four blue headings
+              stacked down the page would read as a link farm rather than a
+              document. The print block already forces links to black, so the
+              PDF is unaffected.
+            {% endcomment %}
             <div class="resume__job">
                 <div class="period">Apr 2026 &mdash; Present</div>
                 <div class="detail">
-                    <h3>Software Engineer &mdash; Quantiphi</h3>
+                    <h3>Software Engineer &mdash; <a href="https://quantiphi.com" target="_blank" rel="noopener">Quantiphi</a></h3>
                     <div class="company">Fredericton, New Brunswick, Canada</div>
                     <ul>
                         <li>Build agentic applications and multi-step AI agent workflows for healthcare and life sciences clients.</li>
@@ -51,7 +59,7 @@
             <div class="resume__job">
                 <div class="period">Jul 2021 &mdash; Aug 2025</div>
                 <div class="detail">
-                    <h3>Lead Software Engineer &mdash; TallyKhata</h3>
+                    <h3>Lead Software Engineer &mdash; <a href="https://tallykhata.com" target="_blank" rel="noopener">TallyKhata</a></h3>
                     <div class="company">Dhaka, Bangladesh &middot; FinTech</div>
                     <ul>
                         <li>Led backend development of a FinTech platform serving 5M+ users.</li>
@@ -65,7 +73,7 @@
             <div class="resume__job">
                 <div class="period">Jul 2017 &mdash; Jun 2021</div>
                 <div class="detail">
-                    <h3>Software Engineer &mdash; TigerIT Bangladesh Ltd</h3>
+                    <h3>Software Engineer &mdash; <a href="https://tigerit.com" target="_blank" rel="noopener">TigerIT Bangladesh Ltd</a></h3>
                     <div class="company">Dhaka, Bangladesh</div>
                     <ul>
                         <li>Developed Java backend and Android modules for national-scale ID verification systems.</li>
@@ -79,7 +87,7 @@
             <div class="resume__job">
                 <div class="period">Feb 2013 &mdash; Jun 2017</div>
                 <div class="detail">
-                    <h3>Software Engineer &mdash; Dimik Computing</h3>
+                    <h3>Software Engineer &mdash; <a href="https://dimikoj.com/" target="_blank" rel="noopener">Dimik Computing</a></h3>
                     <div class="company">Dhaka, Bangladesh &middot; Where it started</div>
                     <ul>
                         <li>Built scalable ETL pipelines processing multi-source datasets.</li>
