@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Salman Wahed | Contact{% endblock %}
+{% block description %}Get in touch with Salman Wahed about freelance, consulting or full-time engineering work.{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="contact{% if not contact_form_enabled %} contact--solo{% endif %}">
+        <div>
+            <div class="eyebrow">Contact</div>
+            <h1>Let's build something.</h1>
+            <p class="lede">Open to discussing and implementing new ideas, consultations,
+               engineering work, and full-time opportunities. The fastest way to
+               reach me is email.</p>
+
+            <a class="email-link" href="mailto:{{ contact_email }}">
+                <span class="at">@</span>{{ contact_email }}
+            </a>
+
+            <ul class="social-links">
+                <li><a href="https://github.com/salmanwahed/" rel="me noopener">GitHub</a></li>
+                <li><a href="https://stackoverflow.com/users/1113211/salmanwahed" rel="me noopener">Stack Overflow</a></li>
+                <li><a href="https://www.linkedin.com/in/salmanwahed" rel="me noopener">LinkedIn</a></li>
+                <li><a href="https://twitter.com/salman_wahed/" rel="me noopener">Twitter</a></li>
+            </ul>
+        </div>
+
+        {% if not contact_form_enabled %}
+        {% comment %}
+          Form hidden until outbound SMTP is configured -- see
+          CONTACT_FORM_ENABLED in settings. The mailto above is the live route,
+          and it reaches the same inbox.
+        {% endcomment %}
+        {% elif sent %}
+        <div class="contact-form">
+            <div class="form-success">
+                Thanks &mdash; your message is on its way. I'll reply to you by email.
+            </div>
+        </div>
+        {% else %}
+        <form class="contact-form" method="post" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="form-error">
+                {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+            </div>
+            {% endif %}
+
+            <div>
+                <label for="{{ form.name.id_for_label }}">Name</label>
+                {{ form.name }}
+                {% for error in form.name.errors %}<div class="form-error">{{ error }}</div>{% endfor %}
+            </div>
+
+            <div>
+                <label for="{{ form.email.id_for_label }}">Email</label>
+                {{ form.email }}
+                {% for error in form.email.errors %}<div class="form-error">{{ error }}</div>{% endfor %}
+            </div>
+
+            <div>
+                <label for="{{ form.subject.id_for_label }}">Subject</label>
+                {{ form.subject }}
+                {% for error in form.subject.errors %}<div class="form-error">{{ error }}</div>{% endfor %}
+            </div>
+
+            <div>
+                <label for="{{ form.message.id_for_label }}">Message</label>
+                {{ form.message }}
+                {% for error in form.message.errors %}<div class="form-error">{{ error }}</div>{% endfor %}
+            </div>
+
+            {# Honeypot: hidden from people, irresistible to bots. #}
+            <div class="honeypot-wrap" aria-hidden="true">
+                <label for="{{ form.website.id_for_label }}">Website</label>
+                {{ form.website }}
+            </div>
+
+            <button type="submit" class="btn btn--primary">Send message</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

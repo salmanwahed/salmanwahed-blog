@@ -1,0 +1,28 @@
+{# ---- templates/partials/_nav.html ---- #}
+<nav class="navigation">
+  <div class="navigation__inner">
+    <a href="{% url 'blog:index' %}" class="navigation-author">
+      <span class="navigation-avatar">SW</span>
+      <span class="name">Salman Wahed</span>
+    </a>
+
+    <input type="checkbox" id="nav-toggle" class="nav-toggle">
+    <label for="nav-toggle" class="hamburger" aria-label="Toggle menu">&#9776;</label>
+
+    <ul class="menu">
+      <li class="menu-item"><a href="{% url 'blog:index' %}">Blog</a></li>
+      <li class="menu-item"><a href="{% url 'portfolio:projects' %}">Projects</a></li>
+      <li class="menu-item"><a href="{% url 'portfolio:about' %}">About</a></li>
+      <li class="menu-item"><a href="{% url 'portfolio:resume' %}">Resume</a></li>
+      <li class="menu-item">
+        <button type="button" class="theme-toggle" aria-label="Toggle theme">&#9790;</button>
+      </li>
+      <li class="menu-item">
+        <a href="{% url 'portfolio:contact' %}" class="btn btn--primary btn--sm">Hire me</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+{# Add class="is-active" on the current page's link, e.g.:
+   <a href="..." class="{% if active == 'blog' %}is-active{% endif %}">Blog</a> #}

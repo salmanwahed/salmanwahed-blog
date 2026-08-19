@@ -1,13 +1,16 @@
-{% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-  <title>{{ policy.name }} – Privacy Policy</title>
-  <link rel="stylesheet" href="{% static 'portfolio/css/privacy-policy.css' %}" type="text/css">
-</head>
-<body>
-  <h1>{{ policy.name }} – Privacy Policy</h1>
-  <div>{{ policy.body|safe }}</div>
-  <p><small>Last updated: {{ policy.updated_at }}</small></p>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}{{ policy.name }} &ndash; Privacy Policy{% endblock %}
+{% block description %}Privacy policy for {{ policy.name }}.{% endblock %}
+{% block content %}
+{# Reuses .post / .post-body so this page needs no stylesheet of its own. #}
+<div class="container">
+    <article class="post policy">
+        <div class="eyebrow">Privacy Policy</div>
+        <h1>{{ policy.name }}</h1>
+        <div class="post-body">
+            {{ policy.body|safe }}
+        </div>
+        <p class="date">Last updated: {{ policy.updated_at|date:"d M Y" }}</p>
+    </article>
+</div>
+{% endblock %}

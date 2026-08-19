@@ -74,6 +74,10 @@ class BlogPost(models.Model):
         DRAFT = 0
         PUBLISHED = 1
 
+    class BodyFormat(models.TextChoices):
+        HTML = "HTML", _("HTML (legacy)")
+        MARKDOWN = "MD", _("Markdown")
+
     title = models.CharField(max_length=255, null=False)
     author = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user), blank=True)
     hero_image = models.ForeignKey(
@@ -81,6 +85,14 @@ class BlogPost(models.Model):
     )
     thumbnail = models.ForeignKey(BlogImages, on_delete=models.SET_NULL, null=True, blank=True, related_name="posts")
     body = models.TextField()
+    # Posts written under CKEditor hold raw HTML. New posts are Markdown. The
+    # field lets both render correctly side by side, so nothing needs migrating.
+    body_format = models.CharField(
+        max_length=4,
+        choices=BodyFormat.choices,
+        default=BodyFormat.MARKDOWN,
+        verbose_name="Body Format",
+    )
     short_desc = models.TextField(null=True, blank=True, verbose_name="Short Description")
     slug = models.SlugField(max_length=255, allow_unicode=True, unique=True, blank=True)
     tag = models.ManyToManyField(Tag, related_name="posts")

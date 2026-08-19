@@ -1,0 +1,33 @@
+{% load static %}
+<nav class="navigation">
+  <div class="navigation__inner">
+    <a href="{% url 'blog:blog_home' %}" class="navigation-author">
+      <span class="navigation-avatar">SW</span>
+      <span class="name">Salman Wahed</span>
+    </a>
+
+    <input type="checkbox" id="nav-toggle" class="nav-toggle">
+    <label for="nav-toggle" class="hamburger" aria-label="Toggle menu">&#9776;</label>
+
+    <ul class="menu">
+      <li class="menu-item">
+        <a href="{% url 'blog:blog_home' %}"{% if active == 'blog' %} class="is-active"{% endif %}>Blog</a>
+      </li>
+      <li class="menu-item">
+        <a href="{% url 'portfolio:portfolio_view' %}"{% if active == 'projects' %} class="is-active"{% endif %}>Projects</a>
+      </li>
+      <li class="menu-item">
+        <a href="{% url 'blog:about' %}"{% if active == 'about' %} class="is-active"{% endif %}>About</a>
+      </li>
+      <li class="menu-item">
+        <a href="{% url 'portfolio:resume' %}"{% if active == 'resume' %} class="is-active"{% endif %}>Resume</a>
+      </li>
+      <li class="menu-item">
+        <button type="button" class="theme-toggle" aria-label="Toggle theme">&#9790;</button>
+      </li>
+      <li class="menu-item">
+        <a href="{% url 'portfolio:contact' %}" class="btn btn--primary btn--sm">Say hello</a>
+      </li>
+    </ul>
+  </div>
+</nav>

@@ -1,419 +1,293 @@
-@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;1,400&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Roboto+Mono:wght@300;400;500&display=swap");
+/* =========================================================
+   salmanwahed.com — blog app styles.css
+   base.css is loaded as a separate <link> ahead of this file in
+   templates/base.html, so the @import that shipped with the handoff
+   has been removed -- django-compressor concatenates them into one
+   bundle and an @import would not survive that.
+   ========================================================= */
 
-body {
-  font-family: "Open Sans", sans-serif;
-  color: #212121;
-  background-color: #fafafa;
+/* ---------- Blog index hero ---------- */
+.blog-hero {
+  padding: 64px 0 40px;
+  border-bottom: 1px solid var(--border);
 }
-
-h2,
-h3,
-h4,
-h5,
-hr {
-  clear: both;
+.blog-hero h1 {
+  font-size: 52px;
+  line-height: 1.05;
+  letter-spacing: -.025em;
+  margin: 0 0 18px;
+  max-width: 18ch;
 }
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: "Lato", sans-serif;
-  font-weight: 500;
-}
-
-
-main {
-  flex: auto;
-}
-
-article {
-  word-wrap: break-word;
-}
-
-a {
-  text-decoration: none;
-}
-
-a:hover {
-  color: #448AFF !important;
-}
-
-pre {
-  font-family: "Roboto Mono", monospace;
-  font-size: .9rem;
-  font-weight: 400;
-  background-color: #FFFFFF;
-  padding: 0.5rem 1rem;
-  border: 1px solid #EAEAEA;
-  border-radius: 0.3rem
-}
-
-.wrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.wip {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 50vh;
-  font-family: "Lato", sans-serif;
-  color: #ccc;
-  font-weight: 400;
-}
-
-.tag-list {
-  display: inline;
-}
-
-.tag {
-  border-radius: 50rem !important;
-  font-family: "Roboto Mono", monospace;
-  font-weight: 400;
-  padding: .1rem 0.5rem .2rem 0.5rem;
-  font-size: .9rem;
-  color: black;
-}
-
-.tag:hover {
-    color: whitesmoke;
-    font-size: .95rem;
-}
-
-.date {
-  font-size: .9rem;
-  fon-weight: 400;
-}
-
-.navigation {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 6rem;
-  width: 100%;
-}
-
-.navigation a,
-.navigation span {
-  display: inline;
-  font-size: 1.1rem;
-  font-family: "Lato", sans-serif;
-  font-weight: 700;
-  line-height: 6rem;
-  color: #212121;
-}
-
-.navigation-author {
-  display: inline-flex;
-  flex-direction: row;
-  justify-content: center;
-}
-
-.navigation-author .name {
-  margin-left: 1rem;
-  font-size: 1.8em;
-  text-decoration: none;
-  font-weight: 400;
-  font-family: 'Lato', sans-serif;
-}
-
-.navigation-avatar {
-  display: inline-block !important;
-  max-width: 50px;
-  max-height: 50px;
-}
-
-.navigation-avatar img {
-  max-width: 100%;
-  object-fit: contain;
-  border-radius: 30%;
-}
-
-.navigation ul {
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-.menu {
-  display: flex;
-  list-style: none;
-  margin-bottom: 0;
-  margin-top: 0;
-}
-
-.menu .menu-item {
+.blog-hero p {
+  font-size: 20px;
+  line-height: 1.6;
+  color: var(--muted);
   margin: 0;
-  display: flex;
-  justify-content: center;
+  max-width: 60ch;
 }
 
-.menu .menu-item a,
-.menu .menu-item span {
-  margin-left: 1rem;
-  margin-right: 1rem;
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--faint);
+  padding: 42px 0 8px;
 }
 
-input[type="checkbox"] {
-  display: none;
-}
-
-.hamburger {
-  display: none;
-  font-size: 24px;
-  user-select: none;
-}
-
-@media (max-width: 992px) {
-  .menu {
-    display: none;
-    position: absolute;
-    right: 0;
-    left: 0;
-    top: 6rem;
-    text-align: center;
-    background-color: #fff;
-    padding: 0;
-  }
-  .menu li:hover {
-    display: inline-block;
-    transition: 0.3s ease;
-  }
-
-  .menu li + li {
-    margin-top: 12px;
-  }
-  input[type="checkbox"]:checked ~ .menu {
-    display: block;
-  }
-  .hamburger {
-    display: block;
-  }
-
-  .menu-item {
-    border-bottom: 1px solid #f9f9f9;
-    padding-left: 0;
-  }
-
-  .navigation a,
-  .navigation span {
-    font-size: 1.3rem;
-    font-family: "Lato", sans-serif;
-    font-weight: 500;
-    line-height: 4rem;
-    color: #212121;
-  }
-}
-
-.list ul li .date {
-  text-align: left;
-  margin: 0;
-}
-
-.list img {
-  object-fit: contain;
-}
-
-.posts-list {
-  margin: 0 0 2rem 0;
-  padding: 0;
-}
+/* ---------- Post list ---------- */
+.posts-list { margin: 0 0 2rem; padding: 0; list-style: none; }
 
 .posts-list li {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  gap: 34px;
   margin: 0;
-  padding: 2rem 0 2rem 0 !important;
-  border-bottom: 1px solid rgba(177, 177, 177, 0.623);
-}
-
-.posts-list .title {
-  font-size: 1.25rem;
-  color: #212121;
-  font-weight: 500;
-  font-family: "Lato", sans-serif;
-}
-
-.posts-list li h2 {
-  margin: 0rem 0 0.2rem 0 !important;
-  line-height: 1.7rem;
-}
-
-@media screen and (min-width: 768px) {
-  .posts-list li {
-    flex-direction: row;
-    padding-bottom: 2rem !important;
-  }
+  padding: 32px 0;
+  border-bottom: 1px solid var(--border);
 }
 
 .posts-list .img-wrapper {
+  flex: none;
+  width: 210px;
+  height: 140px;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.posts-list .img-wrapper img,
+.posts-list .img-wrapper .media-placeholder {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius);
+}
+
+.posts-list .post-content { flex: 1; min-width: 0; }
+
+.posts-list .title,
+.posts-list li h2 {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.25;
+  letter-spacing: -.015em;
+  margin: 0 0 10px;
+  color: var(--ink);
+}
+.posts-list .title:hover { color: var(--accent-ink); }
+
+.date {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--faint);
+  margin-bottom: 12px;
+}
+
+.posts-list .excerpt {
+  font-size: 16.5px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 12px 0 0;
+}
+
+/* ---------- Pagination ----------
+   Replaces Bootstrap's .pagination, which the old templates relied on. */
+.pagination {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  margin-top: 0.5rem;
+  gap: 8px;
+  margin: 36px 0 64px;
 }
-
-@media screen and (min-width: 768px) {
-  .posts-list .img-wrapper {
-    display: block;
-    margin-right: 2.5rem;
-    min-width: 14rem;
-    max-width: 14rem;
-  }
-}
-
-.posts-list li img {
-  max-width: 100%;
-}
-
-@media screen and (min-width: 768px) {
-  .posts-list li img {
-    max-height: 200px;
-  }
-}
-
-.retrospective .finances-chart {
-  margin-bottom: 5rem;
-}
-
-.book-reports-list li {
-  margin: 2rem 0;
-  display: flex;
-  flex-direction: column;
-}
-
-@media screen and (min-width: 768px) {
-  .book-reports-list li {
-    margin-bottom: 3rem;
-  }
-}
-
-@media screen and (min-width: 768px) {
-  .book-reports-list li .summary {
-    display: flex;
-    flex-direction: row;
-  }
-}
-
-.book-reports-list li .title {
-  font-size: 1.1em !important;
-  text-decoration: none;
-}
-
-.book-reports-list .img-wrapper {
-  display: flex;
+.pagination a,
+.pagination span {
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-elev);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--muted);
+  transition: border-color .2s ease, color .2s ease;
 }
-
-@media screen and (min-width: 768px) {
-  .book-reports-list .img-wrapper {
-    justify-content: flex-start;
-    margin-right: 2.5rem;
-    min-width: 260px;
-    max-width: 260px;
-  }
+.pagination a:hover { border-color: var(--accent); color: var(--accent-ink); }
+.pagination .is-current {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
 }
+.pagination .is-disabled { opacity: .45; }
 
-.book-reports-list .full-review-link {
-  display: block;
-  text-align: center;
-  text-decoration: none;
-  font-size: 1.1em;
-  background-color: rgb(225, 255, 208);
-  border: 1px solid rgb(119, 197, 119);
-  padding: 1rem 2rem;
-  margin: 0 auto;
-}
+/* ---------- Post detail ---------- */
+.post { max-width: 760px; margin: 0 auto; }
 
-@media screen and (min-width: 768px) {
-  .book-reports-list .full-review-link {
-    display: inline-block;
-  }
-}
-
-@media screen and (min-width: 768px) {
-  .book-report .book-cover {
-    max-width: 300px;
-    padding-right: 1rem;
-    margin: 0 3rem 0 0 !important;
-  }
-}
-
-.twitter-tweet {
-  margin: 0 auto;
-}
-
-.footer {
-  margin: 3rem 0 1rem;
-  padding: 0;
-  font-size: 1rem;
-}
-
-.footer ul {
-  list-style: none;
-  margin-top: 1rem;
-  font-size: 1.2rem;
-}
-
-.footer ul li {
+.post .back-link {
   display: inline-block;
-  position: relative;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent-ink);
+  margin: 48px 0 28px;
 }
 
-.fa-twitter:hover {
-  color: #2497EA;
+.post h1 {
+  font-size: 40px;
+  line-height: 1.12;
+  letter-spacing: -.025em;
+  margin: 0 0 16px;
 }
 
-.fa-linkedin:hover {
-  color: #1566C2;
+.post .post-meta {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--faint);
+  margin-bottom: 14px;
 }
 
-.fa-github:hover {
-  color: #7DBBE6;
+/* Scales smoothly instead of jumping at a breakpoint */
+.post .cover {
+  width: 100%;
+  height: clamp(180px, 42vw, 300px);
+  border-radius: 14px;
+  margin: 34px 0 40px;
+  object-fit: cover;
 }
 
-.fa-stack-overflow:hover {
-    color: #F49111
+.post-body {
+  font-size: 19px;
+  line-height: 1.75;
+  color: var(--ink);
+  /* Newsreader is loaded as a variable font over 400-600. Long-form copy was
+     already the darkest ink on the page, so the washed-out look came from the
+     stroke, not the colour -- 450 thickens it without reading as semibold. */
+  font-weight: 450;
+  /* Contains anything wider than the 760px column -- a big table, a long
+     code line -- so it scrolls here instead of forcing the whole page
+     sideways. `auto`, not `hidden`: nothing gets silently clipped. */
+  overflow-x: auto;
+}
+.post-body p { margin: 0 0 24px; }
+.post-body h2 { font-size: 25px; letter-spacing: -.015em; margin: 40px 0 14px; }
+.post-body h3 { font-size: 21px; margin: 32px 0 12px; }
+.post-body ul, .post-body ol { margin: 0 0 24px; padding-left: 24px; }
+.post-body li { margin-bottom: 8px; }
+/* margin-inline centres block images -- replaces the jQuery in the old
+   script.js, which wrapped every image in a Bootstrap flex div. */
+.post-body img { max-width: 100%; height: auto; border-radius: 10px; margin: 8px auto 24px; }
+.post-body pre { margin: 0 0 28px; }
+
+/* Tables in existing posts. Also previously handled by script.js, which
+   tacked Bootstrap's .table classes on at runtime. */
+.post-body table {
+  margin: 0 0 28px;
+  border-collapse: collapse;
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: 15.5px;
+}
+.post-body th, .post-body td {
+  border-bottom: 1px solid var(--border);
+  padding: 10px 14px;
+  text-align: left;
+}
+.post-body th { font-weight: 600; color: var(--ink); }
+.post-body td { color: var(--muted); }
+.post-body tbody tr:hover td { background: var(--accent-soft); }
+.post-body blockquote {
+  margin: 0 0 24px;
+  padding: 4px 0 4px 22px;
+  border-left: 2px solid var(--accent);
+  color: var(--muted);
+  font-style: italic;
 }
 
+/* Author card */
+.post-author {
+  border-top: 1px solid var(--border);
+  padding: 28px 0 60px;
+  display: flex; gap: 16px; align-items: center;
+}
+.post-author .avatar {
+  width: 52px; height: 52px; border-radius: 50%; flex: none;
+  background: var(--ink); color: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-weight: 600; font-size: 16px;
+}
+.post-author .name { font-family: var(--font-sans); font-weight: 600; font-size: 16px; color: var(--ink); }
+.post-author .bio { font-size: 15px; color: var(--muted); }
 
-.footer ul li a {
-  color: #212121;
-  text-transform: uppercase;
-  margin-left: 1rem;
-  margin-right: 1rem;
-  font-size: 1.6rem;
+/* ---------- Prev / next ---------- */
+.prev-next-links {
+  display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  margin: 2rem 0;
+}
+.prev-next-links a {
+  font-family: var(--font-sans);
+  font-size: 14.5px; font-weight: 600;
+  background: var(--bg-elev);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  padding: 11px 20px;
+  border-radius: 10px;
+  min-height: var(--tap-min);
+  display: inline-flex; align-items: center;
+}
+.prev-next-links a:hover { border-color: var(--accent); color: var(--ink); }
+
+/* ---------- Book reports ---------- */
+.book-reports-list { list-style: none; padding: 0; }
+.book-reports-list li {
+  display: flex; flex-direction: column; gap: 20px;
+  padding: 32px 0; margin: 0;
+  border-bottom: 1px solid var(--border);
+}
+.book-reports-list li .summary { display: flex; flex-direction: row; gap: 34px; }
+.book-reports-list .img-wrapper { flex: none; min-width: 200px; max-width: 200px; }
+.book-reports-list li .title {
+  font-family: var(--font-sans);
+  font-weight: 600; font-size: 20px;
+  color: var(--ink);
+}
+.book-reports-list .full-review-link {
+  display: inline-flex; align-items: center;
+  font-family: var(--font-sans);
+  font-size: 14.5px; font-weight: 600;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+  padding: 10px 20px;
+  border-radius: 10px;
+  min-height: var(--tap-min);
+  margin-top: 8px;
+}
+.book-reports-list .full-review-link:hover { background: var(--accent); color: var(--on-accent); }
+
+.book-report .book-cover { max-width: 300px; border-radius: var(--radius); }
+
+.retrospective .finances-chart { margin-bottom: 3rem; }
+.gist tbody, .gist td, .gist tfoot, .gist th, .gist thead, .gist tr { border-style: none !important; }
+.twitter-tweet { margin: 0 auto; }
+
+/* =========================================================
+   BREAKPOINTS
+   ========================================================= */
+
+/* Post rows stack; thumbnail goes full-width */
+@media (max-width: 768px) {
+  .posts-list li { flex-direction: column; gap: 18px; }
+  .posts-list .img-wrapper { width: 100%; height: 190px; }
+  .book-reports-list li .summary { flex-direction: column; gap: 18px; }
+  .book-reports-list .img-wrapper { min-width: 0; max-width: 100%; }
 }
 
-.retrospective .prev-next-links {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin: 1rem 0;
-}
-
-.retrospective .prev-next-links a {
-  background-color: #d6d6d6;
-  color: black;
-  padding: 0.5rem 2rem;
-  border: 1px solid #666;
-  border-radius: 4px;
-}
-
-.retrospective .prev-next-links a:hover {
-  background-color: #ccc;
-  color: black;
-  text-decoration: none;
-}
-
-.post-body img {
-    max-width: 75%;
-    height: auto;
-}
-
-.gist tbody, td, tfoot, th, thead, tr {
-    border-style:none !important;
+@media (max-width: 700px) {
+  .blog-hero h1 { font-size: 34px; }
+  .blog-hero p  { font-size: 17px; }
+  .posts-list .title,
+  .posts-list li h2 { font-size: 20px; }
+  .post h1 { font-size: 30px; }
 }

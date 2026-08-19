@@ -1,20 +1,31 @@
-from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.contrib import admin
 
-from .models import AppPrivacyPolicy, Project, ProjectImage, Tag
+from .models import AppPrivacyPolicy, Project, ProjectImage, ProjectStat, Tag
+
+
+class ProjectStatInline(admin.TabularInline):
+    """The three headline numbers on a featured professional card."""
+
+    model = ProjectStat
+    extra = 3
+    fields = ("value", "label", "order")
 
 
 class ProjectAdminForm(forms.ModelForm):
-    description = forms.CharField(widget=CKEditorWidget(), required=False)
-
     class Meta:
         model = Project
         fields = [
             "name",
+            "category",
             "short_description",
+            "description",
+            "meta_primary",
+            "meta_secondary",
+            "is_featured",
             "tag",
             "thumbnail",
+            "banner",
             "project_url",
             "utm_url",
             "source_url",
@@ -22,11 +33,17 @@ class ProjectAdminForm(forms.ModelForm):
             "status",
             "project_weight",
         ]
+        widgets = {
+            "description": forms.Textarea(attrs={"rows": 6, "cols": 90}),
+            "short_description": forms.Textarea(attrs={"rows": 2, "cols": 90}),
+        }
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ("name", "project_type", "status")
+    list_display = ("name", "category", "is_featured", "project_type", "status", "project_weight")
+    list_filter = ("category", "is_featured", "project_type", "status")
     form = ProjectAdminForm
+    inlines = [ProjectStatInline]
 
 
 class ProjectImageAdmin(admin.ModelAdmin):

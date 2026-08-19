@@ -1,0 +1,12 @@
+# Shell scripts must keep LF endings or the Linux containers cannot exec them:
+# with core.autocrlf=true on Windows, entrypoint.sh was checked out with CRLF
+# and Docker failed with "exec /entrypoint.sh: no such file or directory".
+*.sh text eol=lf
+
+# Never line-ending-convert binary assets.
+*.woff2 binary
+*.woff binary
+*.ttf binary
+*.png binary
+*.jpg binary
+*.ico binary

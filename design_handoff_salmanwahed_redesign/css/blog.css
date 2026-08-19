@@ -1,0 +1,227 @@
+/* =========================================================
+   salmanwahed.com — blog app styles.css
+   Requires base.css (import it first, or concatenate).
+   ========================================================= */
+
+@import url("base.css");
+
+/* ---------- Blog index hero ---------- */
+.blog-hero {
+  padding: 64px 0 40px;
+  border-bottom: 1px solid var(--border);
+}
+.blog-hero h1 {
+  font-size: 52px;
+  line-height: 1.05;
+  letter-spacing: -.025em;
+  margin: 0 0 18px;
+  max-width: 18ch;
+}
+.blog-hero p {
+  font-size: 20px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 0;
+  max-width: 60ch;
+}
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--faint);
+  padding: 42px 0 8px;
+}
+
+/* ---------- Post list ---------- */
+.posts-list { margin: 0 0 2rem; padding: 0; list-style: none; }
+
+.posts-list li {
+  display: flex;
+  flex-direction: row;
+  gap: 34px;
+  margin: 0;
+  padding: 32px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.posts-list .img-wrapper {
+  flex: none;
+  width: 210px;
+  height: 140px;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.posts-list .img-wrapper img,
+.posts-list .img-wrapper .media-placeholder {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius);
+}
+
+.posts-list .post-content { flex: 1; min-width: 0; }
+
+.posts-list .title,
+.posts-list li h2 {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.25;
+  letter-spacing: -.015em;
+  margin: 0 0 10px;
+  color: var(--ink);
+}
+.posts-list .title:hover { color: var(--accent-ink); }
+
+.date {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--faint);
+  margin-bottom: 12px;
+}
+
+.posts-list .excerpt {
+  font-size: 16.5px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 12px 0 0;
+}
+
+/* ---------- Post detail ---------- */
+.post { max-width: 760px; margin: 0 auto; }
+
+.post .back-link {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent-ink);
+  margin: 48px 0 28px;
+}
+
+.post h1 {
+  font-size: 40px;
+  line-height: 1.12;
+  letter-spacing: -.025em;
+  margin: 0 0 16px;
+}
+
+.post .post-meta {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--faint);
+  margin-bottom: 14px;
+}
+
+/* Scales smoothly instead of jumping at a breakpoint */
+.post .cover {
+  width: 100%;
+  height: clamp(180px, 42vw, 300px);
+  border-radius: 14px;
+  margin: 34px 0 40px;
+  object-fit: cover;
+}
+
+.post-body { font-size: 19px; line-height: 1.75; color: var(--ink); }
+.post-body p { margin: 0 0 24px; }
+.post-body h2 { font-size: 25px; letter-spacing: -.015em; margin: 40px 0 14px; }
+.post-body h3 { font-size: 21px; margin: 32px 0 12px; }
+.post-body ul, .post-body ol { margin: 0 0 24px; padding-left: 24px; }
+.post-body li { margin-bottom: 8px; }
+.post-body img { max-width: 100%; height: auto; border-radius: 10px; margin: 8px 0 24px; }
+.post-body pre { margin: 0 0 28px; }
+.post-body blockquote {
+  margin: 0 0 24px;
+  padding: 4px 0 4px 22px;
+  border-left: 2px solid var(--accent);
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* Author card */
+.post-author {
+  border-top: 1px solid var(--border);
+  padding: 28px 0 60px;
+  display: flex; gap: 16px; align-items: center;
+}
+.post-author .avatar {
+  width: 52px; height: 52px; border-radius: 50%; flex: none;
+  background: var(--ink); color: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-weight: 600; font-size: 16px;
+}
+.post-author .name { font-family: var(--font-sans); font-weight: 600; font-size: 16px; color: var(--ink); }
+.post-author .bio { font-size: 15px; color: var(--muted); }
+
+/* ---------- Prev / next ---------- */
+.prev-next-links {
+  display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  margin: 2rem 0;
+}
+.prev-next-links a {
+  font-family: var(--font-sans);
+  font-size: 14.5px; font-weight: 600;
+  background: var(--bg-elev);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  padding: 11px 20px;
+  border-radius: 10px;
+  min-height: var(--tap-min);
+  display: inline-flex; align-items: center;
+}
+.prev-next-links a:hover { border-color: var(--accent); color: var(--ink); }
+
+/* ---------- Book reports ---------- */
+.book-reports-list { list-style: none; padding: 0; }
+.book-reports-list li {
+  display: flex; flex-direction: column; gap: 20px;
+  padding: 32px 0; margin: 0;
+  border-bottom: 1px solid var(--border);
+}
+.book-reports-list li .summary { display: flex; flex-direction: row; gap: 34px; }
+.book-reports-list .img-wrapper { flex: none; min-width: 200px; max-width: 200px; }
+.book-reports-list li .title {
+  font-family: var(--font-sans);
+  font-weight: 600; font-size: 20px;
+  color: var(--ink);
+}
+.book-reports-list .full-review-link {
+  display: inline-flex; align-items: center;
+  font-family: var(--font-sans);
+  font-size: 14.5px; font-weight: 600;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+  padding: 10px 20px;
+  border-radius: 10px;
+  min-height: var(--tap-min);
+  margin-top: 8px;
+}
+.book-reports-list .full-review-link:hover { background: var(--accent); color: var(--on-accent); }
+
+.book-report .book-cover { max-width: 300px; border-radius: var(--radius); }
+
+.retrospective .finances-chart { margin-bottom: 3rem; }
+.gist tbody, .gist td, .gist tfoot, .gist th, .gist thead, .gist tr { border-style: none !important; }
+.twitter-tweet { margin: 0 auto; }
+
+/* =========================================================
+   BREAKPOINTS
+   ========================================================= */
+
+/* Post rows stack; thumbnail goes full-width */
+@media (max-width: 768px) {
+  .posts-list li { flex-direction: column; gap: 18px; }
+  .posts-list .img-wrapper { width: 100%; height: 190px; }
+  .book-reports-list li .summary { flex-direction: column; gap: 18px; }
+  .book-reports-list .img-wrapper { min-width: 0; max-width: 100%; }
+}
+
+@media (max-width: 700px) {
+  .blog-hero h1 { font-size: 34px; }
+  .blog-hero p  { font-size: 17px; }
+  .posts-list .title,
+  .posts-list li h2 { font-size: 20px; }
+  .post h1 { font-size: 30px; }
+}

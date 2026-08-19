@@ -99,7 +99,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "debug_toolbar",
     "blog",
-    "ckeditor",
     "portfolio",
     "compressor",
 ]
@@ -120,7 +119,7 @@ ROOT_URLCONF = "salmanwahed_com.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR.joinpath("templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -195,6 +194,10 @@ STATIC_URL = "/static/"
 
 STATIC_ROOT = BASE_DIR.joinpath("static")
 
+# Shared assets used by both apps (tokens, fonts, theme toggle). Kept out of
+# STATIC_ROOT, which is collectstatic's output directory.
+STATICFILES_DIRS = [BASE_DIR.joinpath("assets")]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -210,10 +213,6 @@ MEDIA_ROOT = BASE_DIR.joinpath("upload")
 
 PAGINATION_ITEM_COUNT = 5
 
-CKEDITOR_CONFIGS = {
-    "default": {"extraAllowedContent": "script[src]", "height": 800, "width": 960},
-}
-
 CDN_URL = os.getenv("CDN_URL")
 USE_CDN = os.getenv("USE_CDN", "FALSE").upper() == "TRUE"
 WPM_READ = int(os.getenv("WPM_READ", 180))
@@ -226,6 +225,36 @@ STATICFILES_FINDERS = (
 )
 
 COMPRESS_ENABLED = True
+
+# Contact form email. Mail lands in the console during development so no
+# credentials are needed to exercise the form locally.
+CONTACT_EMAIL = os.getenv("CONTACT_EMAIL", "hello@salmanwahed.com")
+CONTACT_RATE_LIMIT = int(os.getenv("CONTACT_RATE_LIMIT", 5))  # submissions per IP per hour
+
+# The contact page shows a mailto link only until outbound SMTP is configured.
+# With no working relay the form can accept a message and then fail to deliver
+# it, which loses the enquiry silently -- a plain mailto cannot. Set to TRUE to
+# bring the form back once sending is verified.
+CONTACT_FORM_ENABLED = os.getenv("CONTACT_FORM_ENABLED", "FALSE").upper() == "TRUE"
+
+# Console in development, SMTP in production. EMAIL_BACKEND overrides the
+# choice, which is the only way to exercise a real send locally: DEBUG cannot
+# simply be switched off to test mail, because that also drops 127.0.0.1 from
+# ALLOWED_HOSTS and every request starts 400ing.
+_default_backend = (
+    "django.core.mail.backends.console.EmailBackend" if DEBUG else "django.core.mail.backends.smtp.EmailBackend"
+)
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND", _default_backend)
+
+# Read unconditionally. They were previously set only on the production branch,
+# so a local SMTP test silently fell back to Django's localhost:25 defaults.
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "TRUE").upper() == "TRUE"
+
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", CONTACT_EMAIL)
 
 # Sentry SDK
 import sentry_sdk

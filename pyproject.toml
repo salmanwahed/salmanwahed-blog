@@ -13,3 +13,21 @@ ignore = ["E501"]  # line length handled by formatter
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
+
+# Run from salmanwahed_com/: manage.py must be the entry point for the app
+# imports to resolve.
+#   coverage run manage.py test blog portfolio && coverage report
+[tool.coverage.run]
+source = ["blog", "portfolio"]
+omit = ["*/migrations/*", "*/tests.py", "*/apps.py"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+fail_under = 80
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+]
