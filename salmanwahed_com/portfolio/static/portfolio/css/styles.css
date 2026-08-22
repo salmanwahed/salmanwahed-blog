@@ -16,6 +16,7 @@
   margin: 0 0 14px;
 }
 .page-header p {
+  font-family: var(--font-serif);
   font-size: 19px;
   line-height: 1.6;
   color: var(--muted);
@@ -162,7 +163,7 @@
   letter-spacing: -.025em;
   margin: 0 0 26px;
 }
-.about p { font-size: 18.5px; line-height: 1.7; margin: 0 0 20px; color: var(--muted); }
+.about p { font-family: var(--font-serif); font-size: 18.5px; line-height: 1.7; margin: 0 0 20px; color: var(--muted); }
 .about p:first-of-type { color: var(--ink); }
 .about .actions { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 28px; }
 
@@ -280,6 +281,17 @@
 
 .resume__list { margin: 0; padding-left: 18px; color: var(--muted); font-size: 16px; line-height: 1.7; }
 
+/* The Summary block is the one stretch of prose on an otherwise scannable
+   page, so it takes the serif. The bullets above stay in the sans -- they are
+   scanned, not read. */
+.resume__section > p {
+  font-family: var(--font-serif);
+  font-size: 16.5px;
+  line-height: 1.7;
+  color: var(--muted);
+  margin: 0;
+}
+
 .resume__cols {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -322,6 +334,7 @@
   margin: 0 0 18px;
 }
 .contact .lede {
+  font-family: var(--font-serif);
   font-size: 19px;
   line-height: 1.65;
   color: var(--muted);
@@ -391,7 +404,7 @@
 .contact-form input,
 .contact-form textarea {
   width: 100%;
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: 16px;
   color: var(--ink);
   background: var(--bg);
