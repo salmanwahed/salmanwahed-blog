@@ -19,6 +19,7 @@
   max-width: 18ch;
 }
 .blog-hero p {
+  font-family: var(--font-serif);
   font-size: 20px;
   line-height: 1.6;
   color: var(--muted);
@@ -83,6 +84,7 @@
 }
 
 .posts-list .excerpt {
+  font-family: var(--font-serif);
   font-size: 16.5px;
   line-height: 1.6;
   color: var(--muted);
@@ -158,6 +160,7 @@
 }
 
 .post-body {
+  font-family: var(--font-serif);
   font-size: 19px;
   line-height: 1.75;
   color: var(--ink);
@@ -218,7 +221,7 @@
   font-family: var(--font-mono); font-weight: 600; font-size: 16px;
 }
 .post-author .name { font-family: var(--font-sans); font-weight: 600; font-size: 16px; color: var(--ink); }
-.post-author .bio { font-size: 15px; color: var(--muted); }
+.post-author .bio { font-family: var(--font-serif); font-size: 15px; color: var(--muted); }
 
 /* ---------- Prev / next ---------- */
 .prev-next-links {
