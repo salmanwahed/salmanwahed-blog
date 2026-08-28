@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 {% block title %}Salman Wahed | Contact{% endblock %}
-{% block description %}Get in touch with Salman Wahed about freelance, consulting or full-time engineering work.{% endblock %}
+{% block description %}Get in touch with Salman Wahed to talk about software engineering, AI agents, and new technology.{% endblock %}
 {% block content %}
 <div class="container">
     <div class="contact{% if not contact_form_enabled %} contact--solo{% endif %}">
         <div>
             <div class="eyebrow">Contact</div>
             <h1>Let's build something.</h1>
-            <p class="lede">Open to discussing and implementing new ideas, consultations,
-               engineering work, and full-time opportunities. The fastest way to
-               reach me is email.</p>
+            <p class="lede">Always up for a conversation about new technology:
+               agents and LLMs, backend architecture, or whatever you are
+               building at the moment. Email is the fastest way to reach me.</p>
 
             <a class="email-link" href="mailto:{{ contact_email }}">
                 <span class="at">@</span>{{ contact_email }}
