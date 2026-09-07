@@ -151,6 +151,13 @@ CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "LOCATION": os.getenv("REDIS_URL", "redis://127.0.0.1:6379"),
+        # redis-py 6 and later negotiate RESP3 by default, which opens every
+        # connection with a HELLO command. HELLO arrived in Redis 6.0, so
+        # against the Redis 5.0 that Ubuntu 20.04 ships, every cached view
+        # raises ResponseError and the site answers 500. RESP2 is understood by
+        # every Redis version and the cache backend uses no RESP3 feature, so
+        # pinning it costs nothing. Removable once the server runs Redis 6+.
+        "OPTIONS": {"protocol": 2},
     }
 }
 
