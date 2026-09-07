@@ -17,7 +17,7 @@ Migrations run automatically on container start. Admin is at `http://localhost:8
 
 ## Tech Stack
 
-- **Backend**: Django 4.2, Gunicorn
+- **Backend**: Django 5.2 on Python 3.13, Gunicorn
 - **Database**: PostgreSQL
 - **Cache**: Redis
 - **Frontend**: Django templates, Django Compressor. No CSS framework and no

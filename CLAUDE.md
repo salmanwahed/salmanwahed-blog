@@ -4,8 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Personal blog and portfolio website built with Django 4.2 (unpinned in
-`requirements.txt` -- it arrives transitively via django-compressor). The Django project root is `salmanwahed_com/` (one level below the repo root).
+Personal blog and portfolio website built with Django 5.2 LTS on Python 3.13,
+pinned explicitly in `requirements.txt`. Postgres is reached through psycopg 3.
+The Django project root is `salmanwahed_com/` (one level below the repo root).
 
 ## Running Locally with Docker
 
@@ -55,13 +56,11 @@ directory, and `PYTHONPATH` is what lets `manage.py` resolve its imports from th
 PYTHONPATH=salmanwahed_com coverage run salmanwahed_com/manage.py test blog portfolio && coverage report
 ```
 
-`pip install -r requirements-dev.txt` installs it. The `[toml]` extra matters: on
-Python 3.8 there is no stdlib `tomllib`, and without `tomli` coverage silently
-ignores its configuration instead of erroring.
+`pip install -r requirements-dev.txt` installs it.
 
 ## Linting and Formatting
 
-**ruff** is configured in `pyproject.toml` (Python 3.8 target, line length 119).
+**ruff** is configured in `pyproject.toml` (Python 3.13 target, line length 119).
 
 ```bash
 pip install -r requirements-dev.txt   # install ruff locally (one-time)
