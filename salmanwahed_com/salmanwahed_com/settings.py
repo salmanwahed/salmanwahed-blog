@@ -15,7 +15,6 @@ from pathlib import Path
 
 from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
-from redis.connection import HiredisRespSerializer
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -183,8 +182,6 @@ TIME_ZONE = "Asia/Dhaka"
 
 USE_I18N = True
 
-USE_L10N = True
-
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
@@ -202,6 +199,11 @@ STATICFILES_DIRS = [BASE_DIR.joinpath("assets")]
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Opt in early to Django 6.0's URLField behaviour: a bare domain typed into an
+# admin form resolves to https rather than http. Every URL this site stores is
+# https already, and setting it now silences the transitional warning.
+FORMS_URLFIELD_ASSUME_HTTPS = True
 
 INTERNAL_IPS = [
     "0.0.0.0",
