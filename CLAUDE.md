@@ -111,7 +111,11 @@ The `/lint` Claude Code skill runs the full format + check cycle interactively.
 
 **Debug mode** is controlled by the presence of `credentials.txt` in `BASE_DIR` (not by an environment variable directly). Settings read `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT` from environment for PostgreSQL, and `CDN_URL` / `USE_CDN` for optional CDN image serving.
 
-**Caching**: Redis at `redis://127.0.0.1:6379`. Views use per-view cache decorators with varying TTLs. Clear via `/clear-cache/` (login required) or `python manage.py shell` + `cache.clear()`.
+**Caching**: Redis at `redis://127.0.0.1:6379`. Production runs the Redis 5.0
+that Ubuntu 20.04 ships, so `CACHES["default"]["OPTIONS"]` pins the wire
+protocol to RESP2 -- redis-py 6+ otherwise opens connections with a `HELLO`
+command that Redis 5 does not have, and every cached view 500s. Compose and CI
+run `redis:5-alpine` for the same reason: match what production runs. Views use per-view cache decorators with varying TTLs. Clear via `/clear-cache/` (login required) or `python manage.py shell` + `cache.clear()`.
 
 **Static/Media**: Shared front-end assets live in `BASE_DIR/assets` (on `STATICFILES_DIRS`); `BASE_DIR/static` is `STATIC_ROOT` (collectstatic output); media uploads at `BASE_DIR/upload`. Django Compressor concatenates base.css + code.css + both app stylesheets into a single bundle.
 
