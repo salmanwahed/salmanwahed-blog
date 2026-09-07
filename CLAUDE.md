@@ -6,6 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Personal blog and portfolio website built with Django 5.2 LTS on Python 3.13,
 pinned explicitly in `requirements.txt`. Postgres is reached through psycopg 3.
+**Django 5.2 requires PostgreSQL 14 or later** and refuses to connect to
+anything older, so the server's Postgres major version is part of the upgrade,
+not an independent choice.
 The Django project root is `salmanwahed_com/` (one level below the repo root).
 
 ## Running Locally with Docker
